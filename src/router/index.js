@@ -1,19 +1,19 @@
-// Fichier de configuration des routes
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import HomePage from '../views/HomePage.vue';
+import LoginPage from '../views/LoginPage.vue';
+import PublicResources from '../views/PublicResources.vue';
+import Dashboard from '../views/Dashboard.vue';
 
 const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: HomeView
-  }
-  
-]
+  { path: '/', component: HomePage },
+  { path: '/login', component: LoginPage },
+  { path: '/resources', component: PublicResources },
+  { path: '/dashboard', component: Dashboard },
+];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes
-})
+  history: createWebHistory(),
+  routes,
+});
 
-export default router
+export default router;
