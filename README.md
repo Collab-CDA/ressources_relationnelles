@@ -28,3 +28,21 @@ Configure Sequelize et exporte la connexion.
 Gère la configuration du serveur (Express).
 Importe db.js, synchronise les modèles, et crée les routes API.
 
+## GITHUB
+git init
+git remote add origin https://github.com/Collab-CDA/ressources_relationnelles.git
+git add .
+git commit -m "premier commit"
+git push origin master
+
+## Cloner le projet
+git clone https://github.com/Collab-CDA/ressources_relationnelles.git
+
+# Récupérer changement (avant de commencer à travailler chaque jour)
+git pull origin master
+
+# Faire des commits régulier en fin de journée
+git add .
+git add .
+git commit -m "commentaire"
+git push origin master

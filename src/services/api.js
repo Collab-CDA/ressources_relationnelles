@@ -1,3 +1,4 @@
+//  Service pour gérer les appels API généraux
 import axios from 'axios';
 
 const apiClient = axios.create({

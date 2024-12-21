@@ -1,0 +1,1 @@
+<!-- Page des ressources complètes (citoyen connecté) -->

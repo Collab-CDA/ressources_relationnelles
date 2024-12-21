@@ -1,0 +1,1 @@
+<!-- Page de détail d'une ressource -->
