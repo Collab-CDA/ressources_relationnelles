@@ -1,19 +1,30 @@
 # ressources_relationnelles
 
-## Project setup
-```
-yarn install
-```
+## BACKEND
+mkdir backend
+cd backend
+npm init -y
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+## Dépendances Backend
+# express : Pour créer un serveur.
+# mysql2 : Pour communiquer avec la base de données MySQL.
+# body-parser : Pour parser les données envoyées dans le corps des requêtes.
+# cors : Pour autoriser les requêtes provenant de votre frontend Vue.js.
+npm install express mysql2 body-parser cors
 
-### Compiles and minifies for production
-```
-yarn build
-```
+## Lancer le serveur Express
+nodemon server.js
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Configurer Axios dans Vue.js
+npm install axios
+
+## ORM Sequelize dans le serveur Express
+npm install sequelize mysql2 (dans le dossier backend)
+
+# fichier db.js : 
+Gère la connexion à la base de données avec Sequelize.
+Configure Sequelize et exporte la connexion.
+# le fichier server.js : 
+Gère la configuration du serveur (Express).
+Importe db.js, synchronise les modèles, et crée les routes API.
+
