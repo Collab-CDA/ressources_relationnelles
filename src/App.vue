@@ -21,5 +21,7 @@ export default {
 </script>
 
 <style>
-/* Ajouter ici des styles généraux pour l'application si nécessaire */
+body {
+  font-family: 'Roboto', sans-serif;
+}
 </style>
