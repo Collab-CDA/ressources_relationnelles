@@ -1,7 +1,6 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-light">
       <div class="container-fluid">
-        <!-- Logo ou titre de l'application -->
         <a class="navbar-brand nomAppli">(RE)Sources Relationnelles</a>
         <!-- Bouton pour le menu mobile -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,14 +34,19 @@
   </script>
   
   <style scoped>
-  .nomAppli {
-    font-size: 32px;
-    font-weight: bold;
-    color: white;
+.nomAppli {
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+}
+
+.nomAppli:hover {
+  color: white; 
+  text-decoration: none;
 }
 
 .navbar {
-background-color: #0258BD;
+  background-color: #0258BD;
 }
-  </style>
+</style>
   
