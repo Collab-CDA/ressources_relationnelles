@@ -1,45 +1,48 @@
-require('dotenv').config();  // Charger les variables d'environnement
+require('dotenv').config();
 
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
-const mysql = require('mysql2');
+const bodyParser = require('body-parser');
+const sequelize = require('./db/sequelize');
+const utilisateurRoutes = require('./routes/userRoutes');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 const app = express();
-const PORT = process.env.PORT || 3000; // Utilisation de la variable d'environnement pour le port
+const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// Connexion à la base de données avec Sequelize
-const { Sequelize } = require('sequelize');
-
-const sequelize = new Sequelize(
-    process.env.DB_NAME, // Nom de la base de données
-    process.env.DB_USER, // Utilisateur
-    process.env.DB_PASSWORD, // Mot de passe
-    {
-        host: process.env.DB_HOST, // Hôte
-        dialect: process.env.DB_DIALECT // Type de base de données (mysql)
-    }
-);
-
-// Tester la connexion à la base de données
 sequelize.authenticate()
     .then(() => {
-        console.log('La connexion à la base de données a réussi!');
+        console.log('Connexion à la base de données réussie !');
     })
     .catch(err => {
-        console.error('Impossible de se connecter à la base de données:', err);
+        console.error('Erreur lors de la connexion à la base de données :', err.message);
     });
 
-// Route de test
+const verifyToken = (req, res, next) => {
+    const token = req.headers['authorization'];
+    if (!token) {
+        return res.status(403).json({ message: 'Un token est requis pour accéder à cette ressource.' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (err) {
+        return res.status(401).json({ message: 'Token invalide.' });
+    }
+};
+
 app.get('/api', (req, res) => {
-    res.json({ message: 'Hello from backend!' });
+    res.json({ message: 'Bienvenue sur l\'API backend avec JWT et bcrypt !' });
 });
 
-// Lancer le serveur
+app.use('/api/utilisateurs', utilisateurRoutes);
+
 app.listen(PORT, () => {
     console.log(`Serveur démarré sur http://localhost:${PORT}`);
 });
