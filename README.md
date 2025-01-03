@@ -13,7 +13,7 @@ npm init -y
 npm install express mysql2 body-parser cors
 
 ## Lancer le serveur Express
-nodemon server.js
+npm run start
 
 ## Configurer Axios dans Vue.js
 npm install axios
