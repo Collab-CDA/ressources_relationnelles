@@ -1,109 +1,176 @@
 <template>
-  <div class="login">
-    <h1>Connexion</h1>
-    <form @submit.prevent="handleLogin">
-      <div>
-        <label for="username">Nom d'utilisateur :</label>
+  <div class="login-page">
+    <h1>Connectez-vous</h1>
+    <form @submit.prevent="login">
+      <div class="form-group">
+        <label for="email">Email</label>
         <input
-          type="text"
-          id="username"
-          v-model="username"
-          placeholder="Entrez votre nom d'utilisateur"
+          type="email"
+          id="email"
+          v-model="form.email"
+          required
+          placeholder="Votre email"
         />
       </div>
-      <div>
-        <label for="password">Mot de passe :</label>
+      <div class="form-group">
+        <label for="mot_de_passe">Mot de passe</label>
         <input
           type="password"
-          id="password"
-          v-model="password"
-          placeholder="Entrez votre mot de passe"
+          id="mot_de_passe"
+          v-model="form.mot_de_passe"
+          required
+          placeholder="Votre mot de passe"
         />
       </div>
-      <button type="submit">Se connecter</button>
+      <button type="submit" class="btn">Se connecter</button>
+      <p class="redirect-message">
+        Pas encore de compte ? 
+        <button @click="goToRegister" class="redirect-btn">Inscrivez-vous</button>
+      </p>
     </form>
-    <p>
-      Pas encore de compte ?
-      <router-link to="/register">Créer un compte</router-link>
-    </p>
+    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'LoginPage',
+  name: "LoginPage",
   data() {
     return {
-      username: '',
-      password: ''
+      form: {
+        email: "",
+        mot_de_passe: "",
+      },
+      errorMessage: "",
     };
   },
   methods: {
-    handleLogin() {
-      if (this.username && this.password) {
-        // Logique pour vérifier l'authentification
-        console.log("Connexion réussie pour:", this.username);
-      } else {
-        alert("Veuillez remplir tous les champs.");
+    async login() {
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/api/utilisateurs/login",
+          this.form
+        );
+        const { utilisateur, token } = response.data;
+        alert(`Bienvenue ${utilisateur.prenom}!`);
+        // Stockage du token
+        localStorage.setItem("token", token);
+        // Redirection vers le tableau de bord après connexion réussie
+        this.$router.push("/dashboard");
+      } catch (error) {
+        this.errorMessage =
+          error.response?.data?.message || "Une erreur est survenue.";
       }
+    },
+    goToRegister() {
+      this.$router.push("/register"); // Redirection vers la page d'inscription
     }
-  }
+  },
 };
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@700&family=Open+Sans:wght@400;600&display=swap");
-
-.login {
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 30px;
-  background-color: #f7f7f7;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.login-page {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #dad8d8;
 }
 
 h1 {
-  font-family: "Nunito", sans-serif;
-  font-size: 28px;
-  font-weight: bold;
+  text-align: center;
   margin-bottom: 20px;
 }
 
-form div {
+.form-group {
   margin-bottom: 15px;
 }
 
 label {
   display: block;
   margin-bottom: 5px;
+  font-weight: bold;
 }
 
 input {
   width: 100%;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 8px;
+  font-size: 16px;
   border: 1px solid #ccc;
-  font-size: 1rem;
+  border-radius: 4px;
 }
 
-button {
+button.btn {
   width: 100%;
   padding: 10px;
-  background-color: #84B66D;
-  color: white;
+  font-size: 16px;
+  color: #fff;
+  background-color: #b0a2ba;
   border: none;
-  border-radius: 5px;
-  font-size: 1.1rem;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-button:hover {
-  background-color: #69A050;
+button.btn:hover {
+  background-color: #d4c4e0;
 }
 
-p {
-  margin-top: 15px;
+.redirect-message {
   text-align: center;
+  margin-top: 15px;
+}
+
+.redirect-btn {
+  background-color: #b0a2ba;
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.redirect-btn:hover {
+  background-color: #d4c4e0;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-top: 15px;
+}
+
+/* Media queries pour les écrans mobiles */
+@media (max-width: 768px) {
+  .login-page {
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+  .redirect-btn {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 390px) {
+  .login-page {
+    width: 85%;
+    margin-left: 7.5%;
+    margin-right: 7.5%;
+  }
+  h1 {
+    font-size: 18px; 
+  }
+  .btn {
+    padding: 8px;
+    font-size: 14px; 
+  }
+  .form-group input {
+    font-size: 14px; 
+  }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="register-page">
-    <h1>Inscription</h1>
+    <h1>Inscrivez-vous</h1>
     <form @submit.prevent="register">
       <div class="form-group">
         <label for="nom">Nom</label>
@@ -11,6 +11,7 @@
           placeholder="Votre nom"
           required
         />
+        <p v-if="errors.nom" class="error-message">{{ errors.nom }}</p>
       </div>
       <div class="form-group">
         <label for="prenom">Prénom</label>
@@ -21,6 +22,7 @@
           placeholder="Votre prénom"
           required
         />
+        <p v-if="errors.prenom" class="error-message">{{ errors.prenom }}</p>
       </div>
       <div class="form-group">
         <label for="email">Email</label>
@@ -31,6 +33,7 @@
           placeholder="Votre email"
           required
         />
+        <p v-if="errors.email" class="error-message">{{ errors.email }}</p>
       </div>
       <div class="form-group">
         <label for="mot_de_passe">Mot de passe</label>
@@ -40,6 +43,7 @@
           v-model="form.mot_de_passe"
           placeholder="Votre mot de passe"
           required
+          @input="validatePassword"
         />
         <p v-if="passwordError" class="error-message">{{ passwordError }}</p>
       </div>
@@ -52,8 +56,8 @@
           placeholder="Confirmez votre mot de passe"
           required
         />
-        <p v-if="confirmPasswordError" class="error-message">
-          {{ confirmPasswordError }}
+        <p v-if="errors.confirmPassword" class="error-message">
+          {{ errors.confirmPassword }}
         </p>
       </div>
       <div class="form-group">
@@ -62,21 +66,27 @@
           <option value="utilisateur">Utilisateur</option>
           <option value="administrateur">Administrateur</option>
         </select>
+        <p v-if="errors.role" class="error-message">{{ errors.role }}</p>
       </div>
       <div class="form-group checkbox-group">
-        <input
-          type="checkbox"
-          id="accept-cgu"
-          v-model="acceptCgu"
-          required
-        />
+        <input type="checkbox" id="accept-cgu" v-model="acceptCgu" required />
         <label for="accept-cgu">
-          Accepter les 
-          <router-link to="/cgu">conditions générales d'utilisation</router-link>
+          Accepter les
+          <router-link to="/cgu"
+            >conditions générales d'utilisation</router-link
+          >
         </label>
+        <p v-if="errors.acceptCgu" class="error-message">
+          {{ errors.acceptCgu }}
+        </p>
       </div>
-      <button type="submit" :disabled="!isFormValid">S'inscrire</button>
+      <button type="submit">S'inscrire</button>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+      <p class="redirect-message">
+        Déjà inscrit ?
+        <button @click="goToLogin" class="redirect-btn">Connectez-vous</button>
+      </p>
     </form>
   </div>
 </template>
@@ -96,65 +106,96 @@ export default {
         role_: "utilisateur",
       },
       confirmPassword: "",
-      acceptCgu: false, // État pour la checkbox des CGU
-      passwordError: "",
-      confirmPasswordError: "",
+      acceptCgu: false,
+      passwordError: "", // Erreur spécifique pour le mot de passe
+      errors: {}, // Erreurs spécifiques aux champs
       errorMessage: "",
     };
   },
-  computed: {
-    isFormValid() {
-      return (
-        this.form.nom &&
-        this.form.prenom &&
-        this.form.email &&
-        this.validatePassword(this.form.mot_de_passe) &&
-        this.form.mot_de_passe === this.confirmPassword &&
-        this.acceptCgu // Vérifie que les CGU sont acceptées
-      );
-    },
-  },
   methods: {
-    validatePassword(password) {
-      const regex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
-      if (!regex.test(password)) {
+    validatePassword() {
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+      if (!this.form.mot_de_passe) {
+        this.passwordError = "Le mot de passe est requis.";
+      } else if (!regex.test(this.form.mot_de_passe)) {
         this.passwordError =
           "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre.";
-        return false;
+      } else {
+        this.passwordError = "";
       }
-      this.passwordError = "";
-      return true;
     },
     validateConfirmPassword() {
       if (this.form.mot_de_passe !== this.confirmPassword) {
-        this.confirmPasswordError = "Les mots de passe ne correspondent pas.";
-        return false;
+        this.errors.confirmPassword = "Les mots de passe ne correspondent pas.";
+      } else {
+        this.errors.confirmPassword = "";
       }
-      this.confirmPasswordError = "";
-      return true;
+    },
+    validateFields() {
+      let isValid = true;
+      this.errors = {}; // Réinitialiser les erreurs
+
+      if (!this.form.nom) {
+        this.errors.nom = "Le nom est requis.";
+        isValid = false;
+      }
+
+      if (!this.form.prenom) {
+        this.errors.prenom = "Le prénom est requis.";
+        isValid = false;
+      }
+
+      if (!this.form.email) {
+        this.errors.email = "L'email est requis.";
+        isValid = false;
+      } else if (!/\S+@\S+\.\S+/.test(this.form.email)) {
+        this.errors.email = "L'email n'est pas valide.";
+        isValid = false;
+      }
+
+      this.validatePassword(); // Validation du mot de passe
+      const confirmPasswordError = this.validateConfirmPassword();
+      if (confirmPasswordError) {
+        this.errors.confirmPassword = confirmPasswordError;
+        isValid = false;
+      }
+
+      if (!this.acceptCgu) {
+        this.errors.acceptCgu =
+          "Vous devez accepter les conditions générales d'utilisation.";
+        isValid = false;
+      }
+
+      return isValid;
     },
     async register() {
-  if (!this.validatePassword(this.form.mot_de_passe)) return;
-  if (!this.validateConfirmPassword()) return;
+    const isValid = this.validateFields();
 
-  try {
-    const dataToSend = {
-      ...this.form,
-      statut: "actif", // Valeur par défaut
-    };
-    const response = await axios.post("http://localhost:3000/api/utilisateurs/register", dataToSend);
-    alert("Inscription réussie !");
-    this.$router.push("/login"); // Redirection après inscription réussie
-  } catch (error) {
-    this.errorMessage =
-      error.response?.data?.message || "Une erreur est survenue.";
-  }
-},
-  },
-  watch: {
-    confirmPassword() {
-      this.validateConfirmPassword();
+    if (!isValid) {
+        return; // Si les champs ne sont pas valides, on ne soumet pas le formulaire
+    }
+
+    try {
+        const dataToSend = {
+            ...this.form,
+            statut: "actif", // Valeur par défaut
+        };
+
+        const response = await axios.post("http://localhost:3000/api/utilisateurs/register", dataToSend);
+        alert("Inscription réussie !");
+        this.$router.push("/login"); // Redirection après inscription réussie
+    } catch (error) {
+        console.log("Erreur de réponse du serveur:", error.response); // Affiche la réponse complète de l'erreur
+
+        if (error.response && error.response.data && error.response.data.message === "Un compte existe déjà avec cet email.") {
+            this.errorMessage = "Un compte existe déjà avec cet email."; 
+        } else {
+            this.errorMessage = "Une erreur est survenue."; // Autres erreurs génériques
+        }
+    }
+    },
+    goToLogin() {
+      this.$router.push("/login"); // Redirection vers la page de connexion
     },
   },
 };
@@ -162,12 +203,13 @@ export default {
 
 <style scoped>
 .register-page {
-  max-width: 400px;
-  margin: 0 auto;
+  max-width: 600px;
+  margin: 50px auto;
   padding: 1rem;
-  background-color: #f9f9f9;
+  background-color: #dad8d8;
   border: 1px solid #ddd;
   border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
@@ -179,12 +221,19 @@ h1 {
 }
 
 .checkbox-group {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  margin-bottom: 1rem;
 }
 
-label {
+.checkbox-group input {
+  margin-right: 10px;
+}
+
+.checkbox-group label {
   margin-left: 0.5rem;
+  display: inline;
+  white-space: nowrap;
 }
 
 input,
@@ -198,16 +247,10 @@ select {
 button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #007bff;
-  color: white;
+  background-color: #b0a2ba;
   border: none;
   border-radius: 3px;
   cursor: pointer;
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
 }
 
 .error-message {
@@ -216,12 +259,25 @@ button:disabled {
   font-size: 0.9rem;
 }
 
-router-link {
-  color: #007bff;
-  text-decoration: none;
+.redirect-message {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9rem;
 }
 
-router-link:hover {
-  text-decoration: underline;
+.redirect-btn {
+  background-color: #b0a2ba;
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  width: auto;
+  margin-left: 5px;
+}
+
+.redirect-btn:hover {
+  background-color: #d4c4e0;
 }
 </style>

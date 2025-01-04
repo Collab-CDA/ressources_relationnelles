@@ -4,7 +4,16 @@ const Utilisateur = require('../models/User');
 
 exports.creerUtilisateur = async (data) => {
     try {
+        // Vérification si un utilisateur avec le même email existe déjà
+        const utilisateurExistant = await Utilisateur.findOne({ where: { email: data.email } });
+        if (utilisateurExistant) {
+            throw new Error('Un compte existe déjà avec cet email.');
+        }
+
+        // Hachage du mot de passe
         const hash = await bcrypt.hash(data.mot_de_passe, 10);
+
+        // Création du nouvel utilisateur
         const utilisateur = await Utilisateur.create({
             nom: data.nom,
             prenom: data.prenom,
@@ -13,9 +22,11 @@ exports.creerUtilisateur = async (data) => {
             role_: data.role_,
             statut: data.statut
         });
+
         return utilisateur;
     } catch (err) {
-        throw err;
+        // Si l'erreur est liée à un email existant, on la lance explicitement
+        throw err; 
     }
 };
 
@@ -39,6 +50,7 @@ exports.authentifierUtilisateur = async (email, mot_de_passe) => {
 
         return { utilisateur, token };
     } catch (err) {
+        console.error('Erreur dans le service d\'authentification de l\'utilisateur:', err);
         throw err;
     }
 };
