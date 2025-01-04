@@ -14,14 +14,12 @@ exports.creerUtilisateur = async (req, res) => {
     }
 };
 
-
 exports.authentifierUtilisateur = async (req, res) => {
     const { email, mot_de_passe } = req.body;
     try {
         const { utilisateur, token } = await authentifierUtilisateur(email, mot_de_passe);
         res.status(200).json({ utilisateur, token });
     } catch (err) {
-        console.error('Erreur lors de l\'authentification de l\'utilisateur:', err);
         res.status(401).json({ message: err.message });
     }
 };

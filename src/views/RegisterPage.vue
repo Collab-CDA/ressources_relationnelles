@@ -83,6 +83,8 @@
       <button type="submit">S'inscrire</button>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
+      <div class="separator-horizontal"></div>
+
       <p class="redirect-message">
         Déjà inscrit ?
         <button @click="goToLogin" class="redirect-btn">Connectez-vous</button>
@@ -169,30 +171,38 @@ export default {
       return isValid;
     },
     async register() {
-    const isValid = this.validateFields();
+      const isValid = this.validateFields();
 
-    if (!isValid) {
+      if (!isValid) {
         return; // Si les champs ne sont pas valides, on ne soumet pas le formulaire
-    }
+      }
 
-    try {
+      try {
         const dataToSend = {
-            ...this.form,
-            statut: "actif", // Valeur par défaut
+          ...this.form,
+          statut: "actif", // Valeur par défaut
         };
 
-        const response = await axios.post("http://localhost:3000/api/utilisateurs/register", dataToSend);
+        const response = await axios.post(
+          "http://localhost:3000/api/utilisateurs/register",
+          dataToSend
+        );
         alert("Inscription réussie !");
         this.$router.push("/login"); // Redirection après inscription réussie
-    } catch (error) {
+      } catch (error) {
         console.log("Erreur de réponse du serveur:", error.response); // Affiche la réponse complète de l'erreur
 
-        if (error.response && error.response.data && error.response.data.message === "Un compte existe déjà avec cet email.") {
-            this.errorMessage = "Un compte existe déjà avec cet email."; 
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message ===
+            "Un compte existe déjà avec cet email."
+        ) {
+          this.errorMessage = "Un compte existe déjà avec cet email.";
         } else {
-            this.errorMessage = "Une erreur est survenue."; // Autres erreurs génériques
+          this.errorMessage = "Une erreur est survenue."; // Autres erreurs génériques
         }
-    }
+      }
     },
     goToLogin() {
       this.$router.push("/login"); // Redirection vers la page de connexion
@@ -279,5 +289,12 @@ button {
 
 .redirect-btn:hover {
   background-color: #d4c4e0;
+}
+
+.separator-horizontal {
+  width: 10rem;
+  height: 1px;
+  background-color: black;
+  margin: 20px auto;
 }
 </style>

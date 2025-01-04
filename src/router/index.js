@@ -1,16 +1,16 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import HomePage from '../views/HomePage.vue';
-import LoginPage from '../views/LoginPage.vue';
-import RegisterPage from '../views/RegisterPage.vue';
-import PublicResources from '../views/PublicResources.vue';
-import Dashboard from '../views/Dashboard.vue';
+import { createRouter, createWebHistory } from "vue-router";
+import HomePage from "../views/HomePage.vue";
+import LoginPage from "../views/LoginPage.vue";
+import RegisterPage from "../views/RegisterPage.vue";
+import PublicResources from "../views/PublicResources.vue";
+import Dashboard from "../views/Dashboard.vue";
 
 const routes = [
-  { path: '/', component: HomePage },
-  { path: '/login', component: LoginPage },
-  { path: '/register', component: RegisterPage },
-  { path: '/resources', component: PublicResources },
-  { path: '/dashboard', component: Dashboard },
+  { path: "/", name: "HomePage", component: HomePage },
+  { path: "/login", name: "LoginPage", component: LoginPage },
+  { path: "/register", name: "RegisterPage", component: RegisterPage },
+  { path: "/resources", name: "ResourcesPage", component: PublicResources },
+  { path: "/dashboard", name: "DashboardPage", component: Dashboard },
 ];
 
 const router = createRouter({

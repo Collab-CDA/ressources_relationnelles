@@ -29,7 +29,6 @@ exports.creerUtilisateur = async (data) => {
         throw err; 
     }
 };
-
 exports.authentifierUtilisateur = async (email, mot_de_passe) => {
     try {
         const utilisateur = await Utilisateur.findOne({ where: { email } });
@@ -50,7 +49,6 @@ exports.authentifierUtilisateur = async (email, mot_de_passe) => {
 
         return { utilisateur, token };
     } catch (err) {
-        console.error('Erreur dans le service d\'authentification de l\'utilisateur:', err);
         throw err;
     }
 };

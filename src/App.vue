@@ -21,7 +21,9 @@ export default {
 </script>
 
 <style>
-body {
+/* Appliquer la police à tout le contenu du site */
+* {
   font-family: 'Roboto', sans-serif;
 }
+
 </style>
