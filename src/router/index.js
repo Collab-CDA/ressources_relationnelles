@@ -4,9 +4,11 @@ import LoginPage from "../views/LoginPage.vue";
 import RegisterPage from "../views/RegisterPage.vue";
 import PublicResources from "../views/PublicResources.vue";
 import Dashboard from "../views/Dashboard.vue";
+import TutoPage from "../views/TutoPage.vue";
 
 const routes = [
   { path: "/", name: "HomePage", component: HomePage },
+  { path: "/tuto", name: "TutoPage", component: TutoPage },
   { path: "/login", name: "LoginPage", component: LoginPage },
   { path: "/register", name: "RegisterPage", component: RegisterPage },
   { path: "/resources", name: "ResourcesPage", component: PublicResources },

@@ -122,7 +122,7 @@ button.btn {
   background-color: #b0a2ba;
   border: none;
   border-radius: 4px;
-  cursor: pointer;
+  font-weight: bolder;
 }
 
 button.btn:hover {
@@ -139,7 +139,7 @@ button.btn:hover {
   border: none;
   padding: 4px 10px;
   border-radius: 5px;
-  cursor: pointer;
+  font-weight: bolder;
   font-size: 12px;
 }
 

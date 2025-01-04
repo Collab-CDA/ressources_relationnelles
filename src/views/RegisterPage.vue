@@ -260,6 +260,7 @@ button {
   background-color: #b0a2ba;
   border: none;
   border-radius: 3px;
+  font-weight: bolder;
   cursor: pointer;
 }
 
@@ -277,12 +278,12 @@ button {
 
 .redirect-btn {
   background-color: #b0a2ba;
-  color: #fff;
   border: none;
   padding: 4px 10px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 12px;
+  font-weight: bolder;
   width: auto;
   margin-left: 5px;
 }
