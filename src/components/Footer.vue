@@ -6,7 +6,6 @@
         <li class="nav-item"><a href="#" class="nav-link px-2 text-light">RGBD</a></li>
         <li class="nav-item"><a href="#" class="nav-link px-2 text-light">Gestion des cookies</a></li>
         <li class="nav-item"><a href="#" class="nav-link px-2 text-light">Mentions légales</a></li>
-        <li class="nav-item"><a href="#" class="nav-link px-2 text-light">A propos</a></li>
       </ul>
       <p class="text-center text-light">© 2025 Hélène Poirier-Halley - Enzo Radici</p>
     </footer>

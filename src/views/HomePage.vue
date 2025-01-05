@@ -2,7 +2,7 @@
   <div>
     <h1>La plateforme d’amélioration de vos relations</h1>
 
-    <div class="container-accueil">
+    <div class="container-standard">
       <p>
         Cette plateforme a pour but de vous aider à améliorer vos relations avec
         les autres, que ce soit dans la famille, entre amis ou au travail.
@@ -17,7 +17,7 @@
         communiquer, se soutenir et créer des liens plus forts entre eux.
       </p>
       <p>
-        Pour découvrir RE:Sources Relationnelles, rien de mieux que visitez le
+        Pour découvrir (RE)Sources Relationnelles, rien de mieux que visitez le
         site web.
       </p>
     </div>
@@ -38,7 +38,7 @@ h1 {
   margin-top: 2rem;
 }
 
-.container-accueil {
+.container-standard {
   max-width: 600px;
   margin: 2rem auto;
   padding: 20px;
