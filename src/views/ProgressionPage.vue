@@ -1,16 +1,16 @@
 <template>
     <div>
-      <h1>Gestion des catégories (admin)</h1>
+      <h1>Progression</h1>
     </div>
   </template>
   
   <script>
   export default {
-    name: 'CategoryManagement',
+    name: 'ProgressionPage',
   };
   </script>
   
   <style scoped>
-  /* Style de la page des ressources */
+  /* Style du tableau de bord */
   </style>
   

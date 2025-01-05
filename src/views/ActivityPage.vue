@@ -1,13 +1,12 @@
 <template>
     <div>
-      <h1>Page des ressources (utilisateur connecté)</h1>
-      <p>Liste des ressources complètes</p>
+      <h1>Démarrer une activité</h1>
     </div>
   </template>
   
   <script>
   export default {
-    name: 'CompleteResources',
+    name: 'ActivityPage',
   };
   </script>
   

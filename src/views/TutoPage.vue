@@ -13,6 +13,5 @@
   </script>
   
   <style scoped>
-  /* Style de la page d'accueil */
   </style>
   

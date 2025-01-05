@@ -1,5 +1,3 @@
-<!-- Page des ressources publiques -->
-
 <template>
     <div>
       <h1>Page des ressources</h1>

@@ -29,7 +29,7 @@
               <router-link to="/tuto" class="nav-link">Tuto plateforme</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/resources" class="nav-link">Ressources</router-link>
+              <router-link to="/complete-resources" class="nav-link">Ressources</router-link>
             </li>
             <li class="nav-item dropdown">
               <a
@@ -44,10 +44,10 @@
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li>
-                  <router-link to="/profil" class="dropdown-item">Démarrer une activité</router-link>
+                  <router-link to="/activity" class="dropdown-item">Démarrer une activité</router-link>
                 </li>
                 <li>
-                  <router-link to="/messagerie" class="dropdown-item">Progression</router-link>
+                  <router-link to="/progression" class="dropdown-item">Progression</router-link>
                 </li>
               </ul>
             </li>
@@ -64,7 +64,7 @@
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li>
-                  <router-link to="/profil" class="dropdown-item">Profil</router-link>
+                  <router-link to="/profile" class="dropdown-item">Profil</router-link>
                 </li>
                 <li>
                   <router-link to="/messagerie" class="dropdown-item">Messagerie</router-link>

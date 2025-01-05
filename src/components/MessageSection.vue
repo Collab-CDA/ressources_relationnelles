@@ -1,1 +1,0 @@
-<!-- Composant pour échanger des messages -->

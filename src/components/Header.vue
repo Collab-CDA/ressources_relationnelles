@@ -29,7 +29,7 @@
             <router-link to="/tuto" class="nav-link">Tuto plateforme</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/resources" class="nav-link">Ressources</router-link>
+            <router-link to="/resources-public" class="nav-link">Ressources</router-link>
           </li>
             <li class="nav-item">
               <router-link to="/login" class="nav-link">Connexion</router-link>
@@ -52,7 +52,6 @@ export default {
 </script>
 
 <style scoped>
-/* Styles pour le header */
 header {
   background-color: #0258bd;
   padding: 20px;
@@ -82,6 +81,11 @@ header {
 .navbar {
   background-color: #80ada0;
   margin-top: 0;
+}
+
+.nav-link {
+  font-weight: bold;
+  margin-left: 3rem;
 }
 
 .nav-item.dropdown .dropdown-menu {

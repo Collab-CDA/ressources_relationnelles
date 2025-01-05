@@ -1,13 +1,12 @@
 <template>
     <div>
-      <h1>Tableau de bord</h1>
-      <p>Vue des activités et ressources pour l'utilisateur connecté.</p>
+      <h1>Profil</h1>
     </div>
   </template>
   
   <script>
   export default {
-    name: 'DashboardPage',
+    name: 'ProfilePage',
   };
   </script>
   
