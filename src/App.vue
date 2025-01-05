@@ -1,17 +1,24 @@
 <template>
-  <div>
+  <div class="app-container">
     <!-- On vérifie si l'utilisateur est connecté pour afficher le bon header -->
     <component :is="headerComponent" />
-    <router-view />
+    <div class="content">
+      <router-view />
+    </div>
+    <Footer />
   </div>
 </template>
 
 <script>
 import Header from './components/Header.vue';
 import Header2 from './components/Header2.vue';
+import Footer from './components/Footer.vue'; // Importez le composant Footer
 
 export default {
   name: 'App',
+  components: {
+    Footer // Enregistrez le composant Footer
+  },
   data() {
     return {
       headerComponent: null,
@@ -35,3 +42,15 @@ export default {
   }
 };
 </script>
+
+<style>
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+}
+</style>

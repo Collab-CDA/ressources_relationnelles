@@ -58,13 +58,11 @@ export default {
           "http://localhost:3000/api/utilisateurs/login",
           this.form
         );
-        console.log(response.data); // Log pour vérifier la réponse
         const { utilisateur, token } = response.data;
         alert(`Bienvenue ${utilisateur.prenom}!`);
         localStorage.setItem("token", token); // Stockage du token
         this.$router.push("/dashboard"); // Redirection vers le dashboard
       } catch (error) {
-        console.log(error); // Log pour voir l'erreur complète
         this.errorMessage =
           error.response?.data?.message || "Une erreur est survenue.";
       }

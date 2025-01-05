@@ -69,7 +69,6 @@
                 <li>
                   <router-link to="/messagerie" class="dropdown-item">Messagerie</router-link>
                 </li>
-                <!-- Le lien de déconnexion appelle la méthode de déconnexion -->
                 <li>
                   <a @click.prevent="logout" class="dropdown-item">Déconnexion</a>
                 </li>
@@ -89,7 +88,7 @@
       logout() {
         // Retirer le token du localStorage
         localStorage.removeItem("token");
-        // Rediriger vers l'accueil
+        // Redirige vers l'accueil
         this.$router.push("/");
       }
     }
