@@ -46,7 +46,7 @@ app.get('/api', (req, res) => {
 
 app.use('/api/relations', relationRoutes);
 app.use('/api/categories', categoryResourceRoutes);
-app.use('/api/utilisateurs', verifyToken, utilisateurRoutes);
+app.use('/api/utilisateurs', utilisateurRoutes);
 app.use('/api/ressources', verifyToken, resourceRoutes);
 
 app.use((err, _req, res, next) => {

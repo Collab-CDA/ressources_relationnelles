@@ -1,6 +1,6 @@
 const checkRole = (allowedRoles) => {
     return (req, res, next) => {
-        const userRole = req.user?.role; // Assurez-vous que le rôle de l'utilisateur est présent dans `req.user` après la vérification du token JWT
+        const userRole = req.user?.role;
 
         if (!userRole) {
             return res.status(403).json({ message: 'Rôle non défini.' });
