@@ -7,7 +7,8 @@ const utilisateurRoutes = require('./routes/userRoutes');
 const resourceRoutes = require('./routes/resourceRoutes');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
+const relationRoutes = require('./routes/relationRoutes');
+const categoryResourceRoutes = require('./routes/categoryResourceRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -43,6 +44,8 @@ app.get('/api', (req, res) => {
     res.json({ message: 'Bienvenue sur l\'API backend avec JWT et bcrypt !' });
 });
 
+app.use('/api/relations', relationRoutes);
+app.use('/api/categories', categoryResourceRoutes);
 app.use('/api/utilisateurs', verifyToken, utilisateurRoutes);
 app.use('/api/ressources', verifyToken, resourceRoutes);
 
