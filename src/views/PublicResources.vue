@@ -7,13 +7,13 @@
       <label for="typeRelation">Type de relation :</label>
       <select v-model="selectedTypeRelation" id="typeRelation">
         <option value="">Tous</option>
-        <option v-for="type in typesRelation" :key="type" :value="type">{{ type }}</option>
+        <option v-for="type in typesRelation" :key="type.id_relation" :value="type.libelle_relation">{{ type.libelle_relation }}</option>
       </select>
 
       <label for="categoryResource">Catégorie de ressource :</label>
       <select v-model="selectedCategoryResource" id="categoryResource">
         <option value="">Tous</option>
-        <option v-for="category in categoriesResource" :key="category" :value="category">{{ category }}</option>
+        <option v-for="category in categoriesResource" :key="category.id_categorie" :value="category.libelle_categorie">{{ category.libelle_categorie }}</option>
       </select>
 
       <label for="typeResource">Type de ressource :</label>
@@ -59,7 +59,7 @@
       <div class="comments-section">
         <h2>Commentaires</h2>
         <div class="comments-box">
-          <!-- Ajoutez ici le contenu des commentaires -->
+          <!-- contenu des commentaires -->
         </div>
 
         <!-- Bouton Contacter un participant -->
@@ -70,13 +70,14 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'PublicRessources',
   data() {
     return {
       showUploadModal: false,
       selectedFile: null,
-      // A RECUP EN DYNAMIQUE DANS LA BDD
       resources: [
         // Exemple de données
         {
@@ -89,8 +90,8 @@ export default {
           typeResource: 'Type A'
         },
       ],
-      typesRelation: ['Conjoints', 'Famille', 'Professionnelle', 'Amis', 'Inconnus', 'Soi'],
-      categoriesResource: ['Communication', 'Cultures', 'Développement personnel', 'Intelligence émotionnelle', 'Loisirs', 'Monde professionnel', 'Parentalité', 'Qualité de vie', 'Recherche de sens', 'Santé physique', 'Santé psychique', 'Spiritualité', 'Vie affective'],
+      typesRelation: [],
+      categoriesResource: [],
       typesResource: ['Vidéos', 'Pdf', 'Fiches', 'Articles', 'Images'],
       selectedTypeRelation: '',
       selectedCategoryResource: '',
@@ -108,6 +109,24 @@ export default {
     },
   },
   methods: {
+    async fetchTypesRelation() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/relations');
+        console.log('Réponse des types de relation :', response.data);
+        this.typesRelation = response.data;
+      } catch (error) {
+        console.error('Erreur lors de la récupération des types de relation :', error.response ? error.response.data : error.message);
+      }
+    },
+    async fetchCategoriesResource() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/categories');
+        console.log('Réponse des catégories de ressources :', response.data);
+        this.categoriesResource = response.data;
+      } catch (error) {
+        console.error('Erreur lors de la récupération des catégories de ressources :', error.response ? error.response.data : error.message);
+      }
+    },
     handleFileUpload(event) {
       this.selectedFile = event.target.files[0];
     },
@@ -115,15 +134,17 @@ export default {
       if (this.selectedFile) {
         // Logique pour télécharger le fichier
         console.log('Fichier sélectionné:', this.selectedFile);
-        // Vous pouvez ajouter ici la logique pour envoyer le fichier au serveur
       } else {
         alert('Veuillez sélectionner un fichier.');
       }
     },
     contactParticipant() {
-      // Rediriger vers la page "messagerie"
       this.$router.push('/messagerie');
     }
+  },
+  created() {
+    this.fetchTypesRelation();
+    this.fetchCategoriesResource();
   }
 };
 </script>
