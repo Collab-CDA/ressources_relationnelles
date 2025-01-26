@@ -1,6 +1,6 @@
 <template>
   <div class="profile-page">
-    <h1>Profil</h1>
+    <h1>Votre profil</h1>
     <div v-if="utilisateur" class="card">
       <div class="avatar-container">
         <img :src="avatarUrl" alt="Avatar" class="avatar" />
@@ -193,9 +193,8 @@ export default {
 .card {
   background-color: #DAD8D8;
   padding: 20px;
-  border-radius: 10px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  width: 400px;
+  width: 30rem;
   text-align: left;
 }
 
@@ -206,25 +205,27 @@ export default {
 .avatar-container {
   position: relative;
   display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 
 .avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  width: 8rem;
+  height: 8rem;
+  border: solid 5px #80ADA0;
   object-fit: cover;
 }
 
 .avatar-upload-icon {
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: -1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 1.5rem;
+  height: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -248,7 +249,6 @@ export default {
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
-  color: white;
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s;
