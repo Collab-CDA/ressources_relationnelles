@@ -60,7 +60,7 @@ export default {
         );
         const { utilisateur, token } = response.data;
         alert(`Bienvenue ${utilisateur.prenom}!`);
-        localStorage.setItem("token", token); // Stockage du token
+        localStorage.setItem('token', token); // Stockage du token
         this.$router.push("/"); // Redirection vers l'accueil
       } catch (error) {
         this.errorMessage =
