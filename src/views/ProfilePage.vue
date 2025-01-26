@@ -2,6 +2,13 @@
   <div class="profile-page">
     <h1>Profil</h1>
     <div v-if="utilisateur" class="card">
+      <div class="avatar-container">
+        <img :src="avatarUrl" alt="Avatar" class="avatar" />
+        <label for="avatar-upload" class="avatar-upload-icon">
+          <i class="fas fa-camera"></i>
+        </label>
+        <input type="file" id="avatar-upload" @change="handleFileChange" class="avatar-upload-input" />
+      </div>
       <p><strong>Nom:</strong> {{ utilisateur.nom }}</p>
       <p><strong>Prénom:</strong> {{ utilisateur.prenom }}</p>
       <p><strong>Email:</strong> {{ utilisateur.email }}</p>
@@ -39,7 +46,6 @@
   </div>
 </template>
 
-
 <script>
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
@@ -55,10 +61,19 @@ export default {
         prenom: '',
         email: '',
       },
+      defaultAvatar: require('@/assets/default-avatar.png'),
+      selectedFile: null,
     };
   },
   created() {
     this.fetchUtilisateur();
+  },
+  computed: {
+    avatarUrl() {
+      return this.utilisateur.avatar
+        ? `http://localhost:3000/uploads/${this.utilisateur.avatar}`
+        : this.defaultAvatar;
+    },
   },
   methods: {
     async fetchUtilisateur() {
@@ -86,6 +101,36 @@ export default {
     },
     closeEditForm() {
       this.showEditForm = false;
+    },
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.selectedFile = file;
+        this.uploadAvatar();
+      }
+    },
+    async uploadAvatar() {
+      try {
+        const token = localStorage.getItem('token'); // Récupérez le token du localStorage
+        if (!token) {
+          throw new Error('Token manquant dans le localStorage.');
+        }
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.id; // Récupérez l'ID de l'utilisateur à partir du token
+
+        const formData = new FormData();
+        formData.append('avatar', this.selectedFile);
+
+        const response = await axios.put(`http://localhost:3000/api/utilisateurs/${userId}/avatar`, formData, {
+          headers: {
+            Authorization: token,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        this.utilisateur.avatar = response.data.avatar;
+      } catch (error) {
+        console.error('Erreur lors du téléchargement de l\'avatar:', error);
+      }
     },
     async updateUtilisateur() {
       try {
@@ -156,6 +201,39 @@ export default {
 
 .card p {
   margin: 10px 0;
+}
+
+.avatar-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-upload-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+}
+
+.avatar-upload-input {
+  display: none;
 }
 
 .button-container {

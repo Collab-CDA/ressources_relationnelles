@@ -35,6 +35,10 @@ const Utilisateur = sequelize.define('Utilisateur', {
     date_creation: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
+    },
+    avatar: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     tableName: 'UTILISATEUR',
