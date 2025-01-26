@@ -1,56 +1,63 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const Utilisateur = require('../models/User');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
+// Créer un utilisateur
 exports.creerUtilisateur = async (data) => {
-    try {
-        // Vérification si un utilisateur avec le même email existe déjà
-        const utilisateurExistant = await Utilisateur.findOne({ where: { email: data.email } });
-        if (utilisateurExistant) {
-            throw new Error('Un compte existe déjà avec cet email.');
-        }
+    const { email, mot_de_passe } = data;
+    const utilisateurExistant = await Utilisateur.findOne({ where: { email } });
 
-        // Hachage du mot de passe
-        const hash = await bcrypt.hash(data.mot_de_passe, 10);
-
-        // Création du nouvel utilisateur
-        const utilisateur = await Utilisateur.create({
-            nom: data.nom,
-            prenom: data.prenom,
-            email: data.email,
-            mot_de_passe: hash,
-            role_: data.role_,
-            statut: data.statut
-        });
-
-        return utilisateur;
-    } catch (err) {
-        // Si l'erreur est liée à un email existant, on la lance explicitement
-        throw err; 
+    if (utilisateurExistant) {
+        throw new Error('Un utilisateur avec cet email existe déjà.');
     }
+
+    const motDePasseHash = await bcrypt.hash(mot_de_passe, 10);
+    const nouvelUtilisateur = await Utilisateur.create({ ...data, mot_de_passe: motDePasseHash });
+
+    return nouvelUtilisateur;
 };
 
+// Authentifier un utilisateur
 exports.authentifierUtilisateur = async (email, mot_de_passe) => {
-    try {
-        const utilisateur = await Utilisateur.findOne({ where: { email } });
-        if (!utilisateur) {
-            throw new Error('Utilisateur non trouvé.');
-        }
+    const utilisateur = await Utilisateur.findOne({ where: { email } });
 
-        const valide = await bcrypt.compare(mot_de_passe, utilisateur.mot_de_passe);
-        if (!valide) {
-            throw new Error('Mot de passe incorrect.');
-        }
-
-        const token = jwt.sign(
-            { id: utilisateur.id_utilisateur, email: utilisateur.email },
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
-        );
-
-        return { utilisateur, token };
-    } catch (err) {
-        console.error('Erreur dans le service d\'authentification de l\'utilisateur:', err);
-        throw err;
+    if (!utilisateur) {
+        throw new Error('Utilisateur non trouvé.');
     }
+
+    const motDePasseValide = await bcrypt.compare(mot_de_passe, utilisateur.mot_de_passe);
+    if (!motDePasseValide) {
+        throw new Error('Mot de passe incorrect.');
+    }
+
+    const token = jwt.sign({ id: utilisateur.id_utilisateur, email: utilisateur.email }, process.env.JWT_SECRET, {
+        expiresIn: '24h',
+    });
+
+    return { utilisateur, token };
+};
+
+// Trouver un utilisateur par ID
+exports.trouverUtilisateurParId = async (id) => {
+    return await Utilisateur.findByPk(id);
+};
+
+// Modifier un utilisateur
+exports.modifierUtilisateur = async (id, data) => {
+    const utilisateur = await Utilisateur.findByPk(id);
+    if (!utilisateur) {
+        return null;
+    }
+    await utilisateur.update(data);
+    return utilisateur;
+};
+
+// Effacer un utilisateur
+exports.effacerUtilisateur = async (id) => {
+    const utilisateur = await Utilisateur.findByPk(id);
+    if (!utilisateur) {
+        return null;
+    }
+    await utilisateur.destroy();
+    return utilisateur;
 };
