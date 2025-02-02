@@ -2,11 +2,11 @@ const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../db/sequelize');
 
 const Resource = sequelize.define('Ressource', {
-  nom: {
+  titre: { 
     type: DataTypes.STRING,
     allowNull: false
   },
-  description: {
+  contenu: { 
     type: DataTypes.TEXT,
     allowNull: true
   },
@@ -14,14 +14,23 @@ const Resource = sequelize.define('Ressource', {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      isIn: [['text', 'pdf', 'video', 'image']] // Permet de limiter les types de ressources acceptés
+      isIn: [[
+        'Activité / Jeu à réaliser',
+        'Article',
+        'Carte défi',
+        'Cours au format PDF',
+        'Exercices / Atelier',
+        'Fiche de lecture',
+        'Jeu en ligne',
+        'Vidéo'
+      ]] 
     }
   },
   url: {
     type: DataTypes.STRING,
     allowNull: true,
     validate: {
-      isUrl: true // Valide que l'URL est correcte si le type est différent de 'text'
+      isUrl: true // Valide l'URL si fournie
     }
   },
   valide: {
