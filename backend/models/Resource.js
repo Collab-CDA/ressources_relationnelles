@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../db/sequelize');
+const Relation = require('./relation');
 
 const Resource = sequelize.define('Resource', {
   id_ressource_: {
@@ -53,10 +54,16 @@ const Resource = sequelize.define('Resource', {
     type: DataTypes.STRING(255),
     allowNull: true,
     field: 'nom_image'
+  },
+  type_relation: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    field: 'type_relation',
   }
 }, {
   timestamps: false,
   tableName: 'ressources'
 });
+
 
 module.exports = Resource;

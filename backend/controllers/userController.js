@@ -1,4 +1,4 @@
-const { creerUtilisateur, authentifierUtilisateur, trouverUtilisateurParId, modifierUtilisateur, effacerUtilisateur } = require('../services/userService');
+const { creerUtilisateur, authentifierUtilisateur, trouverUtilisateurParId, modifierUtilisateur, effacerUtilisateur, telechargerAvatar } = require('../services/userService');
 
 // Créer un utilisateur
 exports.creerUtilisateur = async (req, res) => {
@@ -6,6 +6,7 @@ exports.creerUtilisateur = async (req, res) => {
         const utilisateur = await creerUtilisateur(req.body);
         res.status(201).json(utilisateur);
     } catch (err) {
+        console.error('Erreur lors de la création de l\'utilisateur:', err);
         res.status(500).json({ message: err.message });
     }
 };
@@ -17,6 +18,7 @@ exports.authentifierUtilisateur = async (req, res) => {
         const { utilisateur, token } = await authentifierUtilisateur(email, mot_de_passe);
         res.status(200).json({ utilisateur, token });
     } catch (err) {
+        console.error('Erreur lors de l\'authentification de l\'utilisateur:', err);
         res.status(401).json({ message: err.message });
     }
 };
@@ -31,6 +33,7 @@ exports.obtenirUtilisateurParId = async (req, res) => {
         }
         res.status(200).json(utilisateur);
     } catch (err) {
+        console.error('Erreur lors de la récupération de l\'utilisateur:', err);
         res.status(500).json({ message: err.message });
     }
 };
@@ -45,6 +48,7 @@ exports.mettreAJourUtilisateur = async (req, res) => {
         }
         res.status(200).json(utilisateur);
     } catch (err) {
+        console.error('Erreur lors de la mise à jour de l\'utilisateur:', err);
         res.status(500).json({ message: err.message });
     }
 };
@@ -59,6 +63,22 @@ exports.supprimerUtilisateur = async (req, res) => {
         }
         res.status(200).json({ message: 'Utilisateur supprimé avec succès.' });
     } catch (err) {
+        console.error('Erreur lors de la suppression de l\'utilisateur:', err);
+        res.status(500).json({ message: err.message });
+    }
+};
+
+// Télécharger l'avatar
+exports.telechargerAvatar = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const utilisateur = await telechargerAvatar(id, req.file);
+        if (!utilisateur) {
+            return res.status(404).json({ message: 'Utilisateur non trouvé.' });
+        }
+        res.status(200).json(utilisateur);
+    } catch (err) {
+        console.error('Erreur lors du téléchargement de l\'avatar:', err);
         res.status(500).json({ message: err.message });
     }
 };

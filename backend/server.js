@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -9,11 +10,15 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const relationRoutes = require('./routes/relationRoutes');
 const categoryResourceRoutes = require('./routes/categoryResourceRoutes');
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
+
+// Servir les fichiers statiques depuis le dossier uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 sequelize.authenticate()
     .then(() => {
@@ -47,7 +52,7 @@ app.get('/api', (req, res) => {
 app.use('/api/relations', relationRoutes);
 app.use('/api/categories', categoryResourceRoutes);
 app.use('/api/utilisateurs', utilisateurRoutes);
-app.use('/api/ressources', verifyToken, resourceRoutes);
+app.use('/api/resources', resourceRoutes);
 
 app.use((err, _req, res, next) => {
     if (err) {

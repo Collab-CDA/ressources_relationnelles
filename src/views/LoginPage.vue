@@ -23,9 +23,14 @@
         />
       </div>
       <button type="submit" class="btn">Se connecter</button>
+
+      <div class="separator-horizontal"></div>
+
       <p class="redirect-message">
-        Pas encore de compte ? 
-        <button @click="goToRegister" class="redirect-btn">Inscrivez-vous</button>
+        Pas encore de compte ?
+        <button @click="goToRegister" class="redirect-btn">
+          Inscrivez-vous
+        </button>
       </p>
     </form>
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
@@ -33,6 +38,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "LoginPage",
   data() {
@@ -53,10 +60,8 @@ export default {
         );
         const { utilisateur, token } = response.data;
         alert(`Bienvenue ${utilisateur.prenom}!`);
-        // Stockage du token
-        localStorage.setItem("token", token);
-        // Redirection vers le tableau de bord après connexion réussie
-        this.$router.push("/dashboard");
+        localStorage.setItem('token', token); // Stockage du token
+        this.$router.push("/"); // Redirection vers l'accueil
       } catch (error) {
         this.errorMessage =
           error.response?.data?.message || "Une erreur est survenue.";
@@ -64,12 +69,17 @@ export default {
     },
     goToRegister() {
       this.$router.push("/register"); // Redirection vers la page d'inscription
-    }
+    },
   },
 };
 </script>
 
 <style scoped>
+body,
+.login-page {
+  font-family: "Roboto", sans-serif;
+}
+
 .login-page {
   max-width: 600px;
   margin: 50px auto;
@@ -107,11 +117,10 @@ button.btn {
   width: 100%;
   padding: 10px;
   font-size: 16px;
-  color: #fff;
   background-color: #b0a2ba;
   border: none;
   border-radius: 4px;
-  cursor: pointer;
+  font-weight: bolder;
 }
 
 button.btn:hover {
@@ -125,11 +134,10 @@ button.btn:hover {
 
 .redirect-btn {
   background-color: #b0a2ba;
-  color: #fff;
   border: none;
   padding: 4px 10px;
   border-radius: 5px;
-  cursor: pointer;
+  font-weight: bolder;
   font-size: 12px;
 }
 
@@ -141,6 +149,13 @@ button.btn:hover {
   color: red;
   text-align: center;
   margin-top: 15px;
+}
+
+.separator-horizontal {
+  width: 10rem;
+  height: 1px;
+  background-color: black;
+  margin: 20px auto;
 }
 
 /* Media queries pour les écrans mobiles */
@@ -163,14 +178,14 @@ button.btn:hover {
     margin-right: 7.5%;
   }
   h1 {
-    font-size: 18px; 
+    font-size: 18px;
   }
   .btn {
     padding: 8px;
-    font-size: 14px; 
+    font-size: 14px;
   }
   .form-group input {
-    font-size: 14px; 
+    font-size: 14px;
   }
 }
 </style>

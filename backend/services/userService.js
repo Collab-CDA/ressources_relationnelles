@@ -1,6 +1,8 @@
 const Utilisateur = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const fs = require('fs');
+const path = require('path');
 
 // Créer un utilisateur
 exports.creerUtilisateur = async (data) => {
@@ -59,5 +61,21 @@ exports.effacerUtilisateur = async (id) => {
         return null;
     }
     await utilisateur.destroy();
+    return utilisateur;
+};
+
+// Télécharger l'avatar
+exports.telechargerAvatar = async (id, file) => {
+    const utilisateur = await Utilisateur.findByPk(id);
+    if (!utilisateur) {
+        return null;
+    }
+
+    const uploadPath = path.join(__dirname, '../uploads', `${id}_${file.originalname}`);
+    fs.writeFileSync(uploadPath, file.buffer);
+
+    utilisateur.avatar = `${id}_${file.originalname}`;
+    await utilisateur.save();
+
     return utilisateur;
 };

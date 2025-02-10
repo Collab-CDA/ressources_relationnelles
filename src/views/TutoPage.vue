@@ -1,16 +1,17 @@
 <template>
     <div>
-      <h1>Gestion des catégories (admin)</h1>
+      <h1>Tutoriel de la plateforme</h1>
+      <p>On vous explique tout !</p>
+      
     </div>
   </template>
   
   <script>
   export default {
-    name: 'CategoryManagement',
+    name: 'TutoPage',
   };
   </script>
   
   <style scoped>
-  /* Style de la page des ressources */
   </style>
   

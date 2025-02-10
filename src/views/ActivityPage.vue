@@ -1,12 +1,12 @@
 <template>
     <div>
-      <h1>Gestion des catégories (admin)</h1>
+      <h1>Démarrer une activité</h1>
     </div>
   </template>
   
   <script>
   export default {
-    name: 'CategoryManagement',
+    name: 'ActivityPage',
   };
   </script>
   
