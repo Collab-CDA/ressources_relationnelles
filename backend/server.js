@@ -52,7 +52,7 @@ app.get('/api', (req, res) => {
 app.use('/api/relations', relationRoutes);
 app.use('/api/categories', categoryResourceRoutes);
 app.use('/api/utilisateurs', utilisateurRoutes);
-app.use('/api/ressources', verifyToken, resourceRoutes);
+app.use('/api/resources', resourceRoutes);
 
 app.use((err, _req, res, next) => {
     if (err) {

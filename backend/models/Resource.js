@@ -1,54 +1,69 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../db/sequelize');
+const Relation = require('./relation');
 
 const Resource = sequelize.define('Resource', {
-  nom: {
-    type: DataTypes.STRING,
+  id_ressource_: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    field: 'id_ressource_'
+  },
+  titre: {
+    type: DataTypes.STRING(50),
     allowNull: false,
-    unique: true,
+    field: 'titre'
   },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  type: {
-    type: DataTypes.STRING,
+  contenu: {
+    type: DataTypes.STRING(2048),
     allowNull: false,
-    validate: {
-      isIn: [['text', 'pdf', 'video', 'image']] 
-    }
+    field: 'contenu'
   },
-  url: {
-    type: DataTypes.STRING,
+  type_ressource_: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+    field: 'type_ressource_'
+  },
+  statut_: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+    defaultValue: 'disponible',
+    field: 'statut_'
+  },
+  auteur_id: {
+    type: DataTypes.STRING(50),
     allowNull: true,
-    validate: {
-      isUrl: true, 
-      is: /^(https?:\/\/)[^\s$.?#].[^\s]*$/i
-    }
+    field: 'auteur_id'
   },
-  valide: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
-  },
-  categoryId: {
+  id_utilisateur: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    references: {
-      model: 'categories',
-      key: 'id'
-    },
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL'
+    field: 'id_utilisateur'
+  },
+  id_categorie: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    field: 'id_categorie'
+  },
+  lien_video: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+    field: 'lien_video'
+  },
+  nom_image: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+    field: 'nom_image'
+  },
+  type_relation: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    field: 'type_relation',
   }
 }, {
-  timestamps: true,
-  tableName: 'ressources',
-  indexes: [
-    {
-      unique: true,
-      fields: ['nom']
-    }
-  ]
+  timestamps: false,
+  tableName: 'ressources'
 });
+
 
 module.exports = Resource;
