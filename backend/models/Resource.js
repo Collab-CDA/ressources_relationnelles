@@ -59,11 +59,15 @@ const Resource = sequelize.define('Resource', {
     type: DataTypes.INTEGER,
     allowNull: false,
     field: 'type_relation',
+  },
+  confidentialite: {
+    type: DataTypes.ENUM('Privée', 'Publique'),
+    allowNull: false,
+    field: 'confidentialite'
   }
 }, {
   timestamps: false,
   tableName: 'ressources'
 });
-
 
 module.exports = Resource;

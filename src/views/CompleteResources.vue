@@ -65,21 +65,20 @@
           <img src="@/assets/images/ressource_par_defaut.jpg" alt="Image par défaut" style="width: 34rem; height: auto;" />
         </div>
       </div>
+    </div>
 
-      <!-- Section des commentaires -->
-      <div class="comments-section">
-        <h2>Commentaires</h2>
-        <div class="comments-box">
-          <!-- Contenu des commentaires -->
-        </div>
-
-        <!-- Bouton Contacter un participant -->
-        <button class="contact-button" @click="contactParticipant">Contacter un participant</button>
+    <!-- Section des commentaires -->
+    <div class="comments-section">
+      <h2>Commentaires</h2>
+      <div class="comments-box">
+        <!-- Contenu des commentaires -->
       </div>
+
+      <!-- Bouton Contacter un participant -->
+      <button class="contact-button" @click="contactParticipant">Contacter un participant</button>
     </div>
   </div>
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -101,7 +100,6 @@ export default {
     };
   },
   computed: {
-        // Filtre les ressources selon les sélections de l'utilisateur
     filteredResources() {
       return this.resources.filter(resource => {
         const typeRelationMatch = this.selectedTypeRelation ? resource.type_relation === parseInt(this.selectedTypeRelation) : true;
@@ -112,7 +110,6 @@ export default {
     }
   },
   methods: {
-        // Récupèration des ressources de la BDD
     async fetchResources() {
       try {
         const response = await axios.get('http://localhost:3000/api/resources');
@@ -142,7 +139,6 @@ export default {
     },
     uploadResource() {
       if (this.selectedFile) {
-        // Logique pour télécharger le fichier
         console.log('Fichier sélectionné:', this.selectedFile);
       } else {
         alert('Veuillez sélectionner un fichier.');
@@ -152,8 +148,7 @@ export default {
       this.$router.push('/messagerie');
     },
     getEmbedVideo(url) {
-    // retourne l'html pour intégrer la vidéo YouTube
-    return `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+      return `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
     },
     getImageUrl(imageName) {
       return require(`@/assets/images/${imageName}`);
@@ -162,7 +157,6 @@ export default {
       this.selectedResource = resource;
     },
     isEmbedYouTubeLink(url) {
-      // Vérifie si l'URL est un lien YouTube intégré
       return url && url.includes('youtube.com/embed/');
     }
   },
@@ -184,7 +178,6 @@ export default {
   }
 };
 </script>
-
 
 <style scoped>
 h1 {
@@ -242,7 +235,7 @@ h2 {
 
 .main-container {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: 1fr 2fr;
   gap: 20px;
   margin: 2rem auto;
   max-width: 1200px;
@@ -276,8 +269,11 @@ h2 {
   padding: 1rem;
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  margin: 2rem auto;
   position: relative;
 }
+
 
 .comments-box {
   background-color: #ffffff;
