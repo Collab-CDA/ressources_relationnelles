@@ -13,11 +13,10 @@ const categoryResourceRoutes = require('./routes/categoryResourceRoutes');
 const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+const commentRoutes = require("./routes/commentRoutes");
 app.use(cors());
 app.use(bodyParser.json());
 
-// Servir les fichiers statiques depuis le dossier uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 sequelize.authenticate()
@@ -53,7 +52,7 @@ app.use('/api/relations', relationRoutes);
 app.use('/api/categories', categoryResourceRoutes);
 app.use('/api/utilisateurs', utilisateurRoutes);
 app.use('/api/resources', resourceRoutes);
-
+app.use("/api/comments", commentRoutes);
 app.use((err, _req, res, next) => {
     if (err) {
         console.error('Erreur lors de la création de la ressource :', err.message);
