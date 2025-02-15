@@ -110,8 +110,8 @@ export default {
       },
       confirmPassword: "",
       acceptCgu: false,
-      passwordError: "", // Erreur spécifique pour le mot de passe
-      errors: {}, // Erreurs spécifiques aux champs
+      passwordError: "",
+      errors: {}, 
       errorMessage: "",
     };
   },
@@ -136,7 +136,7 @@ export default {
     },
     validateFields() {
       let isValid = true;
-      this.errors = {}; // Réinitialiser les erreurs
+      this.errors = {};
 
       if (!this.form.nom) {
         this.errors.nom = "Le nom est requis.";
@@ -156,7 +156,7 @@ export default {
         isValid = false;
       }
 
-      this.validatePassword(); // Validation du mot de passe
+      this.validatePassword(); 
       const confirmPasswordError = this.validateConfirmPassword();
       if (confirmPasswordError) {
         this.errors.confirmPassword = confirmPasswordError;
@@ -175,13 +175,13 @@ export default {
       const isValid = this.validateFields();
 
       if (!isValid) {
-        return; // Si les champs ne sont pas valides, on ne soumet pas le formulaire
+        return; 
       }
 
       try {
         const dataToSend = {
           ...this.form,
-          statut: "actif", // Valeur par défaut
+          statut: "actif",
         };
 
         const response = await axios.post(
@@ -189,9 +189,9 @@ export default {
           dataToSend
         );
         alert("Inscription réussie !");
-        this.$router.push("/login"); // Redirection après inscription réussie
+        this.$router.push("/login"); 
       } catch (error) {
-        console.log("Erreur de réponse du serveur:", error.response); // Affiche la réponse complète de l'erreur
+        console.log("Erreur de réponse du serveur:", error.response);
 
         if (
           error.response &&
@@ -201,12 +201,12 @@ export default {
         ) {
           this.errorMessage = "Un compte existe déjà avec cet email.";
         } else {
-          this.errorMessage = "Une erreur est survenue."; // Autres erreurs génériques
+          this.errorMessage = "Une erreur est survenue.";
         }
       }
     },
     goToLogin() {
-      this.$router.push("/login"); // Redirection vers la page de connexion
+      this.$router.push("/login");
     },
   },
 };
