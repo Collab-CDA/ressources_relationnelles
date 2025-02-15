@@ -83,6 +83,7 @@
 <script>
 export default {
   name: "Header2",
+  emits: ['logout'], // Déclarez l'événement ici
   methods: {
     logout() {
       // Retirer le token du localStorage

@@ -10,39 +10,40 @@
 </template>
 
 <script>
-import Header from './components/Header.vue';
-import Header2 from './components/Header2.vue';
+import { markRaw } from 'vue';
 import Footer from './components/Footer.vue';
 
 export default {
   name: 'App',
   components: {
-    Footer 
+    Footer,
   },
   data() {
     return {
       headerComponent: null,
+      Header: null,
+      Header2: null,
     };
   },
-  created() {
+  async created() {
+    this.Header = markRaw((await import('./components/Header.vue')).default);
+    this.Header2 = markRaw((await import('./components/Header2.vue')).default);
     this.checkUserAuthentication();
   },
   methods: {
     checkUserAuthentication() {
       const token = localStorage.getItem('token');
       // Si le token est présent, cela signifie que l'utilisateur est connecté
-      this.headerComponent = token ? Header2 : Header;
+      this.headerComponent = token ? this.Header2 : this.Header;
     },
     handleLogout() {
-      // Met à jour l'état de l'authentification après la déconnexion
+      localStorage.removeItem('token');
       this.checkUserAuthentication();
-      // Redirige vers l'accueil du menu d'utilisateur non connecté
       this.$router.push('/');
     }
   },
   watch: {
-    // Surveille le changement du token et met à jour le header en conséquence
-    '$route'(to, from) {
+    '$route'() {
       this.checkUserAuthentication();
     }
   }

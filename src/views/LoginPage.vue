@@ -10,6 +10,7 @@
           v-model="form.email"
           required
           placeholder="Votre email"
+          autocomplete="email"
         />
       </div>
       <div class="form-group">
@@ -20,6 +21,7 @@
           v-model="form.mot_de_passe"
           required
           placeholder="Votre mot de passe"
+          autocomplete="current-password"
         />
       </div>
       <button type="submit" class="btn">Se connecter</button>

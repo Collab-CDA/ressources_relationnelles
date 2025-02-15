@@ -2,7 +2,6 @@
   <div>
     <h1>Ressources complètes</h1>
 
-    <!-- Barre de filtre -->
     <div class="filter-bar">
       <label for="typeRelation">Type de relation :</label>
       <select v-model="selectedTypeRelation" id="typeRelation">
@@ -28,18 +27,15 @@
         </option>
       </select>
 
-      <!-- Bouton Ajouter une ressource -->
       <button class="add-resource-button" @click="showUploadModal = !showUploadModal">Ajouter une ressource</button>
     </div>
 
-    <!-- Modal de téléchargement -->
     <div v-if="showUploadModal" class="upload-modal">
       <input type="file" @change="handleFileUpload" accept=".pdf, .jpeg, .jpg, .png, video/*" />
       <button @click="uploadResource">Télécharger</button>
     </div>
 
     <div class="main-container">
-      <!-- Liste des ressources -->
       <div class="resource-list">
         <h2>Liste des ressources</h2>
         <ul>
@@ -50,7 +46,6 @@
         <p v-if="filteredResources.length === 0">Aucun résultat</p>
       </div>
 
-      <!-- Contenu principal -->
       <div class="content-container">
         <div v-if="selectedResource">
           <h2>{{ selectedResource.titre }}</h2>
@@ -62,20 +57,32 @@
           <a v-if="selectedResource.lien_video && !isEmbedYouTubeLink(selectedResource.lien_video)" :href="selectedResource.lien_video" target="_blank">Lien vers la ressource</a>
         </div>
         <div v-else>
-          <img src="@/assets/images/ressource_par_defaut.jpg" alt="Image par défaut" style="width: 34rem; height: auto;" />
+          <img src="@/assets/images/ressource_par_defaut.jpg" alt="Image par défaut" style="width: 100%; height: auto;" />
+        </div>
+        
+        <!-- Section des commentaires -->
+        <div class="comments-section">
+          <h2>Commentaires</h2>
+          <div class="comments-box">
+            <div v-for="comment in comments" :key="comment.id_commentaire" class="comment">
+              <h3>{{ comment.titre_commentaire }}</h3>
+              <p>{{ comment.contenu_commentaire }}</p>
+              <p><strong>Posté par:</strong> {{ comment.User.prenom }} {{ comment.User.nom }}</p>
+              <p><strong>Date:</strong> {{ comment.date_creation }}</p>
+              <button @click="replyToComment(comment)">Répondre</button>
+            </div>
+          </div>
+
+          <form @submit.prevent="addComment">
+            <input v-model="newComment.titre_commentaire" placeholder="Titre du commentaire" required />
+            <textarea v-model="newComment.contenu_commentaire" placeholder="Votre commentaire" required></textarea>
+            <input v-if="newComment.parentCommentId" type="hidden" v-model="newComment.parentCommentId" />
+            <button class="ajout-button" type="submit">Ajouter un commentaire</button>
+          </form>
+
+          <button class="contact-button" @click="contactParticipant">Contacter un participant</button>
         </div>
       </div>
-    </div>
-
-    <!-- Section des commentaires -->
-    <div class="comments-section">
-      <h2>Commentaires</h2>
-      <div class="comments-box">
-        <!-- Contenu des commentaires -->
-      </div>
-
-      <!-- Bouton Contacter un participant -->
-      <button class="contact-button" @click="contactParticipant">Contacter un participant</button>
     </div>
   </div>
 </template>
@@ -97,6 +104,13 @@ export default {
       selectedCategoryResource: '',
       selectedTypeResource: '',
       selectedResource: null,
+      comments: [],
+      newComment: {
+        titre_commentaire: '',
+        contenu_commentaire: '',
+        id_ressource_: null,
+        parentCommentId: null,
+      },
     };
   },
   computed: {
@@ -115,7 +129,7 @@ export default {
         const response = await axios.get('http://localhost:3000/api/resources');
         this.resources = response.data;
       } catch (error) {
-        console.error('Erreur lors de la récupération des ressources :', error.response ? error.response.data : error.message);
+        console.warn('Erreur lors de la récupération des ressources :', error.response ? error.response.data : error.message);
       }
     },
     async fetchTypesRelation() {
@@ -123,7 +137,7 @@ export default {
         const response = await axios.get('http://localhost:3000/api/relations');
         this.typesRelation = response.data;
       } catch (error) {
-        console.error('Erreur lors de la récupération des types de relation :', error.response ? error.response.data : error.message);
+        console.warn('Erreur lors de la récupération des types de relation :', error.response ? error.response.data : error.message);
       }
     },
     async fetchCategoriesResource() {
@@ -131,8 +145,35 @@ export default {
         const response = await axios.get('http://localhost:3000/api/categories');
         this.categoriesResource = response.data;
       } catch (error) {
-        console.error('Erreur lors de la récupération des catégories de ressources :', error.response ? error.response.data : error.message);
+        console.warn('Erreur lors de la récupération des catégories de ressources :', error.response ? error.response.data : error.message);
       }
+    },
+    async fetchComments() {
+      if (this.selectedResource) {
+        try {
+          const response = await axios.get(`http://localhost:3000/api/comments/${this.selectedResource.id_ressource_}`);
+          this.comments = response.data;
+        } catch (error) {
+          console.warn('Erreur lors de la récupération des commentaires :', error.response ? error.response.data : error.message);
+        }
+      }
+    },
+    async addComment() {
+      if (this.selectedResource) {
+        this.newComment.id_ressource_ = this.selectedResource.id_ressource_;
+        try {
+          const response = await axios.post('http://localhost:3000/api/comments', this.newComment);
+          this.comments.push(response.data);
+          this.newComment = { titre_commentaire: '', contenu_commentaire: '', id_ressource_: null, parentCommentId: null };
+        } catch (error) {
+          console.warn('Erreur lors de l\'ajout du commentaire :', error.response ? error.response.data : error.message);
+        }
+      }
+    },
+    replyToComment(comment) {
+      this.newComment.titre_commentaire = `Re: ${comment.titre_commentaire}`;
+      this.newComment.contenu_commentaire = `@${comment.User.prenom} ${comment.User.nom} `;
+      this.newComment.parentCommentId = comment.id_commentaire;
     },
     handleFileUpload(event) {
       this.selectedFile = event.target.files[0];
@@ -140,6 +181,7 @@ export default {
     uploadResource() {
       if (this.selectedFile) {
         console.log('Fichier sélectionné:', this.selectedFile);
+        // Ajoutez ici la logique pour télécharger le fichier
       } else {
         alert('Veuillez sélectionner un fichier.');
       }
@@ -155,6 +197,7 @@ export default {
     },
     selectResource(resource) {
       this.selectedResource = resource;
+      this.fetchComments();
     },
     isEmbedYouTubeLink(url) {
       return url && url.includes('youtube.com/embed/');
@@ -234,9 +277,8 @@ h2 {
 }
 
 .main-container {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 20px;
+  display: flex;
+  gap: 2rem; 
   margin: 2rem auto;
   max-width: 1200px;
 }
@@ -246,6 +288,7 @@ h2 {
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
 .resource-list ul {
@@ -262,6 +305,8 @@ h2 {
   padding: 1rem;
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+  flex-grow: 1;
 }
 
 .comments-section {
@@ -269,11 +314,9 @@ h2 {
   padding: 1rem;
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  margin: 2rem auto;
-  position: relative;
+  margin-top: 2rem;
+  width: 100%;
 }
-
 
 .comments-box {
   background-color: #ffffff;
@@ -283,15 +326,48 @@ h2 {
   margin-bottom: 2rem;
 }
 
+.comment {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form input, form textarea {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+form button {
+  padding: 0.5rem;
+  background-color: #b0a2ba;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #d4c4e0;
+}
+
+.ajout-button {
+  margin-bottom: 1rem;
+}
+
 .contact-button {
   padding: 4px 10px;
   background-color: #b0a2ba;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
 }
 
 .contact-button:hover {

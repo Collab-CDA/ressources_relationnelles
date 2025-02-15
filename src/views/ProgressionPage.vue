@@ -11,6 +11,5 @@
   </script>
   
   <style scoped>
-  /* Style du tableau de bord */
   </style>
   
