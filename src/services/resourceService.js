@@ -1,1 +1,0 @@
-//  Service pour gérer les ressources

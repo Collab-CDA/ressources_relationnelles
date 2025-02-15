@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 
+// Importation des vues
 import HomePage from "../views/HomePage.vue";
 import LoginPage from "../views/LoginPage.vue";
 import RegisterPage from "../views/RegisterPage.vue";
@@ -17,6 +18,9 @@ import CategoryManagement from "@/views/CategoryManagement.vue";
 import UserManagement from "@/views/UserManagement.vue";
 import ActivityPage from "@/views/ActivityPage.vue";
 import MessageriePage from "@/views/MessageriePage.vue";
+
+// Importation du composant d'édition des ressources
+import EditResource from "@/views/EditResource.vue";
 
 const routes = [
   { path: "/", name: "HomePage", component: HomePage },
@@ -36,7 +40,13 @@ const routes = [
   { path: "/admin/resources", name: "AdminResources", component: AdminResources },
   { path: "/admin/category", name: "CategoryManagement", component: CategoryManagement },
   { path: "/admin/user", name: "UserManagement", component: UserManagement },
-
+  
+  {
+    path: '/admin/resources/edit/:id',
+    name: 'editResource',
+    component: EditResource,
+    props: true, 
+  },
 ];
 
 const router = createRouter({

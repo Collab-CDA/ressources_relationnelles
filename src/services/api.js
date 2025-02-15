@@ -1,8 +1,7 @@
-//  Service pour gérer les appels API généraux
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:3000/api', // Backend URL
+    baseURL: 'http://localhost:3000/api',
     headers: {
         'Content-Type': 'application/json',
     },
