@@ -64,7 +64,8 @@
         <label for="role_">Rôle</label>
         <select id="role_" v-model="form.role_" required>
           <option value="utilisateur">Utilisateur</option>
-          <option value="administrateur">Administrateur</option>
+          <option value="Admin">Administrateur</option>
+          <option value="Super-Admin">Super administrateur</option>
         </select>
         <p v-if="errors.role" class="error-message">{{ errors.role }}</p>
       </div>

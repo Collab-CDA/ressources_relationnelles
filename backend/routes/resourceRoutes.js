@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post('/create', authenticate, createResource);
 router.get('/', getAllResources);
-router.put('/update/:id', authenticate, checkRole(['Admin', 'Super Admin']), updateResource);
-router.delete('/delete/:id', authenticate, checkRole(['Admin', 'Super Admin']), deleteResource);
+router.put('/update/:id', authenticate, checkRole(['Admin', 'Super-Admin']), updateResource);
+router.delete('/delete/:id', authenticate, checkRole(['Admin', 'Super-Admin']), deleteResource);
 
 module.exports = router;

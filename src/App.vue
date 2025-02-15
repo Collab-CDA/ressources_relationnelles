@@ -39,7 +39,7 @@ export default {
 
       if (token) {
         // Si l'utilisateur est un administrateur
-        if (role === 'administrateur') {
+        if (role === 'Admin') {
           this.headerComponent = this.HeaderAdmin;
         } else {
           this.headerComponent = this.Header2;  // Affiche Header2 pour utilisateur connecté
