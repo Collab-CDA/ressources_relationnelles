@@ -19,7 +19,6 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <!-- Menu de navigation -->
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
@@ -126,6 +125,11 @@ header {
 .navbar {
   background-color: #80ada0;
   margin-top: 0;
+}
+
+.nav-link {
+  font-weight: bold;
+  margin-left: 3rem;
 }
 
 .nav-item.dropdown .dropdown-menu {

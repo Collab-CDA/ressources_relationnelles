@@ -12,6 +12,7 @@
 <script>
 import { markRaw } from 'vue';
 import Footer from './components/Footer.vue';
+import HeaderAdmin from './components/HeaderAdmin.vue';
 
 export default {
   name: 'App',
@@ -23,6 +24,7 @@ export default {
       headerComponent: null,
       Header: null,
       Header2: null,
+      HeaderAdmin: markRaw(HeaderAdmin),
     };
   },
   async created() {
@@ -33,11 +35,22 @@ export default {
   methods: {
     checkUserAuthentication() {
       const token = localStorage.getItem('token');
-      // Si le token est présent, cela signifie que l'utilisateur est connecté
-      this.headerComponent = token ? this.Header2 : this.Header;
+      const role = localStorage.getItem('role');
+
+      if (token) {
+        // Si l'utilisateur est un administrateur
+        if (role === 'administrateur') {
+          this.headerComponent = this.HeaderAdmin;
+        } else {
+          this.headerComponent = this.Header2;  // Affiche Header2 pour utilisateur connecté
+        }
+      } else {
+        this.headerComponent = this.Header;  // Affiche Header pour non-connecté
+      }
     },
     handleLogout() {
       localStorage.removeItem('token');
+      localStorage.removeItem('role'); 
       this.checkUserAuthentication();
       this.$router.push('/');
     }

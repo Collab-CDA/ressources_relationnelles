@@ -11,6 +11,5 @@
   </script>
   
   <style scoped>
-  /* Style de la page des ressources */
   </style>
   

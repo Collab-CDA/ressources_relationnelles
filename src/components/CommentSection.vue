@@ -1,1 +1,0 @@
-<!-- Composant pour la section des commentaires -->

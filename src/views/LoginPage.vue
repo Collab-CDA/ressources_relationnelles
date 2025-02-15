@@ -62,15 +62,16 @@ export default {
         );
         const { utilisateur, token } = response.data;
         alert(`Bienvenue ${utilisateur.prenom}!`);
-        localStorage.setItem('token', token); // Stockage du token
-        this.$router.push("/"); // Redirection vers l'accueil
+        localStorage.setItem('token', token); 
+        localStorage.setItem('role', utilisateur.role_);  
+        this.$router.push("/");
       } catch (error) {
         this.errorMessage =
           error.response?.data?.message || "Une erreur est survenue.";
       }
     },
     goToRegister() {
-      this.$router.push("/register"); // Redirection vers la page d'inscription
+      this.$router.push("/register"); 
     },
   },
 };
