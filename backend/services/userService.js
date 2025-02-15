@@ -44,6 +44,13 @@ exports.trouverUtilisateurParId = async (id) => {
     return await Utilisateur.findByPk(id);
 };
 
+// Récupérer tous les utilisateurs
+exports.trouverTousUtilisateurs = async () => {
+    return await Utilisateur.findAll({
+        attributes: ['id_utilisateur', 'nom', 'prenom', 'role_', 'statut']
+    });
+};
+
 // Modifier un utilisateur
 exports.modifierUtilisateur = async (id, data) => {
     const utilisateur = await Utilisateur.findByPk(id);

@@ -11,6 +11,19 @@ exports.creerUtilisateur = async (req, res) => {
     }
 };
 
+// Récupérer tous les utilisateurs
+const { trouverTousUtilisateurs } = require('../services/userService');
+
+exports.obtenirTousUtilisateurs = async (req, res) => {
+    try {
+        const utilisateurs = await trouverTousUtilisateurs();
+        res.status(200).json(utilisateurs);
+    } catch (err) {
+        console.error('Erreur lors de la récupération des utilisateurs:', err);
+        res.status(500).json({ message: err.message });
+    }
+};
+
 // Authentifier un utilisateur
 exports.authentifierUtilisateur = async (req, res) => {
     const { email, mot_de_passe } = req.body;

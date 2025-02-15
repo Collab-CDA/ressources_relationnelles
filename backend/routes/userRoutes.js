@@ -2,6 +2,7 @@ const express = require('express');
 const {
     creerUtilisateur,
     authentifierUtilisateur,
+    obtenirTousUtilisateurs,
     obtenirUtilisateurParId,
     mettreAJourUtilisateur,
     supprimerUtilisateur,
@@ -14,6 +15,7 @@ const router = express.Router();
 
 router.post('/register', creerUtilisateur);
 router.post('/login', authentifierUtilisateur);
+router.get('/', obtenirTousUtilisateurs);
 router.get('/:id', obtenirUtilisateurParId);
 router.put('/:id', mettreAJourUtilisateur);
 router.delete('/:id', supprimerUtilisateur);

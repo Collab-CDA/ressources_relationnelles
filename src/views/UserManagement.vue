@@ -1,15 +1,139 @@
 <template>
-    <div>
-      <h1>Gestion des utilisateurs (super-admin)</h1>
+  <div>
+    <h1>Gestion des utilisateurs</h1>
+    
+    <div class="user-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Rôle</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="user in users" :key="user.id_utilisateur">
+            <td>{{ user.nom }}</td>
+            <td>{{ user.prenom }}</td>
+            <td>{{ user.role_ }}</td>
+            <td>
+              <button 
+                :class="{'active': user.statut === 'actif', 'suspended': user.statut === 'suspendu'}"
+                @click="toggleStatus(user)"
+              >
+                {{ user.statut }}
+              </button>
+            </td>
+            <td>
+              <button class="delete-btn" @click="deleteUser(user.id_utilisateur)">
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    name: 'UserManagement',
-  };
-  </script>
-  
-  <style scoped>
-  </style>
-  
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  name: 'UserManagement',
+  data() {
+    return {
+      users: []
+    };
+  },
+  created() {
+    this.fetchUsers();
+  },
+  methods: {
+    async fetchUsers() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/users');
+        this.users = response.data;
+      } catch (error) {
+        console.error("Erreur lors de la récupération des utilisateurs:", error);
+      }
+    },
+
+    async toggleStatus(user) {
+      const newStatus = user.statut === 'actif' ? 'suspendu' : 'actif';
+      try {
+        await axios.put(`http://localhost:3000/api/users/${user.id_utilisateur}`, { statut: newStatus });
+        user.statut = newStatus;
+      } catch (error) {
+        console.error("Erreur lors de la mise à jour du statut:", error);
+      }
+    },
+
+    async deleteUser(userId) {
+      if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
+        try {
+          await axios.delete(`http://localhost:3000/api/users/${userId}`);
+          this.users = this.users.filter(user => user.id_utilisateur !== userId);
+        } catch (error) {
+          console.error("Erreur lors de la suppression de l'utilisateur:", error);
+        }
+      }
+    }
+  }
+};
+</script>
+
+<style scoped>
+h1 {
+  text-align: center;
+  color: #0258BD;
+}
+
+.user-table {
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #f4f4f4;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 5px;
+}
+
+button.active {
+  background-color: #28a745;
+  color: white;
+}
+
+button.suspended {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #d0021b;
+  color: white;
+}
+
+.delete-btn i {
+  font-size: 16px;
+}
+</style>
