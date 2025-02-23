@@ -15,7 +15,7 @@ exports.createComment = async (data) => {
 exports.getCommentsByResource = async (resourceId) => {
     return await Comment.findAll({
         where: { id_ressource_: resourceId },
-        include: [{ model: User, attributes: ["id_utilisateur", "role"] }],
+        include: [{ model: User, attributes: ["id_utilisateur", "role", "prenom", "nom"] }], // MODIF ICI POUR NOM ET PRENOM
     });
 };
 
