@@ -64,13 +64,14 @@
         <div class="comments-section">
           <h2>Commentaires</h2>
           <div class="comments-box">
-              <div v-for="comment in comments" :key="comment.id_commentaire" class="comment">
-                <h3>{{ comment.titre_commentaire }}</h3>
-                <p>{{ comment.contenu_commentaire }}</p>
-                <p><strong>Posté par:</strong> {{ comment.User ? comment.User.prenom : 'Utilisateur inconnu' }} {{ comment.User ? comment.User.nom : '' }}</p>
-                <p><strong>Date:</strong> {{ comment.date_creation }}</p>
-                <button @click="replyToComment(comment)">Répondre</button>
-              </div>
+            <div v-for="comment in comments" :key="comment.id_commentaire" class="comment">
+              <h3>{{ comment.titre_commentaire }}</h3>
+              <p>{{ comment.contenu_commentaire }}</p>
+              <p><strong>Posté par:</strong> {{ comment.prenom_utilisateur || 'Utilisateur inconnu' }}</p>
+              <p><strong>Date:</strong> {{ comment.date_creation }}</p>
+              <button @click="replyToComment(comment)">Répondre</button>
+            </div>
+
 
           </div>
 
@@ -175,23 +176,46 @@ async fetchComments() {
 async addComment() {
   if (this.selectedResource) {
     this.newComment.id_ressource_ = this.selectedResource.id_ressource_;
-    this.newComment.id_utilisateur = this.getUserIdFromToken(); // Ajoutez l'ID utilisateur
+    this.newComment.id_utilisateur = this.getUserIdFromToken(); // Ajoute l'ID utilisateur
+
+    // Récupérer le prénom depuis le JWT stocké dans 'token'
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken = JSON.parse(atob(token.split('.')[1])); // Décodage du payload JWT
+      const userFirstName = decodedToken.prenom || 'Inconnu';
+      this.newComment.prenom_utilisateur = userFirstName;
+    } else {
+      this.newComment.prenom_utilisateur = 'Inconnu';
+    }
+
     try {
       const response = await axios.post('http://localhost:3000/api/comments', this.newComment, this.getAuthHeaders());
       this.comments.push(response.data);
       // Mettre à jour le localStorage avec les nouveaux commentaires
       localStorage.setItem(`comments_${this.selectedResource.id_ressource_}`, JSON.stringify(this.comments));
-      this.newComment = { titre_commentaire: '', contenu_commentaire: '', id_ressource_: null, statut_commentaire: 'Validé', id_utilisateur: null };
+      // Réinitialisation de newComment en incluant prenom_utilisateur
+      this.newComment = {
+        titre_commentaire: '',
+        contenu_commentaire: '',
+        id_ressource_: null,
+        statut_commentaire: 'Validé',
+        id_utilisateur: null,
+        prenom_utilisateur: ''
+      };
     } catch (error) {
       console.warn('Erreur lors de l\'ajout du commentaire :', error.response ? error.response.data : error.message);
     }
   }
 },
 
-    replyToComment(comment) {
-      this.newComment.titre_commentaire = `Re: ${comment.titre_commentaire}`;
-      this.newComment.contenu_commentaire = `@${comment.User.prenom} ${comment.User.nom} `;
-    },
+
+replyToComment(comment) {
+  // Si l'objet User existe, on utilise son prenom, sinon on utilise directement le champ prenom_utilisateur
+  const prenom = comment.User && comment.User.prenom ? comment.User.prenom : comment.prenom_utilisateur || 'Utilisateur inconnu';
+  this.newComment.titre_commentaire = `Re: ${comment.titre_commentaire}`;
+  this.newComment.contenu_commentaire = `@${prenom} `;
+}
+,
     handleFileUpload(event) {
       this.selectedFile = event.target.files[0];
     },
