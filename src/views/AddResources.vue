@@ -175,7 +175,6 @@ export default {
         return null;
       }
     },
-
     getAuthHeaders() {
       const token = localStorage.getItem("token");
       console.log("Token envoyé :", token);
@@ -190,7 +189,6 @@ export default {
         },
       };
     },
-
     getUserIdFromToken() {
       const token = localStorage.getItem("token");
       if (token) {
@@ -199,53 +197,34 @@ export default {
       }
       return null;
     },
-
     async submitResource() {
-      if (!this.resource.type_relation) {
-        console.error("Erreur : le type de relation est vide !");
-        return;
-      }
+  try {
+    const formData = new FormData();
+    formData.append("titre", this.resource.titre);
+    formData.append("contenu", this.resource.contenu);
+    formData.append("id_typeRessource", this.resource.id_typeRessource);
+    formData.append("type_relation", this.resource.type_relation);
+    formData.append("id_categorie", this.resource.id_categorie);
+    formData.append("lien_video", this.resource.lien_video);
+    formData.append("nom_image", this.resource.nom_image);
+    formData.append("confidentialite", "Publique"); // Ajout du champ manquant
 
-      if (!this.resource.id_categorie) {
-        console.error("Erreur : la catégorie est vide !");
-        return;
-      }
+    if (this.resource.selectedFile) {
+      formData.append("file", this.resource.selectedFile);
+    }
 
-      const userId = this.getUserIdFromToken();
-      if (!userId) {
-        console.error("ID utilisateur non trouvé dans le token.");
-        return;
-      }
+    console.log("Données envoyées :", Object.fromEntries(formData.entries()));
 
-      const formData = new FormData();
-      formData.append("titre", this.resource.titre);
-      formData.append("contenu", this.resource.contenu);
-      formData.append("id_typeRessource", this.resource.id_typeRessource);  
-      formData.append("statut_", "disponible");
-      formData.append("id_utilisateur", userId);
-      formData.append("id_categorie", this.resource.id_categorie);
-      formData.append("lien_video", this.resource.lien_video || "");
-      formData.append("nom_image", this.resource.nom_image || "");
-      formData.append("type_relation", this.resource.type_relation);
-      formData.append("confidentialite", "Publique");
-      if (this.resource.selectedFile) {
-        formData.append("file", this.resource.selectedFile);
-      }
+    const headers = this.getAuthHeaders();
+    headers.headers["Content-Type"] = "multipart/form-data";
 
-      try {
-        const response = await axios.post(
-          "http://localhost:3000/api/resources/create",
-          formData,
-          this.getAuthHeaders()
-        );
-        console.log("Ressource ajoutée avec succès :", response.data);
-      } catch (error) {
-        console.error(
-          "Erreur lors de l'ajout de la ressource :",
-          error.response ? error.response.data : error.message
-        );
-      }
-    },
+    const response = await axios.post("http://localhost:3000/api/resources/create", formData, headers);
+    console.log("Ressource ajoutée avec succès :", response.data);
+    alert("Ressource ajoutée avec succès !");
+  } catch (error) {
+    console.error("Erreur lors de l'ajout de la ressource :", error.response ? error.response.data : error.message);
+  }
+},
   },
 
   mounted() {

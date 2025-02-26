@@ -2,17 +2,17 @@ const Resource = require('../models/Resource');
 
 exports.createResource = async (data) => {
     try {
-        const resource = await Resource.create({
-            titre: data.nom,
-            contenu: data.description,
-            id_typeRessource: data.id_typeRessource, 
-            statut_: data.valide ? 'disponible' : 'indisponible',
-            auteur_id: data.auteur_id,
-            id_utilisateur: data.userId,
-            id_categorie: data.categoryId,
-            lien_video: data.url,
-            nom_image: data.image
-        });
+            const resource = await Resource.create({
+                titre: data.titre, 
+                contenu: data.contenu, 
+                id_typeRessource: data.id_typeRessource,
+                statut_: data.statut_, 
+                auteur_id: data.auteur_id,
+                id_utilisateur: data.id_utilisateur, 
+                id_categorie: data.id_categorie, 
+                lien_video: data.lien_video, 
+                nom_image: data.nom_image 
+            });
         return resource;
     } catch (error) {
         throw new Error('Erreur lors de la création de la ressource');
@@ -35,15 +35,15 @@ exports.updateResource = async (id, data) => {
             throw new Error('Ressource introuvable');
         }
         await resource.update({
-            titre: data.nom,
-            contenu: data.description,
-            id_typeRessource: data.id_typeRessource, 
-            statut_: data.valide ? 'disponible' : 'indisponible',
+            titre: data.titre, 
+            contenu: data.contenu, 
+            id_typeRessource: data.id_typeRessource,
+            statut_: data.statut_, 
             auteur_id: data.auteur_id,
-            id_utilisateur: data.userId,
-            id_categorie: data.categoryId,
-            lien_video: data.url,
-            nom_image: data.image
+            id_utilisateur: data.id_utilisateur, 
+            id_categorie: data.id_categorie, 
+            lien_video: data.lien_video, 
+            nom_image: data.nom_image 
         });
         return resource;
     } catch (error) {

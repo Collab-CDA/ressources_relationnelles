@@ -2,6 +2,7 @@ const { createResource, getAllResources, updateResource, deleteResource } = requ
 
 exports.createResource = async (req, res) => {
     try {
+        console.log("Données reçues :", req.body); 
         const resource = await createResource(req.body);
         res.status(201).json(resource);
     } catch (error) {
