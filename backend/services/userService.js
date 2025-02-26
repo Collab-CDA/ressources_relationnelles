@@ -32,9 +32,19 @@ exports.authentifierUtilisateur = async (email, mot_de_passe) => {
         throw new Error('Mot de passe incorrect.');
     }
 
-    const token = jwt.sign({ id: utilisateur.id_utilisateur, email: utilisateur.email, prenom: utilisateur.prenom  }, process.env.JWT_SECRET, {
-        expiresIn: '24h',
-    });
+    const token = jwt.sign(
+        {
+            id: utilisateur.id_utilisateur,
+            email: utilisateur.email,
+            prenom: utilisateur.prenom,
+            nom: utilisateur.nom, 
+            role: utilisateur.role_
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: '24h',
+        }
+    );
 
     return { utilisateur, token };
 };

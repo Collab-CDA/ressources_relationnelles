@@ -5,7 +5,7 @@ exports.createResource = async (data) => {
         const resource = await Resource.create({
             titre: data.nom,
             contenu: data.description,
-            type_ressource_: data.type,
+            id_typeRessource: data.id_typeRessource, 
             statut_: data.valide ? 'disponible' : 'indisponible',
             auteur_id: data.auteur_id,
             id_utilisateur: data.userId,
@@ -37,7 +37,7 @@ exports.updateResource = async (id, data) => {
         await resource.update({
             titre: data.nom,
             contenu: data.description,
-            type_ressource_: data.type,
+            id_typeRessource: data.id_typeRessource, 
             statut_: data.valide ? 'disponible' : 'indisponible',
             auteur_id: data.auteur_id,
             id_utilisateur: data.userId,

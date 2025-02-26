@@ -10,6 +10,7 @@ const utilisateurRoutes = require('./routes/userRoutes');
 const resourceRoutes = require('./routes/resourceRoutes');
 const relationRoutes = require('./routes/relationRoutes');
 const categoryResourceRoutes = require('./routes/categoryResourceRoutes');
+const typesResourceRoutes = require('./routes/typesResourceRoutes');
 const commentRoutes = require("./routes/commentRoutes");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -57,6 +58,8 @@ app.use('/api/resources', resourceRoutes);
 app.use('/api/relations', relationRoutes);
 app.use('/api/categories', categoryResourceRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/types_ressource', typesResourceRoutes);
+
 
 app.use((err, req, res, next) => {
     console.error('Erreur interne du serveur :', err.message);

@@ -18,6 +18,7 @@ import UserManagement from "@/views/UserManagement.vue";
 import ActivityPage from "@/views/ActivityPage.vue";
 import MessageriePage from "@/views/MessageriePage.vue";
 import EditResource from "@/views/EditResource.vue";
+import AddResources from "@/views/AddResources.vue";
 
 const routes = [
   { path: "/", name: "HomePage", component: HomePage },
@@ -37,8 +38,8 @@ const routes = [
   { path: "/admin/resources", name: "AdminResources", component: AdminResources },
   { path: "/admin/category", name: "CategoryManagement", component: CategoryManagement },
   { path: "/admin/user", name: "UserManagement", component: UserManagement },
-  {
-    path: '/admin/resources/edit/:id', name: 'editResource', component: EditResource, props: true,},
+  { path: '/admin/resources/edit/:id', name: 'editResource', component: EditResource, props: true },
+  { path: "/add-resources", name: "AddResources", component: AddResources },
 ];
 
 const router = createRouter({

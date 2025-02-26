@@ -1,6 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../db/sequelize');
-const Relation = require('./relation');
 
 const Resource = sequelize.define('Resource', {
   id_ressource_: {
@@ -19,10 +18,10 @@ const Resource = sequelize.define('Resource', {
     allowNull: false,
     field: 'contenu'
   },
-  type_ressource_: {
-    type: DataTypes.STRING(50),
-    allowNull: false,
-    field: 'type_ressource_'
+  id_typeRessource: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: 'id_typeRessource'
   },
   statut_: {
     type: DataTypes.STRING(50),
@@ -69,5 +68,7 @@ const Resource = sequelize.define('Resource', {
   timestamps: false,
   tableName: 'ressources'
 });
+
+
 
 module.exports = Resource;
