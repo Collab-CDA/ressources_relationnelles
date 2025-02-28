@@ -9,7 +9,7 @@ import PublicResources from "../views/PublicResources.vue";
 import CompleteResources from "@/views/CompleteResources.vue";
 import ResourceDetail from "@/views/ResourceDetail.vue";
 import ProgressionPage from "../views/ProgressionPage.vue";
-import CguPage from "@/views/CguPage.vue";
+import CguPage from "../views/cguPage.vue";
 import Statistics from "@/views/Statistics.vue";
 import AdminDashboard from "@/views/AdminDashboard.vue";
 import AdminResources from "@/views/AdminResources.vue";
