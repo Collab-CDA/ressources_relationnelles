@@ -4,7 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
-const multer = require('multer'); // Importation de multer pour gérer les fichiers
+const multer = require('multer');
 
 const sequelize = require('./db/sequelize');
 
@@ -19,8 +19,17 @@ const bcrypt = require('bcrypt');
 
 const app = express();
 
-// ⚠️ Multer est initialisé ici, mais sans stockage défini, ce qui signifie qu'il ne gère que les champs texte.
-const upload = multer(); 
+// Configuration de multer pour le stockage des images
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'C:/Users/poiri/Desktop/CDA-24-2/1_EVAL BLOCS/1_COLLABORATIF/ressources_relationnelles/backend/uploads');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
+});
+
+const upload = multer({ storage: storage });
 
 const PORT = process.env.PORT || 3000;
 
@@ -28,9 +37,6 @@ app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-//  `upload.none()` empêche l'upload de fichiers et ne permet que les champs texte
-app.use(upload.none()); 
 
 // Permet de servir les fichiers statiques du dossier "uploads"
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -70,7 +76,7 @@ app.get('/api', (req, res) => {
 
 // Importation des différentes routes de l'API
 app.use('/api/utilisateurs', utilisateurRoutes);
-app.use('/api/users', utilisateurRoutes);  
+app.use('/api/users', utilisateurRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/relations', relationRoutes);
 app.use('/api/categories', categoryResourceRoutes);
