@@ -2,18 +2,25 @@
   <div class="add-resources-page">
     <div class="card">
       <h1>Ajouter une ressource</h1>
-      <form @submit.prevent="submitResource" enctype="multipart/form-data">
+      <form @submit.prevent="submitResource">
+        <!-- Titre -->
         <div class="form-group">
-          <label for="titre">Titre</label>
-          <input type="text" id="titre" v-model="titre" required />
+          <label for="titre">Titre :</label>
+          <input type="text" id="titre" v-model="resource.titre" required />
         </div>
+        <!-- Contenu -->
         <div class="form-group">
-          <label for="contenu">Contenu</label>
-          <textarea id="contenu" v-model="contenu" required></textarea>
+          <label for="contenu">Contenu :</label>
+          <textarea id="contenu" v-model="resource.contenu" required></textarea>
         </div>
+        <!-- Type de ressource -->
         <div class="form-group">
           <label for="typeResource">Type de ressource :</label>
-          <select v-model="id_typeRessource" id="typeResource" required>
+          <select
+            v-model="resource.id_typeRessource"
+            id="typeResource"
+            required
+          >
             <option value="" disabled>Sélectionnez un type</option>
             <option
               v-for="type in typesResource"
@@ -24,9 +31,10 @@
             </option>
           </select>
         </div>
+        <!-- Type de relation -->
         <div class="form-group">
           <label for="typeRelation">Type de relation :</label>
-          <select v-model="type_relation" id="typeRelation" required>
+          <select v-model="resource.type_relation" id="typeRelation" required>
             <option value="" disabled>Sélectionnez un type</option>
             <option
               v-for="type in typesRelation"
@@ -37,9 +45,14 @@
             </option>
           </select>
         </div>
+        <!-- Catégorie de ressource -->
         <div class="form-group">
           <label for="categoryResource">Catégorie de ressource :</label>
-          <select v-model="id_categorie" id="categoryResource" required>
+          <select
+            v-model="resource.id_categorie"
+            id="categoryResource"
+            required
+          >
             <option value="" disabled>Sélectionnez une catégorie</option>
             <option
               v-for="category in categoriesResource"
@@ -50,9 +63,24 @@
             </option>
           </select>
         </div>
+        <!-- Lien vidéo -->
+        <div class="form-group">
+          <label for="lien_video">Lien :</label>
+          <input type="url" id="lien_video" v-model="resource.lien_video" />
+        </div>
+        
+        <!-- Fichier -->
         <div class="file-upload-container">
-          <label for="image" class="file-upload-label">Télécharger une image</label>
-          <input type="file" id="image" @change="onFileChange" class="file-upload-input" />
+          <label for="file" class="file-upload-label">
+            Ajouter un fichier (PDF ou Image)
+          </label>
+          <input
+            type="file"
+            id="file"
+            @change="handleFileUpload"
+            accept=".pdf, .jpeg, .jpg, .png"
+            class="file-upload-input"
+          />
         </div>
         <div class="button-container">
           <button type="submit" class="btn">Ajouter la ressource</button>
@@ -69,43 +97,22 @@ export default {
   name: "AddResources",
   data() {
     return {
-      titre: "",
-      contenu: "",
-      id_categorie: "",
-      id_typeRessource: "",
-      type_relation: "",
-      image: null,
+      resource: {
+        titre: "",
+        contenu: "",
+        id_typeRessource: "",
+        type_relation: "",
+        id_categorie: "",
+        lien_video: "",
+        nom_image: "",
+        selectedFile: null,
+      },
       categoriesResource: [],
       typesRelation: [],
-      typesResource: [],
+      typesResource: [], 
     };
   },
   methods: {
-    async submitResource() {
-      const formData = new FormData();
-      formData.append("titre", this.titre);
-      formData.append("contenu", this.contenu);
-      formData.append("id_categorie", this.id_categorie);
-      formData.append("id_typeRessource", this.id_typeRessource);
-      formData.append("type_relation", this.type_relation);
-      if (this.image) {
-        formData.append("image", this.image);
-      }
-
-      try {
-        const response = await axios.post(
-          "http://localhost:3000/api/resources/create",
-          formData,
-          this.getAuthHeaders()
-        );
-        console.log("Ressource ajoutée avec succès :", response.data);
-      } catch (error) {
-        console.error("Erreur lors de l'ajout de la ressource :", error.response ? error.response.data : error.message);
-      }
-    },
-    onFileChange(event) {
-      this.image = event.target.files[0];
-    },
     async fetchTypesResource() {
       try {
         const response = await axios.get(
@@ -120,6 +127,7 @@ export default {
         );
       }
     },
+
     async fetchTypesRelation() {
       try {
         const response = await axios.get(
@@ -134,6 +142,7 @@ export default {
         );
       }
     },
+
     async fetchCategoriesResource() {
       try {
         const response = await axios.get(
@@ -148,8 +157,27 @@ export default {
         );
       }
     },
+
+    handleFileUpload(event) {
+      this.resource.selectedFile = event.target.files[0];
+    },
+
+    decodeToken(token) {
+      try {
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        return JSON.parse(window.atob(base64));
+      } catch (e) {
+        return null;
+      }
+    },
     getAuthHeaders() {
       const token = localStorage.getItem("token");
+      console.log("Token envoyé :", token);
+      if (!token) {
+        console.error("Token non trouvé.");
+        return {};
+      }
       return {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -157,13 +185,51 @@ export default {
         },
       };
     },
+    getUserIdFromToken() {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken = this.decodeToken(token);
+        return decodedToken ? decodedToken.id : null;
+      }
+      return null;
+    },
+    async submitResource() {
+  try {
+    const formData = new FormData();
+    formData.append("titre", this.resource.titre);
+    formData.append("contenu", this.resource.contenu);
+    formData.append("id_typeRessource", this.resource.id_typeRessource);
+    formData.append("type_relation", this.resource.type_relation);
+    formData.append("id_categorie", this.resource.id_categorie);
+    formData.append("lien_video", this.resource.lien_video);
+    formData.append("nom_image", this.resource.nom_image);
+    formData.append("confidentialite", "Publique"); // Ajout du champ manquant
+
+    if (this.resource.selectedFile) {
+      formData.append("file", this.resource.selectedFile);
+    }
+
+    console.log("Données envoyées :", Object.fromEntries(formData.entries()));
+
+    const headers = this.getAuthHeaders();
+    headers.headers["Content-Type"] = "multipart/form-data";
+
+    const response = await axios.post("http://localhost:3000/api/resources/create", formData, headers);
+    console.log("Ressource ajoutée avec succès :", response.data);
+    alert("Ressource ajoutée avec succès !");
+  } catch (error) {
+    console.error("Erreur lors de l'ajout de la ressource :", error.response ? error.response.data : error.message);
+  }
+},
   },
+
   mounted() {
-    this.fetchTypesResource();
+    this.fetchTypesResource(); 
     this.fetchTypesRelation();
     this.fetchCategoriesResource();
   },
 };
+
 </script>
 
 <style scoped>

@@ -69,6 +69,4 @@ const Resource = sequelize.define('Resource', {
   tableName: 'ressources'
 });
 
-
-
 module.exports = Resource;
