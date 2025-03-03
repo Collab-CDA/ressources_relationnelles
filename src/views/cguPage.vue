@@ -4,7 +4,7 @@
     <p><strong>En vigueur au 25/04/2025</strong></p>
 
     <p>Les présentes conditions générales d'utilisation (dites « CGU ») ont pour objet l'encadrement juridique
-    des modalités de mise à disposition du site et des services par _______________ et de définir les
+    des modalités de mise à disposition du site et des services et de définir les
     conditions d’accès et d’utilisation des services par « l'Utilisateur ».</p>
 
     <p>Les présentes CGU sont accessibles sur le site à la rubrique «CGU».</p>
@@ -26,7 +26,7 @@
     <p>Numéro de téléphone : 00 00 00 00 00</p>
     <p>Adresse e-mail : ressources_relationnelles@gmail.com.</p>
     <p>L'hébergeur du site <a href="http://localhost:8080/">http://localhost:8080/</a> est la société Hostinger, dont le siège social est situé au
-    Hostinger, UAB Jonavos g. 60C, 44192, avec le numéro de téléphone : _______________.</p>
+    Hostinger, UAB Jonavos g. 60C, 44192.</p>
 
     <h2>Article 2 : Accès au site</h2>
     <p>Le site <a href="http://localhost:8080/">http://localhost:8080/</a> permet à l'Utilisateur un accès gratuit aux services suivants :</p>
