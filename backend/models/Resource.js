@@ -24,7 +24,7 @@ const Resource = sequelize.define('Resource', {
       field: 'id_typeRessource'
   },
   statut_: {
-    type: DataTypes.STRING(50),
+    type: DataTypes.ENUM('disponible', 'suspendue'), // Modification ici pour correspondre BDD
     allowNull: false,
     defaultValue: 'disponible',
     field: 'statut_'

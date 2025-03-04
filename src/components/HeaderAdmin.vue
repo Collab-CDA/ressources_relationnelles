@@ -31,6 +31,9 @@
               <router-link to="/admin/resources" class="nav-link">Gestion des ressources</router-link>
             </li>
             <li class="nav-item">
+              <router-link to="/admin/category" class="nav-link">Gestion des catégories</router-link>
+            </li>
+            <li class="nav-item">
               <router-link to="/statistics" class="nav-link">Statistiques</router-link>
             </li>
             <li class="nav-item dropdown">

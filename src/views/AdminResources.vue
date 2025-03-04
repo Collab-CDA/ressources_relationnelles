@@ -10,6 +10,12 @@
             <div class="resource-item">
               <p>{{ resource.titre }}</p>
               <div class="button-group">
+                <button
+                  :class="{'available': resource.statut_ === 'disponible', 'suspended': resource.statut_ === 'suspendue'}"
+                  @click="toggleStatus(resource)"
+                >
+                  {{ resource.statut_ }}
+                </button>
                 <button @click="editResource(resource.id_ressource_)">Modifier</button>
                 <button @click="deleteResource(resource.id_ressource_)" class="delete">
                   <i class="fa fa-trash"></i>
@@ -47,6 +53,17 @@ export default {
       }
     },
 
+    async toggleStatus(resource) {
+      const newStatus = resource.statut_ === 'disponible' ? 'suspendue' : 'disponible';
+      try {
+        // Mettre à jour l'URL pour correspondre à la route définie
+        await axios.put(`http://localhost:3000/api/resources/update/${resource.id_ressource_}`, { statut_: newStatus });
+        resource.statut_ = newStatus;
+      } catch (error) {
+        console.warn('Erreur lors de la mise à jour du statut :', error.response ? error.response.data : error.message);
+      }
+    },
+
     editResource(id) {
       this.$router.push({ name: 'editResource', params: { id } });
     },
@@ -66,6 +83,7 @@ export default {
 };
 </script>
 
+
 <style scoped>
 * {
   box-sizing: border-box;
@@ -75,14 +93,14 @@ export default {
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #FFFFFF; 
-  color: #000000; 
+  background-color: #FFFFFF;
+  color: #000000;
 }
 
 h1 {
   font-size: 32px;
   font-weight: bold;
-  color: #0258BD; 
+  color: #0258BD;
   text-align: center;
   margin-top: 2rem;
   margin-bottom: 2rem;
@@ -97,7 +115,7 @@ h1 {
 }
 
 .resource-list {
-  background-color: #f0f0f0; 
+  background-color: #f0f0f0;
   padding: 1rem;
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -126,7 +144,7 @@ h1 {
 
 button {
   padding: 10px 15px;
-  background-color: #B0A2BA; 
+  background-color: #B0A2BA;
   border: none;
   color: white;
   cursor: pointer;
@@ -142,13 +160,13 @@ button i {
 }
 
 button:hover {
-  background-color: #D4C4E0; 
+  background-color: #D4C4E0;
 }
 
 button.delete {
-  background-color: #D0021B; 
+  background-color: #D0021B;
   color: white;
-  width: 2.2rem; 
+  width: 2.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,6 +174,16 @@ button.delete {
 
 button.delete:hover {
   background-color: #d76c61;
+}
+
+button.available {
+  background-color: #28a745;
+  color: white;
+}
+
+button.suspended {
+  background-color: #dc3545;
+  color: white;
 }
 
 /* Responsive */
