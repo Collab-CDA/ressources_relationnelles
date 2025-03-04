@@ -330,7 +330,7 @@ export default {
       return /youtube\.com|youtu\.be/.test(url);
     },
     getImageUrl(imageName) {
-      return `http://localhost:3000/images/${imageName}`;
+      return require(`@/assets/images/${imageName}`);
     },
     getAuthHeaders() {
       const token = localStorage.getItem("token");
@@ -447,6 +447,12 @@ h2 {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   margin-top: 2rem;
   flex-grow: 1;
+}
+
+.content-container img {
+  max-width: 100%; 
+  height: auto; 
+  width: 100%; 
 }
 
 .comments-section {
