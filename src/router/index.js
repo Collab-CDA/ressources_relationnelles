@@ -19,6 +19,9 @@ import ActivityPage from "@/views/ActivityPage.vue";
 import MessageriePage from "@/views/MessageriePage.vue";
 import EditResource from "@/views/EditResource.vue";
 import AddResources from "@/views/AddResources.vue";
+import ContactUsPage from "@/views/ContactUsPage.vue";
+import FaqsPage from "@/views/FaqsPage.vue"
+import PersonalDataPage from "@/views/PersonalDataPage.vue";
 
 const routes = [
   { path: "/", name: "HomePage", component: HomePage },
@@ -33,6 +36,9 @@ const routes = [
   { path: "/activity", name: "ActivityPage", component: ActivityPage },
   { path: "/progression", name: "ProgressionPage", component: ProgressionPage },
   { path: "/cgu", name: "CguPage", component: CguPage },
+  { path: "/personaldata", name: "PersonalDataPage", component: PersonalDataPage },
+  { path: "/faqs", name: "FaqsPage", component: FaqsPage },
+  { path: "/contactus", name: "ContactUsPage", component: ContactUsPage },
   { path: "/statistics", name: "Statistics", component: Statistics },
   { path: "/admin/dashboard", name: "AdminDashboard", component: AdminDashboard },
   { path: "/admin/resources", name: "AdminResources", component: AdminResources },

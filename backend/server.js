@@ -14,8 +14,10 @@ const relationRoutes = require('./routes/relationRoutes');
 const categoryResourceRoutes = require('./routes/categoryResourceRoutes');
 const typesResourceRoutes = require('./routes/typesResourceRoutes');
 const commentRoutes = require("./routes/commentRoutes");
+const favorisRoutes = require('./routes/favorisRoutes');
+const invitationsRoutes = require('./routes/invitationsRoutes');
+
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 
 const app = express();
 
@@ -75,6 +77,8 @@ app.use('/api/resources', resourceRoutes);
 app.use('/api/relations', relationRoutes);
 app.use('/api/categories', categoryResourceRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/favoris', favorisRoutes);
+app.use('/api/invitations', invitationsRoutes);
 app.use('/api/types_ressource', typesResourceRoutes);
 
 // Middleware global pour gérer les erreurs serveur

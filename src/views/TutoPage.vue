@@ -7,7 +7,7 @@
     <section class="tutorial-section">
       <h2 class="section-title">Bienvenue sur (RE)Sources Relationnelles !</h2>
       <p class="section-text">Découvrez comment utiliser notre plateforme pour créer, renforcer et enrichir vos relations.</p>
-      <img src="welcome-illustration.png" alt="Illustration de bienvenue" class="section-image" />
+      <img src="../assets/images/bienvenue1.png" alt="Illustration de bienvenue" class="section-image" />
     </section>
 
     <!-- Objectifs de la plateforme -->
@@ -23,7 +23,7 @@
         <li>Faciliter l'accès à des ressources de qualité pour tous les citoyens.</li>
         <li>Favoriser l'engagement communautaire en permettant aux utilisateurs de partager leurs propres ressources.</li>
       </ul>
-      <img src="objectives-illustration.png" alt="Illustration des objectifs" class="section-image" />
+      <img src="../assets/images/objectifs.png" alt="Illustration des objectifs" class="section-image" />
     </section>
 
     <!-- Fonctionnalités principales -->
@@ -52,8 +52,6 @@
           <strong>Nécessite un compte :</strong> Commentez les ressources, échanger avec d'autres utilisateurs.
         </p>
       </div>
-
-      <img src="features-illustration.png" alt="Illustration des fonctionnalités" class="section-image" />
     </section>
 
     <!-- Suivi de progression -->
@@ -62,16 +60,15 @@
       <p class="section-text">
         <strong>Nécessite un compte :</strong> Gérez vos ressources favorites, exploitées et mises de côté.
       </p>
-      <img src="progress-illustration.png" alt="Illustration du suivi de progression" class="section-image" />
     </section>
 
     <!-- Aide et support -->
     <section class="tutorial-section">
       <h2 class="section-title">Besoin d'aide ?</h2>
       <p class="section-text">
-        <strong>Accessible sans compte :</strong> Consultez notre page d'aide ou contactez notre support.
+        Consultez notre FAQs.
       </p>
-      <img src="support-illustration.png" alt="Illustration de l'aide et support" class="section-image" />
+      <img src="../assets/images/faqs.png" alt="Illustration de l'aide et support" class="section-image2" />
     </section>
   </div>
 </template>
@@ -137,6 +134,12 @@ export default {
 
 .section-image {
   max-width: 100%;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.section-image2 {
+  max-width: 70%;
   border-radius: 8px;
   margin-top: 20px;
 }
