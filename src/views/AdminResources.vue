@@ -69,17 +69,20 @@ export default {
     },
 
     async deleteResource(id) {
-      const confirmation = confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?');
-      if (confirmation) {
-        try {
-          await axios.delete(`http://localhost:3000/api/resources/delete/${id}`);
-          this.fetchResources();
-        } catch (error) {
-          console.warn('Erreur lors de la suppression de la ressource :', error.response ? error.response.data : error.message);
-        }
-      }
-    },
-  },
+  const confirmation = confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?');
+  if (confirmation) {
+    try {
+      const token = localStorage.getItem('token'); // Assurez-vous que c'est bien la clé utilisée pour stocker le token
+      await axios.delete(`http://localhost:3000/api/resources/delete/${id}`, {
+        headers: { Authorization: token }
+      });
+      this.fetchResources();
+    } catch (error) {
+      console.warn('Erreur lors de la suppression de la ressource :', error.response ? error.response.data : error.message);
+    }
+  }
+},
+  }
 };
 </script>
 

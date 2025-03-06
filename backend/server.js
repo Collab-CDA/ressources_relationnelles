@@ -15,24 +15,22 @@ const categoryResourceRoutes = require('./routes/categoryResourceRoutes');
 const typesResourceRoutes = require('./routes/typesResourceRoutes');
 const commentRoutes = require("./routes/commentRoutes");
 const favorisRoutes = require('./routes/favorisRoutes');
-const invitationsRoutes = require('./routes/invitationsRoutes');
 
 const jwt = require('jsonwebtoken');
 
 const app = express();
 
 // ⚠️ Multer est initialisé ici, mais sans stockage défini, ce qui signifie qu'il ne gère que les champs texte.
-const upload = multer(); 
+const upload = multer();
 
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //  `upload.none()` empêche l'upload de fichiers et ne permet que les champs texte
-app.use(upload.none()); 
+app.use(upload.none());
 
 // Permet de servir les fichiers statiques du dossier "uploads"
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -48,11 +46,16 @@ sequelize.authenticate()
 
 // Middleware de vérification du token JWT pour protéger les routes sécurisées
 const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization'];
+    let token = req.headers['authorization'];
 
     if (!token) {
         console.warn('⚠️ Token manquant dans l\'en-tête.');
         return res.status(403).json({ message: 'Un token est requis pour accéder à cette ressource.' });
+    }
+
+    // Extraction du token si le préfixe "Bearer " est présent
+    if (token.startsWith('Bearer ')) {
+        token = token.slice(7).trim();
     }
 
     try {
@@ -72,13 +75,12 @@ app.get('/api', (req, res) => {
 
 // Importation des différentes routes de l'API
 app.use('/api/utilisateurs', utilisateurRoutes);
-app.use('/api/users', utilisateurRoutes);  
+app.use('/api/users', utilisateurRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/relations', relationRoutes);
 app.use('/api/categories', categoryResourceRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/favoris', favorisRoutes);
-app.use('/api/invitations', invitationsRoutes);
 app.use('/api/types_ressource', typesResourceRoutes);
 
 // Middleware global pour gérer les erreurs serveur

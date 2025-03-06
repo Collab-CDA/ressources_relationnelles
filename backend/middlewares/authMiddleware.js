@@ -7,8 +7,14 @@ const authenticate = (req, res, next) => {
         return res.status(403).json({ message: 'Un token est requis pour accéder à cette ressource.' });
     }
 
-    // Vérifier si le header suit le format "Bearer <token>"
-    const token = authHeader.split(' ')[1];  
+    let token;
+    // Vérifie si le header suit le format "Bearer <token>"
+    if (authHeader.startsWith('Bearer ')) {
+        token = authHeader.slice(7).trim();
+    } else {
+        token = authHeader;
+    }
+
     if (!token) {
         return res.status(403).json({ message: 'Format du token invalide.' });
     }

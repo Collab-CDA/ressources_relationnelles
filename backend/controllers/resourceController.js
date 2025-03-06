@@ -30,7 +30,7 @@ exports.updateResource = async (req, res) => {
 
 exports.deleteResource = async (req, res) => {
     try {
-        const success = await deleteResource(req.params.id);
+        await deleteResource(req.params.id);
         res.status(200).json({ message: 'Ressource supprimée avec succès.' });
     } catch (error) {
         res.status(500).json({ message: error.message });
