@@ -1,6 +1,74 @@
 <template>
   <div>
-    <h1>Gestion des ressources</h1>
+    <h1 class="title-container">
+      Gestion des ressources
+      <button class="add-user-button" @click="openModal">Ajouter une ressource</button>
+    </h1>
+
+    <!-- Modal pour ajouter une ressource -->
+    <div v-if="showModal" class="modal">
+      <div class="modal-content">
+        <span class="close-button" @click="closeModal">&times;</span>
+        <h4>Ajouter une ressource</h4>
+        <form @submit.prevent="submitResource">
+          <div class="form-group">
+            <label for="titre">Titre :</label>
+            <input type="text" id="titre" v-model="resource.titre" required />
+          </div>
+          <!-- Contenu -->
+          <div class="form-group">
+            <label for="contenu">Contenu :</label>
+            <textarea id="contenu" v-model="resource.contenu" required></textarea>
+          </div>
+          <!-- Type de ressource -->
+          <div class="form-group">
+            <label for="typeResource">Type de ressource :</label>
+            <select v-model="resource.id_typeRessource" id="typeResource" required>
+              <option value="" disabled>Sélectionnez un type</option>
+              <option v-for="type in typesResource" :key="type.id_typesRessource" :value="type.id_typesRessource">
+                {{ type.libelle_typesRessource }}
+              </option>
+            </select>
+          </div>
+          <!-- Type de relation -->
+          <div class="form-group">
+            <label for="typeRelation">Type de relation :</label>
+            <select v-model="resource.type_relation" id="typeRelation" required>
+              <option value="" disabled>Sélectionnez un type</option>
+              <option v-for="type in typesRelation" :key="type.id_relation" :value="type.id_relation">
+                {{ type.libelle_relation }}
+              </option>
+            </select>
+          </div>
+          <!-- Catégorie de ressource -->
+          <div class="form-group">
+            <label for="categoryResource">Catégorie de ressource :</label>
+            <select v-model="resource.id_categorie" id="categoryResource" required>
+              <option value="" disabled>Sélectionnez une catégorie</option>
+              <option v-for="category in categoriesResource" :key="category.id_categorie" :value="category.id_categorie">
+                {{ category.libelle_categorie }}
+              </option>
+            </select>
+          </div>
+          <!-- Lien vidéo -->
+          <div class="form-group">
+          <label for="lien_video">Lien :</label>
+          <input type="url" id="lien_video" v-model="resource.lien_video" />
+        </div>
+
+          <!-- Fichier -->
+          <div class="file-upload-container">
+            <label for="file" class="file-upload-label">
+              Ajouter un fichier (PDF ou Image)
+            </label>
+            <input type="file" id="file" @change="handleFileUpload" accept=".pdf, .jpeg, .jpg, .png" class="file-upload-input" />
+          </div>
+          <div class="button-container">
+            <button type="submit" class="btn">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <div class="main-container">
       <div class="resource-list">
@@ -10,10 +78,7 @@
             <div class="resource-item">
               <p>{{ resource.titre }}</p>
               <div class="button-group">
-                <button
-                  :class="{'available': resource.statut_ === 'disponible', 'suspended': resource.statut_ === 'suspendue'}"
-                  @click="toggleStatus(resource)"
-                >
+                <button :class="{'available': resource.statut_ === 'disponible', 'suspended': resource.statut_ === 'suspendue'}" @click="toggleStatus(resource)">
                   {{ resource.statut_ }}
                 </button>
                 <button @click="editResource(resource.id_ressource_)">Modifier</button>
@@ -38,54 +103,191 @@ export default {
   data() {
     return {
       resources: [],
+      showModal: false,
+      resource: {
+        titre: "",
+        contenu: "",
+        id_typeRessource: "",
+        type_relation: "",
+        id_categorie: "",
+        lien_video: "",
+        nom_image: "",
+        selectedFile: null,
+      },
+      categoriesResource: [],
+      typesRelation: [],
+      typesResource: [],
     };
   },
   created() {
     this.fetchResources();
   },
-  methods: {
-    async fetchResources() {
-      try {
-        const response = await axios.get('http://localhost:3000/api/resources');
-        this.resources = response.data;
-      } catch (error) {
-        console.warn('Erreur lors de la récupération des ressources :', error.response ? error.response.data : error.message);
-      }
-    },
-
-    async toggleStatus(resource) {
-      const newStatus = resource.statut_ === 'disponible' ? 'suspendue' : 'disponible';
-      try {
-        // Mettre à jour l'URL pour correspondre à la route définie
-        await axios.put(`http://localhost:3000/api/resources/update/${resource.id_ressource_}`, { statut_: newStatus });
-        resource.statut_ = newStatus;
-      } catch (error) {
-        console.warn('Erreur lors de la mise à jour du statut :', error.response ? error.response.data : error.message);
-      }
-    },
-
-    editResource(id) {
-      this.$router.push({ name: 'editResource', params: { id } });
-    },
-
-    async deleteResource(id) {
-  const confirmation = confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?');
-  if (confirmation) {
+    methods: {
+  openModal() {
+    this.showModal = true;
+  },
+  closeModal() {
+    this.showModal = false;
+    this.resource = {
+      titre: "",
+      contenu: "",
+      id_typeRessource: "",
+      type_relation: "",
+      id_categorie: "",
+      lien_video: "",
+      nom_image: "",
+      selectedFile: null,
+    };
+  },
+  async fetchTypesResource() {
     try {
-      const token = localStorage.getItem('token'); // Assurez-vous que c'est bien la clé utilisée pour stocker le token
-      await axios.delete(`http://localhost:3000/api/resources/delete/${id}`, {
-        headers: { Authorization: token }
-      });
+      const response = await axios.get(
+        "http://localhost:3000/api/types_ressource",
+        this.getAuthHeaders()
+      );
+      this.typesResource = response.data;
+    } catch (error) {
+      console.warn(
+        "Erreur lors de la récupération des types de ressource :",
+        error.response ? error.response.data : error.message
+      );
+    }
+  },
+  async fetchTypesRelation() {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/api/relations",
+        this.getAuthHeaders()
+      );
+      this.typesRelation = response.data;
+    } catch (error) {
+      console.warn(
+        "Erreur lors de la récupération des types de relation :",
+        error.response ? error.response.data : error.message
+      );
+    }
+  },
+  async fetchCategoriesResource() {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/api/categories",
+        this.getAuthHeaders()
+      );
+      this.categoriesResource = response.data;
+    } catch (error) {
+      console.warn(
+        "Erreur lors de la récupération des catégories de ressources :",
+        error.response ? error.response.data : error.message
+      );
+    }
+  },
+  async fetchResources() {
+    try {
+      const response = await axios.get('http://localhost:3000/api/resources');
+      this.resources = response.data;
+    } catch (error) {
+      console.warn('Erreur lors de la récupération des ressources :', error.response ? error.response.data : error.message);
+    }
+  },
+  async toggleStatus(resource) {
+    const newStatus = resource.statut_ === 'disponible' ? 'suspendue' : 'disponible';
+    try {
+      await axios.put(`http://localhost:3000/api/resources/update/${resource.id_ressource_}`, { statut_: newStatus });
+      resource.statut_ = newStatus;
+    } catch (error) {
+      console.warn('Erreur lors de la mise à jour du statut :', error.response ? error.response.data : error.message);
+    }
+  },
+  editResource(id) {
+    this.$router.push({ name: 'editResource', params: { id } });
+  },
+  async deleteResource(id) {
+    const confirmation = confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?');
+    if (confirmation) {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.delete(`http://localhost:3000/api/resources/delete/${id}`, {
+          headers: { Authorization: token }
+        });
+        this.fetchResources();
+      } catch (error) {
+        console.warn('Erreur lors de la suppression de la ressource :', error.response ? error.response.data : error.message);
+      }
+    }
+  },
+  handleFileUpload(event) {
+    this.resource.selectedFile = event.target.files[0];
+  },
+  decodeToken(token) {
+    try {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      return JSON.parse(window.atob(base64));
+    } catch (e) {
+      return null;
+    }
+  },
+  getAuthHeaders() {
+    const token = localStorage.getItem("token");
+    console.log("Token envoyé :", token);
+    if (!token) {
+      console.error("Token non trouvé.");
+      return {};
+    }
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+  },
+  getUserIdFromToken() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = this.decodeToken(token);
+      return decodedToken ? decodedToken.id : null;
+    }
+    return null;
+  },
+  async submitResource() {
+    try {
+      const formData = new FormData();
+      formData.append("titre", this.resource.titre);
+      formData.append("contenu", this.resource.contenu);
+      formData.append("id_typeRessource", this.resource.id_typeRessource);
+      formData.append("type_relation", this.resource.type_relation);
+      formData.append("id_categorie", this.resource.id_categorie);
+      formData.append("lien_video", this.resource.lien_video);
+      formData.append("nom_image", this.resource.nom_image);
+      formData.append("confidentialite", "Publique");
+
+      if (this.resource.selectedFile) {
+        formData.append("file", this.resource.selectedFile);
+      }
+
+      const headers = this.getAuthHeaders();
+      headers.headers["Content-Type"] = "multipart/form-data";
+
+      const response = await axios.post("http://localhost:3000/api/resources/create", formData, headers);
+      console.log("Ressource ajoutée avec succès :", response.data);
+      alert("Ressource ajoutée avec succès !");
+
+      // Fermer la modal et recharger les ressources
+      this.closeModal();
       this.fetchResources();
     } catch (error) {
-      console.warn('Erreur lors de la suppression de la ressource :', error.response ? error.response.data : error.message);
+      console.error("Erreur lors de l'ajout de la ressource :", error.response ? error.response.data : error.message);
     }
-  }
+  },
 },
-  }
+mounted() {
+  this.fetchTypesResource();
+  this.fetchTypesRelation();
+  this.fetchCategoriesResource();
+},
+
 };
 </script>
-
 
 <style scoped>
 * {
@@ -187,6 +389,110 @@ button.available {
 button.suspended {
   background-color: #dc3545;
   color: white;
+}
+
+/* Modal ajout ressource */
+.title-container {
+  display: flex;
+  justify-content:center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.add-user-button {
+  margin-left:2rem;
+  font-size: 1.2rem;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #dad8d8;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-group textarea {
+  resize: vertical;
+  height: 100px;
+}
+
+.file-upload-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.file-upload-label {
+  background-color: #b0a2ba;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  color: white;
+  text-align: center;
+}
+
+.file-upload-label:hover {
+  background-color: #d4c4e0;
+  color: black;
+}
+
+.file-upload-input {
+  display: none;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 /* Responsive */

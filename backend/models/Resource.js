@@ -45,7 +45,7 @@ const Resource = sequelize.define('Resource', {
     field: 'id_categorie'
   },
   lien_video: {
-    type: DataTypes.STRING(255),
+    type: DataTypes.STRING(512),
     allowNull: true,
     field: 'lien_video'
   },

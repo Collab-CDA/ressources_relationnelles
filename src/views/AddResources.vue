@@ -68,7 +68,7 @@
           <label for="lien_video">Lien :</label>
           <input type="url" id="lien_video" v-model="resource.lien_video" />
         </div>
-        
+
         <!-- Fichier -->
         <div class="file-upload-container">
           <label for="file" class="file-upload-label">
@@ -109,7 +109,7 @@ export default {
       },
       categoriesResource: [],
       typesRelation: [],
-      typesResource: [], 
+      typesResource: [],
     };
   },
   methods: {
@@ -127,7 +127,6 @@ export default {
         );
       }
     },
-
     async fetchTypesRelation() {
       try {
         const response = await axios.get(
@@ -142,7 +141,6 @@ export default {
         );
       }
     },
-
     async fetchCategoriesResource() {
       try {
         const response = await axios.get(
@@ -157,11 +155,9 @@ export default {
         );
       }
     },
-
     handleFileUpload(event) {
       this.resource.selectedFile = event.target.files[0];
     },
-
     decodeToken(token) {
       try {
         const base64Url = token.split(".")[1];
@@ -194,42 +190,50 @@ export default {
       return null;
     },
     async submitResource() {
-  try {
-    const formData = new FormData();
-    formData.append("titre", this.resource.titre);
-    formData.append("contenu", this.resource.contenu);
-    formData.append("id_typeRessource", this.resource.id_typeRessource);
-    formData.append("type_relation", this.resource.type_relation);
-    formData.append("id_categorie", this.resource.id_categorie);
-    formData.append("lien_video", this.resource.lien_video);
-    formData.append("nom_image", this.resource.nom_image);
-    formData.append("confidentialite", "Publique"); // Ajout du champ manquant
+      try {
+        const formData = new FormData();
+        formData.append("titre", this.resource.titre);
+        formData.append("contenu", this.resource.contenu);
+        formData.append("id_typeRessource", this.resource.id_typeRessource);
+        formData.append("type_relation", this.resource.type_relation);
+        formData.append("id_categorie", this.resource.id_categorie);
+        formData.append("lien_video", this.resource.lien_video || null);
+        formData.append("nom_image", this.resource.nom_image);
+        formData.append("confidentialite", "Publique"); // Ajout du champ manquant
 
-    if (this.resource.selectedFile) {
-      formData.append("file", this.resource.selectedFile);
-    }
+        if (this.resource.selectedFile) {
+          formData.append("file", this.resource.selectedFile);
+        }
 
-    console.log("Données envoyées :", Object.fromEntries(formData.entries()));
+        console.log(
+          "Données envoyées :",
+          Object.fromEntries(formData.entries())
+        );
 
-    const headers = this.getAuthHeaders();
-    headers.headers["Content-Type"] = "multipart/form-data";
+        const headers = this.getAuthHeaders();
+        headers.headers["Content-Type"] = "multipart/form-data";
 
-    const response = await axios.post("http://localhost:3000/api/resources/create", formData, headers);
-    console.log("Ressource ajoutée avec succès :", response.data);
-    alert("Ressource ajoutée avec succès !");
-  } catch (error) {
-    console.error("Erreur lors de l'ajout de la ressource :", error.response ? error.response.data : error.message);
-  }
-},
+        const response = await axios.post(
+          "http://localhost:3000/api/resources/create",
+          formData,
+          headers
+        );
+        console.log("Ressource ajoutée avec succès :", response.data);
+        alert("Ressource ajoutée avec succès !");
+      } catch (error) {
+        console.error(
+          "Erreur lors de l'ajout de la ressource :",
+          error.response ? error.response.data : error.message
+        );
+      }
+    },
   },
-
   mounted() {
-    this.fetchTypesResource(); 
+    this.fetchTypesResource();
     this.fetchTypesRelation();
     this.fetchCategoriesResource();
   },
 };
-
 </script>
 
 <style scoped>
@@ -300,6 +304,7 @@ export default {
 
 .file-upload-label:hover {
   background-color: #d4c4e0;
+  color: black;
 }
 
 .file-upload-input {
