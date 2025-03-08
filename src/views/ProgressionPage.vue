@@ -1,11 +1,15 @@
 <template>
   <div>
     <h1>Progression</h1>
+    
+    <!-- Liste des Favoris -->
     <div class="favorites-list">
       <h2>Vos Favoris</h2>
       <ul>
         <li v-for="favori in favoris" :key="favori.id_favori">
-          <a href="#" @click.prevent="selectResource(favori.id_ressource_)">{{ getResourceTitle(favori.id_ressource_) }}</a>
+          <a href="#" @click.prevent="selectResource(favori.id_ressource_)">
+            {{ getResourceTitle(favori.id_ressource_) }}
+          </a>
           <button class="delete-button" @click="deleteFavori(favori.id_favori)">
             <i class="fas fa-trash-alt"></i>
           </button>
@@ -14,15 +18,18 @@
       <p v-if="favoris.length === 0">Aucun favori trouvé</p>
     </div>
 
-    <!-- Section pour afficher les détails de la ressource sélectionnée -->
+    <!-- Détails de la ressource sélectionnée -->
     <div v-if="selectedResource" class="resource-details">
+      <button class="close-button" @click="selectedResource = null">
+        <i class="fas fa-times"></i>
+      </button>
       <h2>{{ selectedResource.titre }}</h2>
       <p>{{ selectedResource.contenu }}</p>
-      <div v-if="isEmbedYouTubeLink(selectedResource.lien_video)" v-html="getEmbedVideo(selectedResource.lien_video)"></div>
-      <div v-else-if="selectedResource.nom_image">
-        <img :src="getImageUrl(selectedResource.nom_image)" alt="Image de la ressource" />
-      </div>
-      <a v-if="selectedResource.lien_video && !isEmbedYouTubeLink(selectedResource.lien_video)" :href="selectedResource.lien_video" target="_blank">Lien vers la ressource</a>
+
+      <a v-if="selectedResource.lien_video && !isEmbedYouTubeLink(selectedResource.lien_video)"
+         :href="selectedResource.lien_video" target="_blank">
+        Lien vers la ressource
+      </a>
     </div>
   </div>
 </template>
@@ -118,6 +125,7 @@ export default {
 </script>
 
 <style scoped>
+/* Styles généraux */
 h1 {
   font-size: 32px;
   font-weight: bold;
@@ -126,6 +134,7 @@ h1 {
   margin-bottom: 2rem;
 }
 
+/* Section des favoris */
 .favorites-list {
   background-color: #f0f0f0;
   padding: 20px;
@@ -152,6 +161,7 @@ h1 {
   font-size: 18px;
 }
 
+/* Bouton de suppression des favoris */
 .delete-button {
   background: none;
   border: none;
@@ -160,7 +170,9 @@ h1 {
   color: red;
 }
 
+/* Section des détails de la ressource sélectionnée */
 .resource-details {
+  position: relative;
   background-color: #dad8d8;
   padding: 1rem;
   border-radius: 5px;
@@ -169,6 +181,24 @@ h1 {
   width: 100%;
 }
 
+/* Bouton de fermeture */
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #ff0000;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.close-button:hover {
+  transform: scale(1.2);
+}
+
+/* Images */
 .resource-details img {
   max-width: 100%;
   height: auto;
