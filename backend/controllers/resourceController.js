@@ -1,4 +1,4 @@
-const { createResource, getAllResources, updateResource, deleteResource } = require('../services/resourceService');
+const { createResource, getAllResources, updateResource, updateResourceStatus, deleteResource } = require('../services/resourceService');
 
 exports.createResource = async (req, res) => {
     try {
@@ -27,6 +27,16 @@ exports.updateResource = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// modifier que le statut
+exports.updateResourceStatus = async (req, res) => {
+    try {
+      const resource = await updateResourceStatus(req.params.id, req.body.statut_);
+      res.status(200).json(resource);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
 
 exports.deleteResource = async (req, res) => {
     try {

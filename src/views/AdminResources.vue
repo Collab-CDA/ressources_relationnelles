@@ -122,172 +122,169 @@ export default {
   created() {
     this.fetchResources();
   },
-    methods: {
-  openModal() {
-    this.showModal = true;
-  },
-  closeModal() {
-    this.showModal = false;
-    this.resource = {
-      titre: "",
-      contenu: "",
-      id_typeRessource: "",
-      type_relation: "",
-      id_categorie: "",
-      lien_video: "",
-      nom_image: "",
-      selectedFile: null,
-    };
-  },
-  async fetchTypesResource() {
-    try {
-      const response = await axios.get(
-        "http://localhost:3000/api/types_ressource",
-        this.getAuthHeaders()
-      );
-      this.typesResource = response.data;
-    } catch (error) {
-      console.warn(
-        "Erreur lors de la récupération des types de ressource :",
-        error.response ? error.response.data : error.message
-      );
-    }
-  },
-  async fetchTypesRelation() {
-    try {
-      const response = await axios.get(
-        "http://localhost:3000/api/relations",
-        this.getAuthHeaders()
-      );
-      this.typesRelation = response.data;
-    } catch (error) {
-      console.warn(
-        "Erreur lors de la récupération des types de relation :",
-        error.response ? error.response.data : error.message
-      );
-    }
-  },
-  async fetchCategoriesResource() {
-    try {
-      const response = await axios.get(
-        "http://localhost:3000/api/categories",
-        this.getAuthHeaders()
-      );
-      this.categoriesResource = response.data;
-    } catch (error) {
-      console.warn(
-        "Erreur lors de la récupération des catégories de ressources :",
-        error.response ? error.response.data : error.message
-      );
-    }
-  },
-  async fetchResources() {
-    try {
-      const response = await axios.get('http://localhost:3000/api/resources');
-      this.resources = response.data;
-    } catch (error) {
-      console.warn('Erreur lors de la récupération des ressources :', error.response ? error.response.data : error.message);
-    }
-  },
-  async toggleStatus(resource) {
+  methods: {
+    openModal() {
+      this.showModal = true;
+    },
+    closeModal() {
+      this.showModal = false;
+      this.resource = {
+        titre: "",
+        contenu: "",
+        id_typeRessource: "",
+        type_relation: "",
+        id_categorie: "",
+        lien_video: "",
+        nom_image: "",
+        selectedFile: null,
+      };
+    },
+    async fetchTypesResource() {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/types_ressource",
+          this.getAuthHeaders()
+        );
+        this.typesResource = response.data;
+      } catch (error) {
+        console.warn(
+          "Erreur lors de la récupération des types de ressource :",
+          error.response ? error.response.data : error.message
+        );
+      }
+    },
+    async fetchTypesRelation() {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/relations",
+          this.getAuthHeaders()
+        );
+        this.typesRelation = response.data;
+      } catch (error) {
+        console.warn(
+          "Erreur lors de la récupération des types de relation :",
+          error.response ? error.response.data : error.message
+        );
+      }
+    },
+    async fetchCategoriesResource() {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/categories",
+          this.getAuthHeaders()
+        );
+        this.categoriesResource = response.data;
+      } catch (error) {
+        console.warn(
+          "Erreur lors de la récupération des catégories de ressources :",
+          error.response ? error.response.data : error.message
+        );
+      }
+    },
+    async fetchResources() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/resources');
+        this.resources = response.data;
+      } catch (error) {
+        console.warn('Erreur lors de la récupération des ressources :', error.response ? error.response.data : error.message);
+      }
+    },
+    async toggleStatus(resource) {
     const newStatus = resource.statut_ === 'disponible' ? 'suspendue' : 'disponible';
     try {
-      await axios.put(`http://localhost:3000/api/resources/update/${resource.id_ressource_}`, { statut_: newStatus });
+      await axios.put(`http://localhost:3000/api/resources/status/${resource.id_ressource_}`, { statut_: newStatus }, this.getAuthHeaders());
       resource.statut_ = newStatus;
     } catch (error) {
       console.warn('Erreur lors de la mise à jour du statut :', error.response ? error.response.data : error.message);
     }
   },
-  editResource(id) {
-    this.$router.push({ name: 'editResource', params: { id } });
-  },
-  async deleteResource(id) {
-    const confirmation = confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?');
-    if (confirmation) {
+    editResource(id) {
+      this.$router.push({ name: 'editResource', params: { id } });
+    },
+    async deleteResource(id) {
+      const confirmation = confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?');
+      if (confirmation) {
+        try {
+          await axios.delete(`http://localhost:3000/api/resources/delete/${id}`, this.getAuthHeaders());
+          this.fetchResources();
+        } catch (error) {
+          console.warn('Erreur lors de la suppression de la ressource :', error.response ? error.response.data : error.message);
+        }
+      }
+    },
+    handleFileUpload(event) {
+      this.resource.selectedFile = event.target.files[0];
+    },
+    decodeToken(token) {
       try {
-        const token = localStorage.getItem('token');
-        await axios.delete(`http://localhost:3000/api/resources/delete/${id}`, {
-          headers: { Authorization: token }
-        });
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        return JSON.parse(window.atob(base64));
+      } catch (e) {
+        return null;
+      }
+    },
+    getAuthHeaders() {
+      const token = localStorage.getItem("token");
+      console.log("Token envoyé :", token);
+      if (!token) {
+        console.error("Token non trouvé.");
+        return {};
+      }
+      return {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      };
+    },
+    getUserIdFromToken() {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken = this.decodeToken(token);
+        return decodedToken ? decodedToken.id : null;
+      }
+      return null;
+    },
+    async submitResource() {
+      try {
+        const formData = new FormData();
+        formData.append("titre", this.resource.titre);
+        formData.append("contenu", this.resource.contenu);
+        formData.append("id_typeRessource", this.resource.id_typeRessource);
+        formData.append("type_relation", this.resource.type_relation);
+        formData.append("id_categorie", this.resource.id_categorie);
+        formData.append("lien_video", this.resource.lien_video);
+        formData.append("nom_image", this.resource.nom_image);
+        formData.append("confidentialite", "Publique");
+
+        if (this.resource.selectedFile) {
+          formData.append("file", this.resource.selectedFile);
+        }
+
+        const headers = this.getAuthHeaders();
+        headers.headers["Content-Type"] = "multipart/form-data";
+
+        const response = await axios.post("http://localhost:3000/api/resources/create", formData, headers);
+        console.log("Ressource ajoutée avec succès :", response.data);
+        alert("Ressource ajoutée avec succès !");
+
+        // Fermer la modal et recharger les ressources
+        this.closeModal();
         this.fetchResources();
       } catch (error) {
-        console.warn('Erreur lors de la suppression de la ressource :', error.response ? error.response.data : error.message);
+        console.error("Erreur lors de l'ajout de la ressource :", error.response ? error.response.data : error.message);
       }
-    }
+    },
   },
-  handleFileUpload(event) {
-    this.resource.selectedFile = event.target.files[0];
+  mounted() {
+    this.fetchTypesResource();
+    this.fetchTypesRelation();
+    this.fetchCategoriesResource();
   },
-  decodeToken(token) {
-    try {
-      const base64Url = token.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      return JSON.parse(window.atob(base64));
-    } catch (e) {
-      return null;
-    }
-  },
-  getAuthHeaders() {
-    const token = localStorage.getItem("token");
-    console.log("Token envoyé :", token);
-    if (!token) {
-      console.error("Token non trouvé.");
-      return {};
-    }
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    };
-  },
-  getUserIdFromToken() {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const decodedToken = this.decodeToken(token);
-      return decodedToken ? decodedToken.id : null;
-    }
-    return null;
-  },
-  async submitResource() {
-    try {
-      const formData = new FormData();
-      formData.append("titre", this.resource.titre);
-      formData.append("contenu", this.resource.contenu);
-      formData.append("id_typeRessource", this.resource.id_typeRessource);
-      formData.append("type_relation", this.resource.type_relation);
-      formData.append("id_categorie", this.resource.id_categorie);
-      formData.append("lien_video", this.resource.lien_video);
-      formData.append("nom_image", this.resource.nom_image);
-      formData.append("confidentialite", "Publique");
-
-      if (this.resource.selectedFile) {
-        formData.append("file", this.resource.selectedFile);
-      }
-
-      const headers = this.getAuthHeaders();
-      headers.headers["Content-Type"] = "multipart/form-data";
-
-      const response = await axios.post("http://localhost:3000/api/resources/create", formData, headers);
-      console.log("Ressource ajoutée avec succès :", response.data);
-      alert("Ressource ajoutée avec succès !");
-
-      // Fermer la modal et recharger les ressources
-      this.closeModal();
-      this.fetchResources();
-    } catch (error) {
-      console.error("Erreur lors de l'ajout de la ressource :", error.response ? error.response.data : error.message);
-    }
-  },
-},
-mounted() {
-  this.fetchTypesResource();
-  this.fetchTypesRelation();
-  this.fetchCategoriesResource();
-},
-
 };
 </script>
+
 
 <style scoped>
 * {

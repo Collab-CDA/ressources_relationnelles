@@ -98,6 +98,22 @@ exports.updateResource = async (id, data, files) => {
   }
 };
 
+// modifier le statut
+exports.updateResourceStatus = async (id, newStatus) => {
+  try {
+    const resource = await Resource.findByPk(id);
+    if (!resource) {
+      throw new Error('Ressource introuvable');
+    }
+
+    resource.statut_ = newStatus;
+    await resource.save();
+    return resource;
+  } catch (error) {
+    throw new Error('Erreur lors de la mise à jour du statut de la ressource: ' + error.message);
+  }
+};
+
 exports.deleteResource = async (id) => {
   try {
     const resource = await Resource.findByPk(id);
