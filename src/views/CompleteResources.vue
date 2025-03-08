@@ -2,6 +2,7 @@
   <div>
     <h1>Ressources complètes</h1>
 
+    <!-- recherche et filtres -->
     <div class="filter-bar">
       <label for="typeRelation">Type de relation :</label>
       <select v-model="selectedTypeRelation" id="typeRelation">
@@ -44,6 +45,7 @@
       </button>
     </div>
 
+    <!--liste des ressources à gauche -->
     <div class="main-container">
       <div class="resource-list">
         <h2>Liste des ressources</h2>
@@ -59,29 +61,46 @@
         <p v-if="filteredResources.length === 0">Aucun résultat</p>
       </div>
 
+      <!-- contenu d'une ressource -->
       <div class="content-container">
         <div v-if="selectedResource">
           <h2>{{ selectedResource.titre }}</h2>
+          <button class="favorite-button" @click="toggleFavorite(selectedResource)">
+            <i class="fas fa-heart"></i>
+          </button>
           <p>{{ selectedResource.contenu }}</p>
           <div
             v-if="isEmbedYouTubeLink(selectedResource.lien_video)"
             v-html="getEmbedVideo(selectedResource.lien_video)"
           ></div>
+          <!-- Affichage des fichiers uploadés -->
           <div v-else-if="selectedResource.nom_image">
-            <img
-              :src="getImageUrl(selectedResource.nom_image)"
-              alt="Image de la ressource"
-            />
+            <div v-for="file in selectedResource.nom_image" :key="file" style="margin-bottom:10px;">
+              <!-- Si c'est une image (data URI), on l'affiche -->
+              <div v-if="isImage(file)">
+                <img :src="getFileUrl(file)" alt="Image de la ressource" style="max-width:300px;" />
+              </div>
+              <!-- Si c'est un PDF, on affiche un lien pour le télécharger -->
+              <div v-else-if="isPDF(file)">
+                <a :href="getFileUrl(file)" target="_blank" download>
+                  Télécharger PDF : {{ file }}
+                </a>
+              </div>
+              <!-- Autres types de fichiers -->
+              <div v-else>
+                <a :href="getFileUrl(file)" target="_blank" download>
+                  Télécharger le fichier : {{ file }}
+                </a>
+              </div>
+            </div>
           </div>
           <a
-            v-if="
-              selectedResource.lien_video &&
-              !isEmbedYouTubeLink(selectedResource.lien_video)
-            "
+            v-if="selectedResource.lien_video && !isEmbedYouTubeLink(selectedResource.lien_video)"
             :href="selectedResource.lien_video"
             target="_blank"
-            >Lien vers la ressource</a
           >
+            Lien vers la ressource
+          </a>
         </div>
         <div v-else>
           <img
@@ -169,9 +188,9 @@ export default {
         const categoryResourceMatch = this.selectedCategoryResource
           ? resource.id_categorie === parseInt(this.selectedCategoryResource)
           : true;
-        const typeResourceMatch = this.selectedTypeResource
-          ? resource.id_typeRessource === this.selectedTypeResource
-          : true; // Correction ici
+          const typeResourceMatch = this.selectedTypeResource
+          ? resource.id_typeRessource === parseInt(this.selectedTypeResource)
+          : true;
         return typeRelationMatch && categoryResourceMatch && typeResourceMatch;
       });
     },
@@ -329,29 +348,73 @@ export default {
     isEmbedYouTubeLink(url) {
       return /youtube\.com|youtu\.be/.test(url);
     },
-    getImageUrl(imageName) {
-      return require(`@/assets/images/${imageName}`);
+     // Vérifie si le fichier est une image (data URI ou nom de fichier avec extension image)
+     isImage(file) {
+      if (file.startsWith("data:")) return true;
+      return /\.(jpg|jpeg|png|gif)$/i.test(file);
     },
-    getAuthHeaders() {
-      const token = localStorage.getItem("token");
-      return {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+    // Vérifie si le fichier est un PDF
+    isPDF(file) {
+      if (file.startsWith("data:")) return false;
+      return /\.pdf$/i.test(file);
+    },
+    // Si le fichier est déjà une data URI, on le renvoie, sinon on construit l'URL complète
+    getFileUrl(file) {
+      if (file.startsWith("data:")) {
+        return file;
+      }
+      return `${window.location.origin}/uploads/${file}`;
     },
     getUserIdFromToken() {
-      const token = localStorage.getItem("token");
-      if (token) {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
         const decodedToken = JSON.parse(atob(token.split(".")[1]));
-        return decodedToken.userId;
+        return decodedToken.id; 
+      } catch (error) {
+        console.error("Erreur lors du décodage du token :", error);
+        return null;
       }
-      return null;
-    },
+    }
+    console.warn("Token non trouvé dans le localStorage.");
+    return null;
+  },
+  getAuthHeaders() {
+    const token = localStorage.getItem("token");
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  },
+
+  async toggleFavorite(resource) {
+    const token = localStorage.getItem("token");
+    const userId = this.getUserIdFromToken();
+    if (!userId) {
+      alert("Vous devez être connecté pour ajouter une ressource aux favoris.");
+      return;
+    }
+
+    try {
+      await axios.post(
+        "http://localhost:3000/api/favoris/create",
+        { id_utilisateur: userId, id_ressource_: resource.id_ressource_ },
+        this.getAuthHeaders()
+      );
+      alert("Ressource ajoutée aux favoris avec succès !");
+    } catch (error) {
+      console.warn(
+        "Erreur lors de l'ajout aux favoris :",
+        error.response ? error.response.data : error.message
+      );
+    }
+  },
     selectResource(resource) {
       this.selectedResource = resource;
       this.fetchComments();
     },
+
   },
   mounted() {
     this.fetchResources();
@@ -447,12 +510,24 @@ h2 {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   margin-top: 2rem;
   flex-grow: 1;
+  position: relative;
 }
 
 .content-container img {
-  max-width: 100%; 
-  height: auto; 
-  width: 100%; 
+  max-width: 100%;
+  height: auto;
+  width: 100%;
+}
+
+.favorite-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: red;
 }
 
 .comments-section {

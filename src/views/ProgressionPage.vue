@@ -1,15 +1,177 @@
 <template>
-    <div>
-      <h1>Progression</h1>
+  <div>
+    <h1>Progression</h1>
+    <div class="favorites-list">
+      <h2>Vos Favoris</h2>
+      <ul>
+        <li v-for="favori in favoris" :key="favori.id_favori">
+          <a href="#" @click.prevent="selectResource(favori.id_ressource_)">{{ getResourceTitle(favori.id_ressource_) }}</a>
+          <button class="delete-button" @click="deleteFavori(favori.id_favori)">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </li>
+      </ul>
+      <p v-if="favoris.length === 0">Aucun favori trouvé</p>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    name: 'ProgressionPage',
-  };
-  </script>
-  
-  <style scoped>
-  </style>
-  
+
+    <!-- Section pour afficher les détails de la ressource sélectionnée -->
+    <div v-if="selectedResource" class="resource-details">
+      <h2>{{ selectedResource.titre }}</h2>
+      <p>{{ selectedResource.contenu }}</p>
+      <div v-if="isEmbedYouTubeLink(selectedResource.lien_video)" v-html="getEmbedVideo(selectedResource.lien_video)"></div>
+      <div v-else-if="selectedResource.nom_image">
+        <img :src="getImageUrl(selectedResource.nom_image)" alt="Image de la ressource" />
+      </div>
+      <a v-if="selectedResource.lien_video && !isEmbedYouTubeLink(selectedResource.lien_video)" :href="selectedResource.lien_video" target="_blank">Lien vers la ressource</a>
+    </div>
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  name: 'ProgressionPage',
+  data() {
+    return {
+      favoris: [],
+      resources: [],
+      selectedResource: null,
+    };
+  },
+  methods: {
+    async fetchFavoris() {
+      const userId = this.getUserIdFromToken();
+      if (!userId) {
+        console.warn("Utilisateur non connecté.");
+        return;
+      }
+
+      try {
+        const response = await axios.get(`http://localhost:3000/api/favoris/${userId}`, this.getAuthHeaders());
+        this.favoris = response.data;
+      } catch (error) {
+        console.warn("Erreur lors de la récupération des favoris :", error.response ? error.response.data : error.message);
+      }
+    },
+    async fetchResources() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/resources', this.getAuthHeaders());
+        this.resources = response.data;
+      } catch (error) {
+        console.warn("Erreur lors de la récupération des ressources :", error.response ? error.response.data : error.message);
+      }
+    },
+    getResourceTitle(resourceId) {
+      const resource = this.resources.find(r => r.id_ressource_ === resourceId);
+      return resource ? resource.titre : 'Titre inconnu';
+    },
+    selectResource(resourceId) {
+      this.selectedResource = this.resources.find(r => r.id_ressource_ === resourceId);
+    },
+    async deleteFavori(favoriId) {
+      try {
+        await axios.delete(`http://localhost:3000/api/favoris/delete/${favoriId}`, this.getAuthHeaders());
+        this.favoris = this.favoris.filter(f => f.id_favori !== favoriId);
+        alert("Favori supprimé avec succès !");
+      } catch (error) {
+        console.warn("Erreur lors de la suppression du favori :", error.response ? error.response.data : error.message);
+      }
+    },
+    getUserIdFromToken() {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decodedToken = JSON.parse(atob(token.split(".")[1]));
+          return decodedToken.id;
+        } catch (error) {
+          console.error("Erreur lors du décodage du token :", error);
+          return null;
+        }
+      }
+      console.warn("Token non trouvé dans le localStorage.");
+      return null;
+    },
+    getAuthHeaders() {
+      const token = localStorage.getItem("token");
+      return {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+    },
+    isEmbedYouTubeLink(url) {
+      return /youtube\.com|youtu\.be/.test(url);
+    },
+    getEmbedVideo(url) {
+      return `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+    },
+    getImageUrl(imageName) {
+      return require(`@/assets/images/${imageName}`);
+    },
+  },
+  mounted() {
+    this.fetchFavoris();
+    this.fetchResources();
+  },
+};
+</script>
+
+<style scoped>
+h1 {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.favorites-list {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.favorites-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.favorites-list ul li {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.favorites-list a {
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: red;
+}
+
+.resource-details {
+  background-color: #dad8d8;
+  padding: 1rem;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.resource-details img {
+  max-width: 100%;
+  height: auto;
+  width: 100%;
+}
+</style>

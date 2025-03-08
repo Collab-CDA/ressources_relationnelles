@@ -199,10 +199,10 @@ export default {
         formData.append("id_categorie", this.resource.id_categorie);
         formData.append("lien_video", this.resource.lien_video || null);
         formData.append("nom_image", this.resource.nom_image);
-        formData.append("confidentialite", "Publique"); // Ajout du champ manquant
+        formData.append("confidentialite", "Publique");
 
         if (this.resource.selectedFile) {
-          formData.append("file", this.resource.selectedFile);
+          formData.append("files", this.resource.selectedFile);
         }
 
         console.log(
