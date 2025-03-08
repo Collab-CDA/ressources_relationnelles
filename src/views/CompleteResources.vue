@@ -67,21 +67,34 @@
             v-if="isEmbedYouTubeLink(selectedResource.lien_video)"
             v-html="getEmbedVideo(selectedResource.lien_video)"
           ></div>
+          <!-- Affichage des fichiers uploadés -->
           <div v-else-if="selectedResource.nom_image">
-            <img
-              :src="getImageUrl(selectedResource.nom_image)"
-              alt="Image de la ressource"
-            />
+            <div v-for="file in selectedResource.nom_image" :key="file" style="margin-bottom:10px;">
+              <!-- Si c'est une image (data URI), on l'affiche -->
+              <div v-if="isImage(file)">
+                <img :src="getFileUrl(file)" alt="Image de la ressource" style="max-width:300px;" />
+              </div>
+              <!-- Si c'est un PDF, on affiche un lien pour le télécharger -->
+              <div v-else-if="isPDF(file)">
+                <a :href="getFileUrl(file)" target="_blank" download>
+                  Télécharger PDF : {{ file }}
+                </a>
+              </div>
+              <!-- Autres types de fichiers -->
+              <div v-else>
+                <a :href="getFileUrl(file)" target="_blank" download>
+                  Télécharger le fichier : {{ file }}
+                </a>
+              </div>
+            </div>
           </div>
           <a
-            v-if="
-              selectedResource.lien_video &&
-              !isEmbedYouTubeLink(selectedResource.lien_video)
-            "
+            v-if="selectedResource.lien_video && !isEmbedYouTubeLink(selectedResource.lien_video)"
             :href="selectedResource.lien_video"
             target="_blank"
-            >Lien vers la ressource</a
           >
+            Lien vers la ressource
+          </a>
         </div>
         <div v-else>
           <img
@@ -170,8 +183,8 @@ export default {
           ? resource.id_categorie === parseInt(this.selectedCategoryResource)
           : true;
         const typeResourceMatch = this.selectedTypeResource
-          ? resource.id_typeRessource === this.selectedTypeResource
-          : true; // Correction ici
+          ? resource.id_typeRessource === parseInt(this.selectedTypeResource)
+          : true;
         return typeRelationMatch && categoryResourceMatch && typeResourceMatch;
       });
     },
@@ -242,7 +255,6 @@ export default {
           this.comments = JSON.parse(storedComments);
           return;
         }
-
         try {
           const response = await axios.get(
             `http://localhost:3000/api/comments/${this.selectedResource.id_ressource_}`,
@@ -329,8 +341,22 @@ export default {
     isEmbedYouTubeLink(url) {
       return /youtube\.com|youtu\.be/.test(url);
     },
-    getImageUrl(imageName) {
-      return require(`@/assets/images/${imageName}`);
+    // Vérifie si le fichier est une image (data URI ou nom de fichier avec extension image)
+    isImage(file) {
+      if (file.startsWith("data:")) return true;
+      return /\.(jpg|jpeg|png|gif)$/i.test(file);
+    },
+    // Vérifie si le fichier est un PDF
+    isPDF(file) {
+      if (file.startsWith("data:")) return false;
+      return /\.pdf$/i.test(file);
+    },
+    // Si le fichier est déjà une data URI, on le renvoie, sinon on construit l'URL complète
+    getFileUrl(file) {
+      if (file.startsWith("data:")) {
+        return file;
+      }
+      return `${window.location.origin}/uploads/${file}`;
     },
     getAuthHeaders() {
       const token = localStorage.getItem("token");
@@ -361,6 +387,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 h1 {
