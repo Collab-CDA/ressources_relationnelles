@@ -74,26 +74,7 @@
             v-html="getEmbedVideo(selectedResource.lien_video)"
           ></div>
           <!-- Affichage des fichiers uploadés -->
-          <!-- Affichage des fichiers uploadés -->
           <div v-else-if="selectedResource.nom_image">
-            <div v-for="file in selectedResource.nom_image" :key="file" style="margin-bottom:10px;">
-              <!-- Si c'est une image (data URI), on l'affiche -->
-              <div v-if="isImage(file)">
-                <img :src="getFileUrl(file)" alt="Image de la ressource" style="max-width:300px;" />
-              </div>
-              <!-- Si c'est un PDF, on affiche un lien pour le télécharger -->
-              <div v-else-if="isPDF(file)">
-                <a :href="getFileUrl(file)" target="_blank" download>
-                  Télécharger PDF : {{ file }}
-                </a>
-              </div>
-              <!-- Autres types de fichiers -->
-              <div v-else>
-                <a :href="getFileUrl(file)" target="_blank" download>
-                  Télécharger le fichier : {{ file }}
-                </a>
-              </div>
-            </div>
             <div v-for="file in selectedResource.nom_image" :key="file" style="margin-bottom:10px;">
               <!-- Si c'est une image (data URI), on l'affiche -->
               <div v-if="isImage(file)">
@@ -115,14 +96,12 @@
           </div>
           <a
             v-if="selectedResource.lien_video && !isEmbedYouTubeLink(selectedResource.lien_video)"
-            v-if="selectedResource.lien_video && !isEmbedYouTubeLink(selectedResource.lien_video)"
             :href="selectedResource.lien_video"
             target="_blank"
           >
             Lien vers la ressource
           </a>
-            Lien vers la ressource
-          </a>
+
         </div>
         <div v-else>
           <img
@@ -209,9 +188,6 @@ export default {
           : true;
         const categoryResourceMatch = this.selectedCategoryResource
           ? resource.id_categorie === parseInt(this.selectedCategoryResource)
-          : true;
-        const typeResourceMatch = this.selectedTypeResource
-          ? resource.id_typeRessource === parseInt(this.selectedTypeResource)
           : true;
           const typeResourceMatch = this.selectedTypeResource
           ? resource.id_typeRessource === parseInt(this.selectedTypeResource)
