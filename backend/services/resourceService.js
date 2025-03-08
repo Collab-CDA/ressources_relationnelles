@@ -1,4 +1,6 @@
 const Resource = require('../models/Resource');
+const path = require('path');
+const fsPromises = require('fs').promises;
 
 exports.createResource = async (data, files) => {
   try {
@@ -45,7 +47,54 @@ exports.createResource = async (data, files) => {
 
 exports.getAllResources = async () => {
   try {
-    const resources = await Resource.findAll();
+    let resources = await Resource.findAll();
+
+    resources = await Promise.all(resources.map(async resource => {
+      if (resource.nom_image) {
+        let fileNames = [];
+        try {
+          // Vérifie si la chaîne ressemble à un JSON (commence par [)
+          if (resource.nom_image.trim().startsWith('[')) {
+            fileNames = JSON.parse(resource.nom_image);
+          } else {
+            // Sinon, enveloppe la chaîne dans un tableau
+            fileNames = [resource.nom_image];
+          }
+        } catch (error) {
+          console.error("Erreur lors du parsing de nom_image :", error.message);
+          fileNames = [resource.nom_image];
+        }
+
+        // Pour chaque fichier, si c'est une image, on renvoie son contenu en base64,
+        // sinon on renvoie l'URL complète.
+        const processedFiles = await Promise.all(fileNames.map(async file => {
+          // Vérifier si le fichier est une image
+          if (/\.(jpe?g|png|gif)$/i.test(file)) {
+            try {
+              const filePath = path.join(process.cwd(), 'uploads', file);
+              const fileContent = await fsPromises.readFile(filePath);
+              let mimeType = 'image/jpeg';
+              const ext = file.split('.').pop().toLowerCase();
+              if (ext === 'png') mimeType = 'image/png';
+              else if (ext === 'gif') mimeType = 'image/gif';
+              else if (ext === 'jpg' || ext === 'jpeg') mimeType = 'image/jpeg';
+              return `data:${mimeType};base64,${fileContent.toString('base64')}`;
+            } catch (error) {
+              console.error("Erreur lors de la lecture du fichier image :", error.message);
+              return `${process.env.BASE_URL || 'http://localhost:3000'}/uploads/${file}`;
+            }
+          } else if (/\.(pdf)$/i.test(file)) {
+            // Pour les fichiers PDF, renvoie l'URL complète
+            return `${process.env.BASE_URL || 'http://localhost:3000'}/uploads/${file}`;
+          } else {
+            // Pour d'autres types de fichiers
+            return `${process.env.BASE_URL || 'http://localhost:3000'}/uploads/${file}`;
+          }
+        }));
+        resource.nom_image = processedFiles;
+      }
+      return resource;
+    }));
     return resources;
   } catch (error) {
     throw new Error('Erreur lors de la récupération des ressources: ' + error.message);
@@ -89,7 +138,7 @@ exports.updateResource = async (id, data, files) => {
       id_utilisateur: data.id_utilisateur || resource.id_utilisateur, 
       id_categorie: idCategorie,
       lien_video: data.lien_video || resource.lien_video, 
-      // Si de nouveaux fichiers sont uploadés, on met à jour, sinon on garde l'ancien
+      // Mise à jour des fichiers : si de nouveaux fichiers sont uploadés, on remplace, sinon on conserve l'ancien
       nom_image: filenames.length > 0 ? JSON.stringify(filenames) : (data.nom_image || resource.nom_image)
     });
     return resource;
@@ -98,7 +147,7 @@ exports.updateResource = async (id, data, files) => {
   }
 };
 
-// modifier le statut
+// Modifier le statut
 exports.updateResourceStatus = async (id, newStatus) => {
   try {
     const resource = await Resource.findByPk(id);

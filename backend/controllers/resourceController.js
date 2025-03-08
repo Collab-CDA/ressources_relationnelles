@@ -2,8 +2,7 @@ const { createResource, getAllResources, updateResource, updateResourceStatus, d
 
 exports.createResource = async (req, res) => {
     try {
-        console.log("Données reçues :", req.body); 
-        const resource = await createResource(req.body);
+        const resource = await createResource(req.body, req.files);
         res.status(201).json(resource);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -21,7 +20,7 @@ exports.getAllResources = async (req, res) => {
 
 exports.updateResource = async (req, res) => {
     try {
-        const resource = await updateResource(req.params.id, req.body);
+        const resource = await updateResource(req.params.id, req.body, req.files);
         res.status(200).json(resource);
     } catch (error) {
         res.status(500).json({ message: error.message });
