@@ -1,21 +1,30 @@
 <template>
   <div>
     <h1>Progression</h1>
-    
-    <!-- Liste des Favoris -->
-    <div class="favorites-list">
-      <h2>Vos Favoris</h2>
-      <ul>
-        <li v-for="favori in favoris" :key="favori.id_favori">
-          <a href="#" @click.prevent="selectResource(favori.id_ressource_)">
-            {{ getResourceTitle(favori.id_ressource_) }}
-          </a>
-          <button class="delete-button" @click="deleteFavori(favori.id_favori)">
-            <i class="fas fa-trash-alt"></i>
-          </button>
-        </li>
-      </ul>
-      <p v-if="favoris.length === 0">Aucun favori trouvé</p>
+
+    <div class="card-container">
+      <!-- Liste des Favoris -->
+      <div class="favorites-list">
+        <h2>Vos Favoris</h2>
+        <ul>
+          <li v-for="favori in favoris" :key="favori.id_favori">
+            <a href="#" @click.prevent="selectResource(favori.id_ressource_)">
+              {{ getResourceTitle(favori.id_ressource_) }}
+            </a>
+            <button class="delete-button" @click="deleteFavori(favori.id_favori)">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </li>
+        </ul>
+        <p v-if="favoris.length === 0">Aucun favori trouvé</p>
+      </div>
+
+      <!-- Tableau de bord des progressions -->
+      <div class="progress-dashboard">
+        <h2>Progressions</h2>
+        <!-- Contenu du tableau de bord -->
+        <p>Ici sera affiché le pourcentage de progression des activités.</p>
+      </div>
     </div>
 
     <!-- Détails de la ressource sélectionnée -->
@@ -33,6 +42,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -125,7 +135,6 @@ export default {
 </script>
 
 <style scoped>
-/* Styles généraux */
 h1 {
   font-size: 32px;
   font-weight: bold;
@@ -134,13 +143,19 @@ h1 {
   margin-bottom: 2rem;
 }
 
-/* Section des favoris */
-.favorites-list {
+.card-container {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  margin: 0 40px;
+}
+
+.favorites-list, .progress-dashboard {
   background-color: #f0f0f0;
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  width: 48%;
 }
 
 .favorites-list ul {
@@ -161,7 +176,6 @@ h1 {
   font-size: 18px;
 }
 
-/* Bouton de suppression des favoris */
 .delete-button {
   background: none;
   border: none;
@@ -170,7 +184,6 @@ h1 {
   color: red;
 }
 
-/* Section des détails de la ressource sélectionnée */
 .resource-details {
   position: relative;
   background-color: #dad8d8;
@@ -181,7 +194,6 @@ h1 {
   width: 100%;
 }
 
-/* Bouton de fermeture */
 .close-button {
   background: none;
   border: none;
@@ -198,10 +210,45 @@ h1 {
   transform: scale(1.2);
 }
 
-/* Images */
 .resource-details img {
   max-width: 100%;
   height: auto;
   width: 100%;
+}
+
+/* Media Query pour les tablettes */
+@media (max-width: 1024px) {
+  .card-container {
+    flex-direction: column;
+    align-items: center;
+    margin: 0 20px;
+  }
+
+  .favorites-list, .progress-dashboard {
+    width: 100%;
+  }
+}
+
+/* Media Query pour les mobiles */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 24px;
+  }
+
+  .card-container {
+    margin: 0 10px;
+  }
+
+  .favorites-list, .progress-dashboard {
+    padding: 15px;
+  }
+
+  .favorites-list a {
+    font-size: 16px;
+  }
+
+  .resource-details {
+    padding: 1rem;
+  }
 }
 </style>
