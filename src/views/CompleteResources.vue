@@ -596,4 +596,65 @@ form button:hover {
 .contact-button:hover {
   background-color: #d4c4e0;
 }
+
+/* Responsive mobiles */
+@media (max-width: 768px) {
+  .main-container {
+    margin: 2rem 1rem;
+    width: calc(100% - 2rem);
+  }
+
+  .filter-bar {
+    margin: 0 2rem;
+    width: calc(100% - 4rem); 
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-bar label, .filter-bar select, .add-resource-button {
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  .main-container {
+    flex-direction: column;
+  }
+
+  .resource-list, .content-container {
+    padding: 1rem;
+  }
+}
+
+/* Responsive tablettes */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .main-container {
+    margin: 2rem 2rem; 
+    width: calc(100% - 4rem); 
+  }
+
+  .filter-bar {
+    margin: 0 4rem;
+    width: calc(100% - 6rem);
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .filter-bar label, .filter-bar select {
+    margin-bottom: 1rem;
+    width: calc(50% - 20px);
+  }
+
+  .add-resource-button {
+    width: 100%;
+  }
+
+  .main-container {
+    flex-direction: column;
+  }
+
+  .resource-list, .content-container {
+    padding: 1.5rem;
+  }
+}
+
 </style>
