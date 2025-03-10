@@ -15,12 +15,10 @@
             <label for="titre">Titre :</label>
             <input type="text" id="titre" v-model="resource.titre" required />
           </div>
-          <!-- Contenu -->
           <div class="form-group">
             <label for="contenu">Contenu :</label>
             <textarea id="contenu" v-model="resource.contenu" required></textarea>
           </div>
-          <!-- Type de ressource -->
           <div class="form-group">
             <label for="typeResource">Type de ressource :</label>
             <select v-model="resource.id_typeRessource" id="typeResource" required>
@@ -30,7 +28,6 @@
               </option>
             </select>
           </div>
-          <!-- Type de relation -->
           <div class="form-group">
             <label for="typeRelation">Type de relation :</label>
             <select v-model="resource.type_relation" id="typeRelation" required>
@@ -40,7 +37,6 @@
               </option>
             </select>
           </div>
-          <!-- Catégorie de ressource -->
           <div class="form-group">
             <label for="categoryResource">Catégorie de ressource :</label>
             <select v-model="resource.id_categorie" id="categoryResource" required>
@@ -50,11 +46,10 @@
               </option>
             </select>
           </div>
-          <!-- Lien vidéo -->
           <div class="form-group">
-          <label for="lien_video">Lien :</label>
-          <input type="url" id="lien_video" v-model="resource.lien_video" />
-        </div>
+            <label for="lien_video">Lien :</label>
+            <input type="url" id="lien_video" v-model="resource.lien_video" />
+          </div>
 
           <!-- Fichier -->
           <div class="file-upload-container">
@@ -63,6 +58,7 @@
             </label>
             <input type="file" id="file" @change="handleFileUpload" accept=".pdf, .jpeg, .jpg, .png" class="file-upload-input" />
           </div>
+
           <div class="button-container">
             <button type="submit" class="btn">Ajouter</button>
           </div>
@@ -70,6 +66,7 @@
       </div>
     </div>
 
+    <!-- Liste des ressources -->
     <div class="main-container">
       <div class="resource-list">
         <h3>Titre des ressources</h3>
@@ -128,6 +125,9 @@ export default {
     },
     closeModal() {
       this.showModal = false;
+      this.resetResource();
+    },
+    resetResource() {
       this.resource = {
         titre: "",
         contenu: "",
@@ -141,44 +141,26 @@ export default {
     },
     async fetchTypesResource() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/types_ressource",
-          this.getAuthHeaders()
-        );
+        const response = await axios.get("http://localhost:3000/api/types_ressource", this.getAuthHeaders());
         this.typesResource = response.data;
       } catch (error) {
-        console.warn(
-          "Erreur lors de la récupération des types de ressource :",
-          error.response ? error.response.data : error.message
-        );
+        console.error("Erreur lors de la récupération des types de ressource :", error.response?.data || error.message);
       }
     },
     async fetchTypesRelation() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/relations",
-          this.getAuthHeaders()
-        );
+        const response = await axios.get("http://localhost:3000/api/relations", this.getAuthHeaders());
         this.typesRelation = response.data;
       } catch (error) {
-        console.warn(
-          "Erreur lors de la récupération des types de relation :",
-          error.response ? error.response.data : error.message
-        );
+        console.error("Erreur lors de la récupération des types de relation :", error.response?.data || error.message);
       }
     },
     async fetchCategoriesResource() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/categories",
-          this.getAuthHeaders()
-        );
+        const response = await axios.get("http://localhost:3000/api/categories", this.getAuthHeaders());
         this.categoriesResource = response.data;
       } catch (error) {
-        console.warn(
-          "Erreur lors de la récupération des catégories de ressources :",
-          error.response ? error.response.data : error.message
-        );
+        console.error("Erreur lors de la récupération des catégories de ressources :", error.response?.data || error.message);
       }
     },
     async fetchResources() {
@@ -186,18 +168,18 @@ export default {
         const response = await axios.get('http://localhost:3000/api/resources');
         this.resources = response.data;
       } catch (error) {
-        console.warn('Erreur lors de la récupération des ressources :', error.response ? error.response.data : error.message);
+        console.error('Erreur lors de la récupération des ressources :', error.response?.data || error.message);
       }
     },
     async toggleStatus(resource) {
-    const newStatus = resource.statut_ === 'disponible' ? 'suspendue' : 'disponible';
-    try {
-      await axios.put(`http://localhost:3000/api/resources/status/${resource.id_ressource_}`, { statut_: newStatus }, this.getAuthHeaders());
-      resource.statut_ = newStatus;
-    } catch (error) {
-      console.warn('Erreur lors de la mise à jour du statut :', error.response ? error.response.data : error.message);
-    }
-  },
+      const newStatus = resource.statut_ === 'disponible' ? 'suspendue' : 'disponible';
+      try {
+        await axios.put(`http://localhost:3000/api/resources/status/${resource.id_ressource_}`, { statut_: newStatus }, this.getAuthHeaders());
+        resource.statut_ = newStatus;
+      } catch (error) {
+        console.error('Erreur lors de la mise à jour du statut :', error.response?.data || error.message);
+      }
+    },
     editResource(id) {
       this.$router.push({ name: 'editResource', params: { id } });
     },
@@ -208,7 +190,7 @@ export default {
           await axios.delete(`http://localhost:3000/api/resources/delete/${id}`, this.getAuthHeaders());
           this.fetchResources();
         } catch (error) {
-          console.warn('Erreur lors de la suppression de la ressource :', error.response ? error.response.data : error.message);
+          console.error('Erreur lors de la suppression de la ressource :', error.response?.data || error.message);
         }
       }
     },
@@ -226,7 +208,6 @@ export default {
     },
     getAuthHeaders() {
       const token = localStorage.getItem("token");
-      console.log("Token envoyé :", token);
       if (!token) {
         console.error("Token non trouvé.");
         return {};
@@ -247,6 +228,12 @@ export default {
       return null;
     },
     async submitResource() {
+      const userId = this.getUserIdFromToken();
+      if (!userId) {
+        alert("Utilisateur non authentifié.");
+        return;
+      }
+
       try {
         const formData = new FormData();
         formData.append("titre", this.resource.titre);
@@ -257,9 +244,12 @@ export default {
         formData.append("lien_video", this.resource.lien_video);
         formData.append("nom_image", this.resource.nom_image);
         formData.append("confidentialite", "Publique");
+        formData.append("id_utilisateur", userId);
 
+        // Ajout du fichier (si sélectionné)
         if (this.resource.selectedFile) {
           formData.append("file", this.resource.selectedFile);
+          formData.append("fileName", this.resource.selectedFile.name);
         }
 
         const headers = this.getAuthHeaders();
@@ -284,6 +274,9 @@ export default {
   },
 };
 </script>
+
+
+
 
 
 <style scoped>
