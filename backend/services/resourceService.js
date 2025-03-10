@@ -4,7 +4,6 @@ const fsPromises = require('fs').promises;
 
 exports.createResource = async (data, files) => {
   try {
-    // Validation et conversion des identifiants numériques
     const idTypeRessource = parseInt(data.id_typeRessource);
     if (!idTypeRessource || idTypeRessource <= 0) {
       throw new Error('Type de ressource invalide.');
@@ -18,19 +17,16 @@ exports.createResource = async (data, files) => {
       throw new Error('Catégorie de ressource invalide.');
     }
 
-    // Traitement des fichiers uploadés
     let filenames = [];
     if (files && files.length > 0) {
       filenames = files.map(file => file.filename);
     }
-
-    // Création de la ressource avec les noms de fichiers stockés en JSON s'il y a plusieurs
     const resource = await Resource.create({
       titre: data.titre, 
       contenu: data.contenu, 
       id_typeRessource: idTypeRessource,
       type_relation: typeRelation,
-      confidentialite: data.confidentialite,  // "Publique" ou "Privée"
+      confidentialite: data.confidentialite,
       statut_: data.statut_ || 'disponible',
       auteur_id: data.auteur_id || null,
       id_utilisateur: data.id_utilisateur || null, 
@@ -53,11 +49,9 @@ exports.getAllResources = async () => {
       if (resource.nom_image) {
         let fileNames = [];
         try {
-          // Vérifie si la chaîne ressemble à un JSON (commence par [)
           if (resource.nom_image.trim().startsWith('[')) {
             fileNames = JSON.parse(resource.nom_image);
           } else {
-            // Sinon, enveloppe la chaîne dans un tableau
             fileNames = [resource.nom_image];
           }
         } catch (error) {
@@ -65,10 +59,7 @@ exports.getAllResources = async () => {
           fileNames = [resource.nom_image];
         }
 
-        // Pour chaque fichier, si c'est une image, on renvoie son contenu en base64,
-        // sinon on renvoie l'URL complète.
         const processedFiles = await Promise.all(fileNames.map(async file => {
-          // Vérifier si le fichier est une image
           if (/\.(jpe?g|png|gif)$/i.test(file)) {
             try {
               const filePath = path.join(process.cwd(), 'uploads', file);
@@ -84,10 +75,8 @@ exports.getAllResources = async () => {
               return `${process.env.BASE_URL || 'http://localhost:3000'}/uploads/${file}`;
             }
           } else if (/\.(pdf)$/i.test(file)) {
-            // Pour les fichiers PDF, renvoie l'URL complète
             return `${process.env.BASE_URL || 'http://localhost:3000'}/uploads/${file}`;
           } else {
-            // Pour d'autres types de fichiers
             return `${process.env.BASE_URL || 'http://localhost:3000'}/uploads/${file}`;
           }
         }));
@@ -107,7 +96,6 @@ exports.updateResource = async (id, data, files) => {
     if (!resource) {
       throw new Error('Ressource introuvable');
     }
-    // Conversion et validation pour les identifiants mis à jour
     const idTypeRessource = parseInt(data.id_typeRessource);
     if (!idTypeRessource || idTypeRessource <= 0) {
       throw new Error('Type de ressource invalide.');
@@ -121,7 +109,6 @@ exports.updateResource = async (id, data, files) => {
       throw new Error('Catégorie de ressource invalide.');
     }
 
-    // Traitement des fichiers uploadés lors de la mise à jour
     let filenames = [];
     if (files && files.length > 0) {
       filenames = files.map(file => file.filename);
@@ -138,7 +125,6 @@ exports.updateResource = async (id, data, files) => {
       id_utilisateur: data.id_utilisateur || resource.id_utilisateur, 
       id_categorie: idCategorie,
       lien_video: data.lien_video || resource.lien_video, 
-      // Mise à jour des fichiers : si de nouveaux fichiers sont uploadés, on remplace, sinon on conserve l'ancien
       nom_image: filenames.length > 0 ? JSON.stringify(filenames) : (data.nom_image || resource.nom_image)
     });
     return resource;
@@ -146,8 +132,6 @@ exports.updateResource = async (id, data, files) => {
     throw new Error('Erreur lors de la mise à jour de la ressource: ' + error.message);
   }
 };
-
-// Modifier le statut
 exports.updateResourceStatus = async (id, newStatus) => {
   try {
     const resource = await Resource.findByPk(id);

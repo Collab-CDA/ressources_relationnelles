@@ -89,7 +89,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import axios from "axios";
 
@@ -101,6 +100,7 @@ export default {
         titre: "",
         contenu: "",
         id_typeRessource: "",
+        id_utilisateur: "",
         type_relation: "",
         id_categorie: "",
         lien_video: "",
@@ -113,51 +113,7 @@ export default {
     };
   },
   methods: {
-    async fetchTypesResource() {
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/api/types_ressource",
-          this.getAuthHeaders()
-        );
-        this.typesResource = response.data;
-      } catch (error) {
-        console.warn(
-          "Erreur lors de la récupération des types de ressource :",
-          error.response ? error.response.data : error.message
-        );
-      }
-    },
-    async fetchTypesRelation() {
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/api/relations",
-          this.getAuthHeaders()
-        );
-        this.typesRelation = response.data;
-      } catch (error) {
-        console.warn(
-          "Erreur lors de la récupération des types de relation :",
-          error.response ? error.response.data : error.message
-        );
-      }
-    },
-    async fetchCategoriesResource() {
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/api/categories",
-          this.getAuthHeaders()
-        );
-        this.categoriesResource = response.data;
-      } catch (error) {
-        console.warn(
-          "Erreur lors de la récupération des catégories de ressources :",
-          error.response ? error.response.data : error.message
-        );
-      }
-    },
-    handleFileUpload(event) {
-      this.resource.selectedFile = event.target.files[0];
-    },
+    // Extraction de l'id du token
     decodeToken(token) {
       try {
         const base64Url = token.split(".")[1];
@@ -167,9 +123,17 @@ export default {
         return null;
       }
     },
+    // Renvoie l'id_utilisateur depuis le token (champ "id" dans le JWT)
+    getUserIdFromToken() {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken = this.decodeToken(token);
+        return decodedToken ? decodedToken.id : null;
+      }
+      return null;
+    },
     getAuthHeaders() {
       const token = localStorage.getItem("token");
-      console.log("Token envoyé :", token);
       if (!token) {
         console.error("Token non trouvé.");
         return {};
@@ -180,14 +144,6 @@ export default {
           "Content-Type": "multipart/form-data",
         },
       };
-    },
-    getUserIdFromToken() {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const decodedToken = this.decodeToken(token);
-        return decodedToken ? decodedToken.id : null;
-      }
-      return null;
     },
     async submitResource() {
       try {
@@ -201,14 +157,13 @@ export default {
         formData.append("nom_image", this.resource.nom_image);
         formData.append("confidentialite", "Publique");
 
+        // Extraction et ajout de l'id_utilisateur à partir du JWT
+        const idUtilisateur = this.getUserIdFromToken();
+        formData.append("id_utilisateur", idUtilisateur);
+
         if (this.resource.selectedFile) {
           formData.append("files", this.resource.selectedFile);
         }
-
-        console.log(
-          "Données envoyées :",
-          Object.fromEntries(formData.entries())
-        );
 
         const headers = this.getAuthHeaders();
         headers.headers["Content-Type"] = "multipart/form-data";
@@ -226,6 +181,43 @@ export default {
           error.response ? error.response.data : error.message
         );
       }
+    },
+    // Méthodes pour récupérer les types et catégories de ressources
+    async fetchTypesResource() {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/types_ressource",
+          this.getAuthHeaders()
+        );
+        this.typesResource = response.data;
+      } catch (error) {
+        console.warn("Erreur lors de la récupération des types de ressource :", error.response ? error.response.data : error.message);
+      }
+    },
+    async fetchTypesRelation() {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/relations",
+          this.getAuthHeaders()
+        );
+        this.typesRelation = response.data;
+      } catch (error) {
+        console.warn("Erreur lors de la récupération des types de relation :", error.response ? error.response.data : error.message);
+      }
+    },
+    async fetchCategoriesResource() {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/categories",
+          this.getAuthHeaders()
+        );
+        this.categoriesResource = response.data;
+      } catch (error) {
+        console.warn("Erreur lors de la récupération des catégories de ressources :", error.response ? error.response.data : error.message);
+      }
+    },
+    handleFileUpload(event) {
+      this.resource.selectedFile = event.target.files[0];
     },
   },
   mounted() {
