@@ -6,7 +6,7 @@ exports.createComment = async (data) => {
         statut_commentaire: data.statut_commentaire,
         titre_commentaire: data.titre_commentaire,
         contenu_commentaire: data.contenu_commentaire,
-        date_creation: new Date(), // La date est générée automatiquement
+        date_creation: new Date(),
         id_utilisateur: data.id_utilisateur,
         id_ressource_: data.id_ressource_,
     });
