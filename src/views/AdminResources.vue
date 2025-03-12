@@ -4,8 +4,6 @@
       Gestion des ressources
       <button class="add-user-button" @click="openModal">Ajouter une ressource</button>
     </h1>
-
-    <!-- Modal pour ajouter une ressource -->
     <div v-if="showModal" class="modal">
       <div class="modal-content">
         <span class="close-button" @click="closeModal">&times;</span>
@@ -50,23 +48,18 @@
             <label for="lien_video">Lien :</label>
             <input type="url" id="lien_video" v-model="resource.lien_video" />
           </div>
-
-          <!-- Fichier -->
           <div class="file-upload-container">
             <label for="file" class="file-upload-label">
               Ajouter un fichier (PDF ou Image)
             </label>
             <input type="file" id="file" @change="handleFileUpload" accept=".pdf, .jpeg, .jpg, .png" class="file-upload-input" />
           </div>
-
           <div class="button-container">
             <button type="submit" class="btn">Ajouter</button>
           </div>
         </form>
       </div>
     </div>
-
-    <!-- Liste des ressources -->
     <div class="main-container">
       <div class="resource-list">
         <h3>Titre des ressources</h3>
@@ -194,8 +187,11 @@ export default {
         }
       }
     },
+    // Gestion de l'upload de l'image
     handleFileUpload(event) {
-      this.resource.selectedFile = event.target.files[0];
+      const file = event.target.files[0];
+      this.resource.selectedFile = file;
+      this.resource.nom_image = file ? file.name : "";
     },
     decodeToken(token) {
       try {
@@ -233,7 +229,6 @@ export default {
         alert("Utilisateur non authentifié.");
         return;
       }
-
       try {
         const formData = new FormData();
         formData.append("titre", this.resource.titre);
@@ -245,21 +240,14 @@ export default {
         formData.append("nom_image", this.resource.nom_image);
         formData.append("confidentialite", "Publique");
         formData.append("id_utilisateur", userId);
-
-        // Ajout du fichier (si sélectionné)
         if (this.resource.selectedFile) {
-          formData.append("file", this.resource.selectedFile);
-          formData.append("fileName", this.resource.selectedFile.name);
+          formData.append("files", this.resource.selectedFile);
         }
-
         const headers = this.getAuthHeaders();
         headers.headers["Content-Type"] = "multipart/form-data";
-
         const response = await axios.post("http://localhost:3000/api/resources/create", formData, headers);
         console.log("Ressource ajoutée avec succès :", response.data);
         alert("Ressource ajoutée avec succès !");
-
-        // Fermer la modal et recharger les ressources
         this.closeModal();
         this.fetchResources();
       } catch (error) {

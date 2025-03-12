@@ -8,12 +8,10 @@
           <label for="titre">Titre :</label>
           <input type="text" id="titre" v-model="resource.titre" required />
         </div>
-        <!-- Contenu -->
         <div class="form-group">
           <label for="contenu">Contenu :</label>
           <textarea id="contenu" v-model="resource.contenu" required></textarea>
         </div>
-        <!-- Type de ressource -->
         <div class="form-group">
           <label for="typeResource">Type de ressource :</label>
           <select
@@ -157,7 +155,6 @@ export default {
         formData.append("nom_image", this.resource.nom_image);
         formData.append("confidentialite", "Publique");
 
-        // Extraction et ajout de l'id_utilisateur à partir du JWT
         const idUtilisateur = this.getUserIdFromToken();
         formData.append("id_utilisateur", idUtilisateur);
 
@@ -182,7 +179,6 @@ export default {
         );
       }
     },
-    // Méthodes pour récupérer les types et catégories de ressources
     async fetchTypesResource() {
       try {
         const response = await axios.get(

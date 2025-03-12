@@ -1,8 +1,6 @@
 <template>
   <div>
     <h1>Ressources complètes</h1>
-
-    <!-- recherche et filtres -->
     <div class="filter-bar">
       <label for="typeRelation">Type de relation :</label>
       <select v-model="selectedTypeRelation" id="typeRelation">
@@ -44,8 +42,6 @@
         Ajouter une ressource
       </button>
     </div>
-
-    <!--liste des ressources à gauche -->
     <div class="main-container">
       <div class="resource-list">
         <h2>Liste des ressources</h2>
@@ -60,8 +56,6 @@
         </ul>
         <p v-if="filteredResources.length === 0">Aucun résultat</p>
       </div>
-
-      <!-- contenu d'une ressource -->
       <div class="content-container">
         <div v-if="selectedResource">
           <h2>{{ selectedResource.titre }}</h2>
@@ -73,20 +67,16 @@
             v-if="isEmbedYouTubeLink(selectedResource.lien_video)"
             v-html="getEmbedVideo(selectedResource.lien_video)"
           ></div>
-          <!-- Affichage des fichiers uploadés -->
           <div v-else-if="selectedResource.nom_image">
             <div v-for="file in selectedResource.nom_image" :key="file" style="margin-bottom:10px;">
-              <!-- Si c'est une image (data URI), on l'affiche -->
               <div v-if="isImage(file)">
                 <img :src="getFileUrl(file)" alt="Image de la ressource" style="max-width:300px;" />
               </div>
-              <!-- Si c'est un PDF, on affiche un lien pour le télécharger -->
               <div v-else-if="isPDF(file)">
                 <a :href="getFileUrl(file)" target="_blank" download>
                   Télécharger PDF : {{ file }}
                 </a>
               </div>
-              <!-- Autres types de fichiers -->
               <div v-else>
                 <a :href="getFileUrl(file)" target="_blank" download>
                   Télécharger le fichier : {{ file }}
@@ -110,8 +100,6 @@
             style="width: 100%; height: auto"
           />
         </div>
-
-        <!-- Section des commentaires -->
         <div class="comments-section">
           <h2>Commentaires</h2>
           <div class="comments-box">
@@ -348,17 +336,14 @@ export default {
     isEmbedYouTubeLink(url) {
       return /youtube\.com|youtu\.be/.test(url);
     },
-     // Vérifie si le fichier est une image (data URI ou nom de fichier avec extension image)
      isImage(file) {
       if (file.startsWith("data:")) return true;
       return /\.(jpg|jpeg|png|gif)$/i.test(file);
     },
-    // Vérifie si le fichier est un PDF
     isPDF(file) {
       if (file.startsWith("data:")) return false;
       return /\.pdf$/i.test(file);
     },
-    // Si le fichier est déjà une data URI, on le renvoie, sinon on construit l'URL complète
     getFileUrl(file) {
       if (file.startsWith("data:")) {
         return file;
