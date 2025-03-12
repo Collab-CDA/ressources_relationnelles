@@ -50,9 +50,9 @@
           </div>
           <div class="file-upload-container">
             <label for="file" class="file-upload-label">
-              Ajouter un fichier (PDF ou Image)
+              Ajouter une image
             </label>
-            <input type="file" id="file" @change="handleFileUpload" accept=".pdf, .jpeg, .jpg, .png" class="file-upload-input" />
+            <input type="file" id="file" @change="handleFileUpload" accept=".jpeg, .jpg, .png" class="file-upload-input" />
           </div>
           <div class="button-container">
             <button type="submit" class="btn">Ajouter</button>
@@ -187,7 +187,6 @@ export default {
         }
       }
     },
-    // Gestion de l'upload de l'image
     handleFileUpload(event) {
       const file = event.target.files[0];
       this.resource.selectedFile = file;
@@ -262,6 +261,7 @@ export default {
   },
 };
 </script>
+
 
 
 

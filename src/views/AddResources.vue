@@ -70,13 +70,13 @@
         <!-- Fichier -->
         <div class="file-upload-container">
           <label for="file" class="file-upload-label">
-            Ajouter un fichier (PDF ou Image)
+            Ajouter une image
           </label>
           <input
             type="file"
             id="file"
             @change="handleFileUpload"
-            accept=".pdf, .jpeg, .jpg, .png"
+            accept=".jpeg, .jpg, .png"
             class="file-upload-input"
           />
         </div>
