@@ -1,38 +1,42 @@
-const Comment = require("../models/Comment");
-const User = require("../models/User");
-
-exports.createComment = async (data) => {
-    return await Comment.create({
-        statut_commentaire: data.statut_commentaire,
-        titre_commentaire: data.titre_commentaire,
-        contenu_commentaire: data.contenu_commentaire,
-        date_creation: new Date(),
-        id_utilisateur: data.id_utilisateur,
-        id_ressource_: data.id_ressource_,
-    });
+const Comment = require('../models/Comment');
+const User = require('../models/User');
+const createComment = async (id_utilisateur, id_ressource_, titre, contenu, id_commentaire_parent = null) => {
+    return await Comment.create({ id_utilisateur, id_ressource_, titre, contenu, id_commentaire_parent });
 };
 
-exports.getCommentsByResource = async (resourceId) => {
+const getCommentsByResource = async (id_ressource_) => {
     return await Comment.findAll({
-        where: { id_ressource_: resourceId },
-        include: [{ model: User, attributes: ["id_utilisateur", "nom", "prenom", "role"] }],
+        where: { id_ressource_ },
+        include: [{
+            model: User,
+            as: 'User',
+            attributes: ['prenom', 'nom']
+        }]
     });
 };
 
-exports.updateComment = async (commentId, userId, content) => {
-    const comment = await Comment.findByPk(commentId);
-    if (!comment || comment.id_utilisateur !== userId) {
-        throw new Error("Commentaire non trouvé ou accès refusé.");
-    }
-    await comment.update({ contenu_commentaire: content });
+const getCommentById = async (id_commentaire) => {
+    return await Comment.findByPk(id_commentaire);
+};
+
+const updateComment = async (id_commentaire, id_utilisateur, titre, contenu) => {
+    const comment = await Comment.findByPk(id_commentaire);
+    if (!comment) throw new Error('Commentaire non trouvé');
+    if (comment.id_utilisateur !== id_utilisateur) throw new Error('Non autorisé');
+
+    // Mise à jour des champs
+    comment.titre = titre;
+    comment.contenu = contenu;
+    await comment.save();
     return comment;
 };
 
-exports.deleteComment = async (commentId, userId, isAdmin) => {
-    const comment = await Comment.findByPk(commentId);
-    if (!comment || (comment.id_utilisateur !== userId && !isAdmin)) {
-        throw new Error("Commentaire non trouvé ou accès refusé.");
-    }
+const deleteComment = async (id_commentaire, id_utilisateur) => {
+    const comment = await Comment.findByPk(id_commentaire);
+    if (!comment) throw new Error('Commentaire non trouvé');
+    if (comment.id_utilisateur !== id_utilisateur) throw new Error('Non autorisé');
+
     await comment.destroy();
-    return true;
 };
+
+module.exports = { createComment, getCommentsByResource, getCommentById, updateComment, deleteComment };

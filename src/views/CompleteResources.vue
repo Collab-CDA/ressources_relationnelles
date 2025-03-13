@@ -42,6 +42,7 @@
         Ajouter une ressource
       </button>
     </div>
+
     <div class="main-container">
       <div class="resource-list">
         <h2>Liste des ressources</h2>
@@ -56,6 +57,7 @@
         </ul>
         <p v-if="filteredResources.length === 0">Aucun résultat</p>
       </div>
+
       <div class="content-container">
         <div v-if="selectedResource">
           <h2>{{ selectedResource.titre }}</h2>
@@ -91,7 +93,6 @@
           >
             Lien vers la ressource
           </a>
-
         </div>
         <div v-else>
           <img
@@ -100,6 +101,7 @@
             style="width: 100%; height: auto"
           />
         </div>
+
         <div class="comments-section">
           <h2>Commentaires</h2>
           <div class="comments-box">
@@ -108,25 +110,28 @@
               :key="comment.id_commentaire"
               class="comment"
             >
-              <h3>{{ comment.titre_commentaire }}</h3>
-              <p>{{ comment.contenu_commentaire }}</p>
+              <h3>{{ comment.titre }}</h3>
+              <p>{{ comment.contenu }}</p>
               <p>
-                <strong>Posté par:</strong>
-                {{ comment.prenom_utilisateur || "Utilisateur inconnu" }}
+                <strong>Posté par :</strong>
+                {{ comment.User ? comment.User.prenom + ' ' + comment.User.nom : "Utilisateur inconnu" }}
               </p>
-              <p><strong>Date:</strong> {{ comment.date_creation }}</p>
+              <p>
+                <strong>Date :</strong>
+                {{ formatDate(comment.date_creation) }}
+              </p>
               <button @click="replyToComment(comment)">Répondre</button>
             </div>
           </div>
 
           <form @submit.prevent="addComment">
             <input
-              v-model="newComment.titre_commentaire"
+              v-model="newComment.titre"
               placeholder="Titre du commentaire"
               required
             />
             <textarea
-              v-model="newComment.contenu_commentaire"
+              v-model="newComment.contenu"
               placeholder="Votre commentaire"
               required
             ></textarea>
@@ -161,11 +166,12 @@ export default {
       selectedResource: null,
       comments: [],
       newComment: {
-        titre_commentaire: "",
-        contenu_commentaire: "",
+        titre: "",
+        contenu: "",
         id_ressource_: null,
-        statut_commentaire: "Validé",
-      },
+        id_commentaire_parent: null,
+        id_utilisateur: null
+      }
     };
   },
   computed: {
@@ -177,14 +183,19 @@ export default {
         const categoryResourceMatch = this.selectedCategoryResource
           ? resource.id_categorie === parseInt(this.selectedCategoryResource)
           : true;
-          const typeResourceMatch = this.selectedTypeResource
+        const typeResourceMatch = this.selectedTypeResource
           ? resource.id_typeRessource === parseInt(this.selectedTypeResource)
           : true;
         return typeRelationMatch && categoryResourceMatch && typeResourceMatch;
       });
-    },
+    }
   },
   methods: {
+    formatDate(dateStr) {
+      if (!dateStr || dateStr === "CURRENT_TIMESTAMP") return "";
+      const dateObj = new Date(dateStr);
+      return isNaN(dateObj) ? "" : dateObj.toLocaleString();
+    },
     async fetchResources() {
       try {
         const response = await axios.get(
@@ -243,29 +254,15 @@ export default {
     },
     async fetchComments() {
       if (this.selectedResource) {
-        const storedComments = localStorage.getItem(
-          `comments_${this.selectedResource.id_ressource_}`
-        );
-        if (storedComments) {
-          this.comments = JSON.parse(storedComments);
-          return;
-        }
         try {
           const response = await axios.get(
-            `http://localhost:3000/api/comments/${this.selectedResource.id_ressource_}`,
+            `http://localhost:3000/api/comments/resource/${this.selectedResource.id_ressource_}`,
             this.getAuthHeaders()
           );
           if (response.data && Array.isArray(response.data)) {
             this.comments = response.data;
-            localStorage.setItem(
-              `comments_${this.selectedResource.id_ressource_}`,
-              JSON.stringify(this.comments)
-            );
           } else {
-            console.warn(
-              "Données de commentaires incorrectes ou incomplètes :",
-              response.data
-            );
+            console.warn("Données de commentaires incorrectes ou incomplètes :", response.data);
           }
         } catch (error) {
           console.warn(
@@ -279,34 +276,21 @@ export default {
       if (this.selectedResource) {
         this.newComment.id_ressource_ = this.selectedResource.id_ressource_;
         this.newComment.id_utilisateur = this.getUserIdFromToken();
-
-        const token = localStorage.getItem("token");
-        if (token) {
-          const decodedToken = JSON.parse(atob(token.split(".")[1]));
-          const userFirstName = decodedToken.prenom || "Inconnu";
-          this.newComment.prenom_utilisateur = userFirstName;
-        } else {
-          this.newComment.prenom_utilisateur = "Inconnu";
-        }
-
         try {
-          const response = await axios.post(
+          // On poste le commentaire puis on re-fait une récupération complète
+          await axios.post(
             "http://localhost:3000/api/comments",
             this.newComment,
             this.getAuthHeaders()
           );
-          this.comments.push(response.data);
-          localStorage.setItem(
-            `comments_${this.selectedResource.id_ressource_}`,
-            JSON.stringify(this.comments)
-          );
+          this.fetchComments(); // recharge les commentaires pour afficher le post fraîchement ajouté
+          // Réinitialiser le formulaire
           this.newComment = {
-            titre_commentaire: "",
-            contenu_commentaire: "",
+            titre: "",
+            contenu: "",
             id_ressource_: null,
-            statut_commentaire: "Validé",
-            id_utilisateur: null,
-            prenom_utilisateur: "",
+            id_commentaire_parent: null,
+            id_utilisateur: null
           };
         } catch (error) {
           console.warn(
@@ -317,12 +301,10 @@ export default {
       }
     },
     replyToComment(comment) {
-      const prenom =
-        comment.User && comment.User.prenom
-          ? comment.User.prenom
-          : comment.prenom_utilisateur || "Utilisateur inconnu";
-      this.newComment.titre_commentaire = `Re: ${comment.titre_commentaire}`;
-      this.newComment.contenu_commentaire = `@${prenom} `;
+      const prenom = (comment.User && comment.User.prenom) || "Utilisateur inconnu";
+      this.newComment.titre = `Re: ${comment.titre}`;
+      this.newComment.contenu = `@${prenom} `;
+      this.newComment.id_commentaire_parent = comment.id_commentaire;
     },
     redirectToAddResource() {
       this.$router.push("/add-resources");
@@ -336,7 +318,7 @@ export default {
     isEmbedYouTubeLink(url) {
       return /youtube\.com|youtu\.be/.test(url);
     },
-     isImage(file) {
+    isImage(file) {
       if (file.startsWith("data:")) return true;
       return /\.(jpg|jpeg|png|gif)$/i.test(file);
     },
@@ -351,64 +333,61 @@ export default {
       return `${window.location.origin}/uploads/${file}`;
     },
     getUserIdFromToken() {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const decodedToken = JSON.parse(atob(token.split(".")[1]));
-        return decodedToken.id; 
-      } catch (error) {
-        console.error("Erreur lors du décodage du token :", error);
-        return null;
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decodedToken = JSON.parse(atob(token.split(".")[1]));
+          return decodedToken.id; 
+        } catch (error) {
+          console.error("Erreur lors du décodage du token :", error);
+          return null;
+        }
       }
-    }
-    console.warn("Token non trouvé dans le localStorage.");
-    return null;
-  },
-  getAuthHeaders() {
-    const token = localStorage.getItem("token");
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  },
-
-  async toggleFavorite(resource) {
-    const token = localStorage.getItem("token");
-    const userId = this.getUserIdFromToken();
-    if (!userId) {
-      alert("Vous devez être connecté pour ajouter une ressource aux favoris.");
-      return;
-    }
-
-    try {
-      await axios.post(
-        "http://localhost:3000/api/favoris/create",
-        { id_utilisateur: userId, id_ressource_: resource.id_ressource_ },
-        this.getAuthHeaders()
-      );
-      alert("Ressource ajoutée aux favoris avec succès !");
-    } catch (error) {
-      console.warn(
-        "Erreur lors de l'ajout aux favoris :",
-        error.response ? error.response.data : error.message
-      );
-    }
-  },
+      console.warn("Token non trouvé dans le localStorage.");
+      return null;
+    },
+    getAuthHeaders() {
+      const token = localStorage.getItem("token");
+      return {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+    },
+    async toggleFavorite(resource) {
+      const userId = this.getUserIdFromToken();
+      if (!userId) {
+        alert("Vous devez être connecté pour ajouter une ressource aux favoris.");
+        return;
+      }
+      try {
+        await axios.post(
+          "http://localhost:3000/api/favoris/create",
+          { id_utilisateur: userId, id_ressource_: resource.id_ressource_ },
+          this.getAuthHeaders()
+        );
+        alert("Ressource ajoutée aux favoris avec succès !");
+      } catch (error) {
+        console.warn(
+          "Erreur lors de l'ajout aux favoris :",
+          error.response ? error.response.data : error.message
+        );
+      }
+    },
     selectResource(resource) {
       this.selectedResource = resource;
       this.fetchComments();
-    },
-
+    }
   },
   mounted() {
     this.fetchResources();
     this.fetchTypesRelation();
     this.fetchCategoriesResource();
     this.fetchTypesResource();
-  },
+  }
 };
 </script>
+
 
 
 <style scoped>

@@ -7,7 +7,7 @@ exports.createInvitation = async (data) => {
       id_utilisateur_inviteur: data.id_utilisateur_inviteur,
       id_utilisateur_invite: data.id_utilisateur_invite,
       id_ressource_: data.id_ressource_,
-      statut_invitation: data.statut_invitation // 'envoyée', 'acceptée' ou 'refusée'
+      statut_invitation: data.statut_invitation
     });
     return invitation;
   } catch (error) {
@@ -17,7 +17,6 @@ exports.createInvitation = async (data) => {
 
 exports.getInvitationsByUser = async (userId) => {
   try {
-    // Récupère les invitations où l'utilisateur est soit l'inviteur, soit l'invité
     const invitations = await Invitation.findAll({ 
       where: {
         [Op.or]: [

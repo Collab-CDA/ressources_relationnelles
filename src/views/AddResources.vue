@@ -3,7 +3,6 @@
     <div class="card">
       <h1>Ajouter une ressource</h1>
       <form @submit.prevent="submitResource">
-        <!-- Titre -->
         <div class="form-group">
           <label for="titre">Titre :</label>
           <input type="text" id="titre" v-model="resource.titre" required />
@@ -111,7 +110,6 @@ export default {
     };
   },
   methods: {
-    // Extraction de l'id du token
     decodeToken(token) {
       try {
         const base64Url = token.split(".")[1];
@@ -121,7 +119,6 @@ export default {
         return null;
       }
     },
-    // Renvoie l'id_utilisateur depuis le token (champ "id" dans le JWT)
     getUserIdFromToken() {
       const token = localStorage.getItem("token");
       if (token) {
