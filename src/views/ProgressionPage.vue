@@ -22,8 +22,13 @@
       <!-- Tableau de bord des progressions -->
       <div class="progress-dashboard">
         <h2>Progressions</h2>
-        <!-- Contenu du tableau de bord -->
-        <p>Ici sera affiché le pourcentage de progression des activités.</p>
+        <ul>
+          <li v-for="progression in progressions" :key="progression.id_progression">
+            <strong>{{ getResourceTitle(progression.id_ressource_) }}</strong>
+            <p>Pourcentage de complétion : {{ progression.pourcentage_completion }}%</p>
+          </li>
+        </ul>
+        <p v-if="progressions.length === 0">Aucune progression trouvée</p>
       </div>
     </div>
 
@@ -43,7 +48,6 @@
   </div>
 </template>
 
-
 <script>
 import axios from 'axios';
 
@@ -54,6 +58,7 @@ export default {
       favoris: [],
       resources: [],
       selectedResource: null,
+      progressions: [] // Ajouté pour stocker les progressions
     };
   },
   methods: {
@@ -77,6 +82,20 @@ export default {
         this.resources = response.data;
       } catch (error) {
         console.warn("Erreur lors de la récupération des ressources :", error.response ? error.response.data : error.message);
+      }
+    },
+    async fetchProgressions() {
+      const userId = this.getUserIdFromToken();
+      if (!userId) {
+        console.warn("Utilisateur non connecté.");
+        return;
+      }
+
+      try {
+        const response = await axios.get(`http://localhost:3000/api/progression/${userId}`, this.getAuthHeaders());
+        this.progressions = response.data;
+      } catch (error) {
+        console.warn("Erreur lors de la récupération des progressions :", error.response ? error.response.data : error.message);
       }
     },
     getResourceTitle(resourceId) {
@@ -130,6 +149,7 @@ export default {
   mounted() {
     this.fetchFavoris();
     this.fetchResources();
+    this.fetchProgressions(); // Appel de la méthode pour récupérer les progressions
   },
 };
 </script>

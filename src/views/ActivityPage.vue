@@ -4,7 +4,11 @@
     <ul>
       <li v-for="activity in activities" :key="activity.id_ressource_">
         {{ activity.titre }}
-        <button @click="startActivity(activity.id_ressource_)">Démarrer</button>
+        <div v-if="activity.id_ressource_ === currentActivityId">
+          <span>{{ elapsedTime }}s</span>
+          <button @click="stopActivity">Stop</button>
+        </div>
+        <button v-else @click="startActivity(activity.id_ressource_)">Démarrer</button>
       </li>
     </ul>
   </div>
@@ -17,13 +21,15 @@ export default {
   name: 'ActivityPage',
   data() {
     return {
-      activities: []
+      activities: [],
+      currentActivityId: null,
+      elapsedTime: 0,
+      timer: null
     };
   },
   methods: {
     async fetchActivities() {
       try {
-        // Assurez-vous que votre backend filtre les ressources par type
         const response = await axios.get('http://localhost:3000/api/resources?type=1', this.getAuthHeaders());
         this.activities = response.data;
       } catch (error) {
@@ -32,14 +38,32 @@ export default {
     },
     async startActivity(resourceId) {
       try {
-        await axios.post('http://localhost:3000/api/progress', {
+        await axios.post('http://localhost:3000/api/progression', {
           id_ressource_: resourceId,
           statut: 'en cours',
           pourcentage_completion: 0
         }, this.getAuthHeaders());
-        alert("Activité démarrée avec succès !");
+
+        this.currentActivityId = resourceId;
+        this.elapsedTime = 0;
+        this.timer = setInterval(() => {
+          this.elapsedTime++;
+        }, 1000);
       } catch (error) {
         console.warn("Erreur lors du démarrage de l'activité :", error.response ? error.response.data : error.message);
+      }
+    },
+    async stopActivity() {
+      clearInterval(this.timer);
+      try {
+        await axios.put(`http://localhost:3000/api/progression/${this.currentActivityId}`, {
+          pourcentage_completion: this.elapsedTime
+        }, this.getAuthHeaders());
+
+        alert("Activité arrêtée avec succès !");
+        this.currentActivityId = null;
+      } catch (error) {
+        console.warn("Erreur lors de l'arrêt de l'activité :", error.response ? error.response.data : error.message);
       }
     },
     getAuthHeaders() {
