@@ -58,28 +58,75 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+  font-size: 32px;
+  font-weight: bold;
+  color: #0258BD;
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
 ul {
   list-style-type: none;
   padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 li {
-  margin-bottom: 10px;
+  background-color: #dad8d8;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: calc(33.333% - 20px); 
+  box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+li h2 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 0;
+}
+
 button {
-  background-color: #007bff;
+  background-color: #B0A2BA;
   color: white;
   border: none;
-  padding: 10px;
+  padding: 10px 15px;
   cursor: pointer;
   border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  margin-left: auto; 
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #D4C4E0;
+}
+
+@media (max-width: 1024px) {
+  li {
+    width: calc(50% - 20px); 
+  }
+}
+
+@media (max-width: 768px) {
+  li {
+    width: 100%; 
+  }
 }
 </style>
+
