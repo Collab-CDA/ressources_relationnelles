@@ -13,8 +13,9 @@ const resourceRoutes = require('./routes/resourceRoutes');
 const relationRoutes = require('./routes/relationRoutes');
 const categoryResourceRoutes = require('./routes/categoryResourceRoutes');
 const typesResourceRoutes = require('./routes/typesResourceRoutes');
-const commentRoutes = require("./routes/commentRoutes");
+const commentRoutes = require('./routes/commentRoutes');
 const favorisRoutes = require('./routes/favorisRoutes');
+const progressionActiviteRoutes = require('./routes/progressionActiviteRoutes'); 
 
 const jwt = require('jsonwebtoken');
 
@@ -84,6 +85,7 @@ app.use('/api/categories', categoryResourceRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/favoris', favorisRoutes);
 app.use('/api/types_ressource', typesResourceRoutes);
+app.use('/api/progression', progressionActiviteRoutes); 
 
 // Middleware global pour gérer les erreurs serveur
 app.use((err, req, res, next) => {
