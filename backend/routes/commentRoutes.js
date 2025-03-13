@@ -1,17 +1,12 @@
-const express = require("express");
-const {
-    createComment,
-    getCommentsByResource,
-    updateComment,
-    deleteComment,
-} = require("../controllers/commentController");
-const authenticate = require("../middlewares/authMiddleware");
-
+const express = require('express');
 const router = express.Router();
+const commentController = require('../controllers/commentController');
+const authenticate = require('../middlewares/authMiddleware');
 
-router.post("/", authenticate, createComment);
-router.get("/:resourceId", getCommentsByResource);
-router.put("/:commentId", authenticate, updateComment);
-router.delete("/:commentId", authenticate, deleteComment);
+router.post('/', authenticate, commentController.addComment);
+router.get('/resource/:id_ressource_', commentController.getComments);
+router.get('/:id', commentController.getComment);
+router.put('/:id', authenticate, commentController.updateComment);
+router.delete('/:id', authenticate, commentController.removeComment);
 
 module.exports = router;

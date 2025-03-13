@@ -1,53 +1,59 @@
-const {
-    createComment,
-    getCommentsByResource,
-    updateComment,
-    deleteComment,
-} = require("../services/commentService");
+const commentService = require('../services/commentService');
 
-exports.createComment = async (req, res) => {
+const addComment = async (req, res) => {
     try {
-        const comment = await createComment({
-            statut_commentaire: req.body.statut_commentaire,
-            titre_commentaire: req.body.titre_commentaire,
-            contenu_commentaire: req.body.contenu_commentaire,
-            id_utilisateur: req.user.id,
-            id_ressource_: req.body.id_ressource_,
-        });
+        const { id_ressource_, titre, contenu, id_commentaire_parent } = req.body;
+        const id_utilisateur = req.user.id;
+        const comment = await commentService.createComment(id_utilisateur, id_ressource_, titre, contenu, id_commentaire_parent);
         res.status(201).json(comment);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-exports.getCommentsByResource = async (req, res) => {
+// Si vous souhaitez autoriser la modification du titre lors de la mise à jour, adaptez également updateComment :
+const updateComment = async (req, res) => {
     try {
-        const comments = await getCommentsByResource(req.params.resourceId);
+        const { id } = req.params;
+        const { titre, contenu } = req.body;
+        const id_utilisateur = req.user.id;
+        const updatedComment = await commentService.updateComment(id, id_utilisateur, titre, contenu);
+        res.status(200).json(updatedComment);
+    } catch (error) {
+        res.status(403).json({ message: error.message });
+    }
+};
+
+const getComments = async (req, res) => {
+    try {
+        const { id_ressource_ } = req.params;
+        const comments = await commentService.getCommentsByResource(id_ressource_);
         res.status(200).json(comments);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-exports.updateComment = async (req, res) => {
+const getComment = async (req, res) => {
     try {
-        const comment = await updateComment(
-            req.params.commentId,
-            req.user.id, 
-            req.body.contenu_commentaire
-        );
+        const { id } = req.params;
+        const comment = await commentService.getCommentById(id);
+        if (!comment) return res.status(404).json({ message: "Commentaire non trouvé" });
         res.status(200).json(comment);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const removeComment = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const id_utilisateur = req.user.id;
+        await commentService.deleteComment(id, id_utilisateur);
+        res.status(200).json({ message: 'Commentaire supprimé' });
     } catch (error) {
         res.status(403).json({ message: error.message });
     }
 };
 
-exports.deleteComment = async (req, res) => {
-    try {
-        const isAdmin = req.user.role === "Admin" || req.user.role === "Super Admin";
-        await deleteComment(req.params.commentId, req.user.id, isAdmin);
-        res.status(200).json({ message: "Commentaire supprimé." });
-    } catch (error) {
-        res.status(403).json({ message: error.message });
-    }
-};
+module.exports = { addComment, getComments, getComment, updateComment, removeComment };

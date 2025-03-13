@@ -1,53 +1,44 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../db/sequelize");
-const User = require("./User");
-const Resource = require("./Resource");
+// models/Comment.js
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = require('../db/sequelize');
+const User = require('./User'); // Assurez-vous que le modèle User existe
 
-const Comment = sequelize.define(
-    "Comment",
-    {
-        id_commentaire: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-        },
-        statut_commentaire: {
-            type: DataTypes.STRING(50),
-            allowNull: false,
-        },
-        titre_commentaire: {
-            type: DataTypes.STRING(50),
-            allowNull: false,
-        },
-        contenu_commentaire: {
-            type: DataTypes.STRING(50),
-            allowNull: false,
-        },
-        date_creation: {
-            type: DataTypes.DATEONLY,
-            allowNull: false,
-        },
-        id_utilisateur: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: User,
-                key: "id_utilisateur",
-            },
-        },
-        id_ressource_: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: Resource,
-                key: "id_ressource_",
-            },
-        },
+const Comment = sequelize.define('Comment', {
+    id_commentaire: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
     },
-    {
-        timestamps: false,
-        tableName: "commentaires",
+    id_utilisateur: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    id_ressource_: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    id_commentaire_parent: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    titre: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    contenu: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    date_creation: {
+        type: DataTypes.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
     }
-);
+}, {
+    timestamps: false,
+    tableName: 'commentaires'
+});
+
+// Définition de l'association : chaque commentaire appartient à un utilisateur
+Comment.belongsTo(User, { foreignKey: 'id_utilisateur', as: 'User' });
 
 module.exports = Comment;
