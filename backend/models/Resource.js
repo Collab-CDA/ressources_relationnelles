@@ -24,7 +24,7 @@ const Resource = sequelize.define('Resource', {
     field: 'id_typeRessource'
   },
   statut_: {
-    type: DataTypes.ENUM('disponible', 'suspendue'), // Modification ici pour correspondre à la BDD
+    type: DataTypes.ENUM('disponible', 'suspendue'),
     allowNull: false,
     defaultValue: 'disponible',
     field: 'statut_'
@@ -64,13 +64,13 @@ const Resource = sequelize.define('Resource', {
     allowNull: false,
     field: 'confidentialite'
   },
-  est_exploitee: {                                      // Modification ici pour correspondre à la BDD
+  est_exploitee: {                                      
     type: DataTypes.ENUM('exploitée', 'non exploitée'),
     allowNull: false,
     defaultValue: 'non exploitée',
     field: 'est_exploitee'
   },
-  est_mise_de_cote: {                                 // Modification ici pour correspondre à la BDD
+  est_mise_de_cote: {                                 
     type: DataTypes.ENUM('mise de côté', 'active'),
     allowNull: false,
     defaultValue: 'active',

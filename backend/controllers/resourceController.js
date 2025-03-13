@@ -27,7 +27,6 @@ exports.updateResource = async (req, res) => {
     }
 };
 
-// modifier que le statut
 exports.updateResourceStatus = async (req, res) => {
     try {
       const resource = await updateResourceStatus(req.params.id, req.body.statut_);

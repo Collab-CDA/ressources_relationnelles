@@ -1,6 +1,6 @@
 const { creerUtilisateur, authentifierUtilisateur, trouverUtilisateurParId, modifierUtilisateur, effacerUtilisateur, telechargerAvatar } = require('../services/userService');
 
-// Créer un utilisateur
+
 exports.creerUtilisateur = async (req, res) => {
     try {
         const utilisateur = await creerUtilisateur(req.body);
@@ -11,7 +11,7 @@ exports.creerUtilisateur = async (req, res) => {
     }
 };
 
-// Récupérer tous les utilisateurs
+
 const { trouverTousUtilisateurs } = require('../services/userService');
 
 exports.obtenirTousUtilisateurs = async (req, res) => {
@@ -24,7 +24,7 @@ exports.obtenirTousUtilisateurs = async (req, res) => {
     }
 };
 
-// Authentifier un utilisateur
+
 exports.authentifierUtilisateur = async (req, res) => {
     const { email, mot_de_passe } = req.body;
     try {
@@ -36,7 +36,6 @@ exports.authentifierUtilisateur = async (req, res) => {
     }
 };
 
-// Récupérer un utilisateur par ID
 exports.obtenirUtilisateurParId = async (req, res) => {
     const { id } = req.params;
     try {
@@ -51,7 +50,6 @@ exports.obtenirUtilisateurParId = async (req, res) => {
     }
 };
 
-// Mettre à jour un utilisateur par ID
 exports.mettreAJourUtilisateur = async (req, res) => {
     const { id } = req.params;
     try {
@@ -66,7 +64,6 @@ exports.mettreAJourUtilisateur = async (req, res) => {
     }
 };
 
-// Supprimer un utilisateur par ID
 exports.supprimerUtilisateur = async (req, res) => {
     const { id } = req.params;
     try {
@@ -81,7 +78,6 @@ exports.supprimerUtilisateur = async (req, res) => {
     }
 };
 
-// Télécharger l'avatar
 exports.telechargerAvatar = async (req, res) => {
     const { id } = req.params;
     try {

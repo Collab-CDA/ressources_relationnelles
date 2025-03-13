@@ -23,8 +23,6 @@ const updateComment = async (id_commentaire, id_utilisateur, titre, contenu) => 
     const comment = await Comment.findByPk(id_commentaire);
     if (!comment) throw new Error('Commentaire non trouvé');
     if (comment.id_utilisateur !== id_utilisateur) throw new Error('Non autorisé');
-
-    // Mise à jour des champs
     comment.titre = titre;
     comment.contenu = contenu;
     await comment.save();

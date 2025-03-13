@@ -1,7 +1,6 @@
-// models/Comment.js
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../db/sequelize');
-const User = require('./User'); // Assurez-vous que le modèle User existe
+const User = require('./User');
 
 const Comment = sequelize.define('Comment', {
     id_commentaire: {
@@ -38,7 +37,7 @@ const Comment = sequelize.define('Comment', {
     tableName: 'commentaires'
 });
 
-// Définition de l'association : chaque commentaire appartient à un utilisateur
+
 Comment.belongsTo(User, { foreignKey: 'id_utilisateur', as: 'User' });
 
 module.exports = Comment;

@@ -11,7 +11,6 @@ const addComment = async (req, res) => {
     }
 };
 
-// Si vous souhaitez autoriser la modification du titre lors de la mise à jour, adaptez également updateComment :
 const updateComment = async (req, res) => {
     try {
         const { id } = req.params;

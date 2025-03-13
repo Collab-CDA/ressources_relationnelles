@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt');
 const fs = require('fs');
 const path = require('path');
 
-// Créer un utilisateur
 exports.creerUtilisateur = async (data) => {
     const { email, mot_de_passe } = data;
     const utilisateurExistant = await Utilisateur.findOne({ where: { email } });
@@ -19,7 +18,6 @@ exports.creerUtilisateur = async (data) => {
     return nouvelUtilisateur;
 };
 
-// Authentifier un utilisateur
 exports.authentifierUtilisateur = async (email, mot_de_passe) => {
     const utilisateur = await Utilisateur.findOne({ where: { email } });
 
@@ -49,19 +47,16 @@ exports.authentifierUtilisateur = async (email, mot_de_passe) => {
     return { utilisateur, token };
 };
 
-// Trouver un utilisateur par ID
 exports.trouverUtilisateurParId = async (id) => {
     return await Utilisateur.findByPk(id);
 };
 
-// Récupérer tous les utilisateurs
 exports.trouverTousUtilisateurs = async () => {
     return await Utilisateur.findAll({
         attributes: ['id_utilisateur', 'nom', 'prenom', 'role_', 'statut']
     });
 };
 
-// Modifier un utilisateur
 exports.modifierUtilisateur = async (id, data) => {
     const utilisateur = await Utilisateur.findByPk(id);
     if (!utilisateur) {
@@ -71,7 +66,6 @@ exports.modifierUtilisateur = async (id, data) => {
     return utilisateur;
 };
 
-// Effacer un utilisateur
 exports.effacerUtilisateur = async (id) => {
     const utilisateur = await Utilisateur.findByPk(id);
     if (!utilisateur) {
@@ -81,7 +75,6 @@ exports.effacerUtilisateur = async (id) => {
     return utilisateur;
 };
 
-// Télécharger l'avatar
 exports.telechargerAvatar = async (id, file) => {
     const utilisateur = await Utilisateur.findByPk(id);
     if (!utilisateur) {

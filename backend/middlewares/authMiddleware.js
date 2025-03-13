@@ -8,7 +8,6 @@ const authenticate = (req, res, next) => {
     }
 
     let token;
-    // Vérifie si le header suit le format "Bearer <token>"
     if (authHeader.startsWith('Bearer ')) {
         token = authHeader.slice(7).trim();
     } else {
