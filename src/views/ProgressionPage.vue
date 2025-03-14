@@ -58,7 +58,7 @@ export default {
       favoris: [],
       resources: [],
       selectedResource: null,
-      progressions: [] // Ajouté pour stocker les progressions
+      progressions: []
     };
   },
   methods: {
@@ -149,10 +149,11 @@ export default {
   mounted() {
     this.fetchFavoris();
     this.fetchResources();
-    this.fetchProgressions(); // Appel de la méthode pour récupérer les progressions
+    this.fetchProgressions();
   },
 };
 </script>
+
 
 <style scoped>
 h1 {

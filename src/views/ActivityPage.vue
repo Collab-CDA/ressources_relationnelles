@@ -5,7 +5,8 @@
       <li v-for="activity in activities" :key="activity.id_ressource_">
         {{ activity.titre }}
         <div v-if="activity.id_ressource_ === currentActivityId">
-          <span>{{ elapsedTime }}s</span>
+          <span v-if="completionPercentage < 100">{{ completionPercentage }}%</span>
+          <span v-else>Complet</span>
           <button @click="stopActivity">Stop</button>
         </div>
         <button v-else @click="startActivity(activity.id_ressource_)">Démarrer</button>
@@ -23,8 +24,9 @@ export default {
     return {
       activities: [],
       currentActivityId: null,
-      elapsedTime: 0,
-      timer: null
+      completionPercentage: 0,
+      timer: null,
+      progressions: [] // Ajouté pour stocker les progressions
     };
   },
   methods: {
@@ -36,19 +38,53 @@ export default {
         console.warn("Erreur lors de la récupération des activités :", error.response ? error.response.data : error.message);
       }
     },
-    async startActivity(resourceId) {
+    async fetchProgressions() {
+      const userId = this.getUserIdFromToken();
+      if (!userId) {
+        console.warn("Utilisateur non connecté.");
+        return;
+      }
+
       try {
-        await axios.post('http://localhost:3000/api/progression', {
-          id_ressource_: resourceId,
-          statut: 'en cours',
-          pourcentage_completion: 0
-        }, this.getAuthHeaders());
+        const response = await axios.get(`http://localhost:3000/api/progression/${userId}`, this.getAuthHeaders());
+        this.progressions = response.data;
+      } catch (error) {
+        console.warn("Erreur lors de la récupération des progressions :", error.response ? error.response.data : error.message);
+      }
+    },
+    async startActivity(resourceId) {
+      const userId = this.getUserIdFromToken();
+      if (!userId) {
+        console.warn("Utilisateur non connecté.");
+        return;
+      }
+
+      try {
+        // Vérifiez si une progression existe déjà
+        const existingProgress = this.progressions.find(p => p.id_ressource_ === resourceId && p.statut === 'en cours');
+
+        if (existingProgress) {
+          // Si une progression existe, mettez à jour le pourcentage
+          this.completionPercentage = existingProgress.pourcentage_completion;
+        } else {
+          // Sinon, créez une nouvelle progression
+          await axios.post('http://localhost:3000/api/progression', {
+            id_ressource_: resourceId,
+            statut: 'en cours',
+            pourcentage_completion: 0
+          }, this.getAuthHeaders());
+
+          this.completionPercentage = 0;
+        }
 
         this.currentActivityId = resourceId;
-        this.elapsedTime = 0;
         this.timer = setInterval(() => {
-          this.elapsedTime++;
-        }, 1000);
+          if (this.completionPercentage < 100) {
+            this.completionPercentage += 1;
+          } else {
+            clearInterval(this.timer);
+          }
+        }, 4000);
       } catch (error) {
         console.warn("Erreur lors du démarrage de l'activité :", error.response ? error.response.data : error.message);
       }
@@ -57,7 +93,7 @@ export default {
       clearInterval(this.timer);
       try {
         await axios.put(`http://localhost:3000/api/progression/${this.currentActivityId}`, {
-          pourcentage_completion: this.elapsedTime
+          pourcentage_completion: this.completionPercentage
         }, this.getAuthHeaders());
 
         alert("Activité arrêtée avec succès !");
@@ -73,13 +109,30 @@ export default {
           Authorization: `Bearer ${token}`,
         },
       };
+    },
+    getUserIdFromToken() {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decodedToken = JSON.parse(atob(token.split(".")[1]));
+          return decodedToken.id;
+        } catch (error) {
+          console.error("Erreur lors du décodage du token :", error);
+          return null;
+        }
+      }
+      console.warn("Token non trouvé dans le localStorage.");
+      return null;
     }
   },
   mounted() {
     this.fetchActivities();
-  }
+    this.fetchProgressions(); 
+  },
 };
 </script>
+
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
