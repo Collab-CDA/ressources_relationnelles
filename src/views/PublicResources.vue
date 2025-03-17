@@ -62,27 +62,28 @@
 
         <!-- Section des commentaires -->
         <div class="comments-section">
-          <h2>Commentaires</h2>
-          <div class="comments-box">
-            <div v-for="comment in comments" :key="comment.id_commentaire" class="comment">
-              <h3>{{ comment.titre_commentaire }}</h3>
-              <p>{{ comment.contenu_commentaire }}</p>
-              <p><strong>Posté par:</strong> {{ comment.prenom_utilisateur || 'Utilisateur inconnu' }}</p>
-              <p><strong>Date:</strong> {{ comment.date_creation }}</p>
-              <button @click="replyToComment(comment)">Répondre</button>
-            </div>
+  <h2>Commentaires</h2>
+  <div class="comments-box">
+    <div v-for="comment in comments" :key="comment.id_commentaire" class="comment">
+      <h3>{{ comment.titre_commentaire }}</h3>
+      <p>{{ comment.contenu_commentaire }}</p>
+      <p><strong>Posté par:</strong> {{ comment.prenom_utilisateur || 'Utilisateur inconnu' }}</p>
+      <p><strong>Date:</strong> {{ comment.date_creation }}</p>
+      <button @click="replyToComment(comment)">Répondre</button>
+    </div>
+  </div>
 
+  <!-- Afficher le formulaire d'ajout de commentaire uniquement si l'utilisateur est connecté -->
+  <form v-if="isUserLoggedIn" @submit.prevent="addComment">
+    <input v-model="newComment.titre_commentaire" placeholder="Titre du commentaire" required />
+    <textarea v-model="newComment.contenu_commentaire" placeholder="Votre commentaire" required></textarea>
+    <button class="ajout-button" type="submit">Ajouter un commentaire</button>
+  </form>
+  <p v-else>Veuillez vous connecter pour ajouter un commentaire.</p>
 
-          </div>
+  <button class="contact-button" @click="contactParticipant">Contacter un participant</button>
+</div>
 
-          <form @submit.prevent="addComment">
-            <input v-model="newComment.titre_commentaire" placeholder="Titre du commentaire" required />
-            <textarea v-model="newComment.contenu_commentaire" placeholder="Votre commentaire" required></textarea>
-            <button class="ajout-button" type="submit">Ajouter un commentaire</button>
-          </form>
-
-          <button class="contact-button" @click="contactParticipant">Contacter un participant</button>
-        </div>
       </div>
     </div>
   </div>
@@ -120,7 +121,7 @@ export default {
       const typeRelationMatch = this.selectedTypeRelation ? resource.type_relation === parseInt(this.selectedTypeRelation) : true;
       const categoryResourceMatch = this.selectedCategoryResource ? resource.id_categorie === parseInt(this.selectedCategoryResource) : true;
       const typeResourceMatch = this.selectedTypeResource ? resource.type_ressource_ === this.selectedTypeResource : true;
-      const confidentialityMatch = resource.confidentialite === 'Publique'; // Ajout du filtre de confidentialité
+      const confidentialityMatch = resource.confidentialite === 'Publique'; 
       return typeRelationMatch && categoryResourceMatch && typeResourceMatch && confidentialityMatch;
     });
   }
@@ -129,7 +130,6 @@ export default {
     async fetchResources() {
   try {
     const response = await axios.get('http://localhost:3000/api/resources', this.getAuthHeaders());
-    // Filtre les ressources récupérer uniquement les publiques
     this.resources = response.data.filter(resource => resource.confidentialite === 'Publique');
   } catch (error) {
     console.warn('Erreur lors de la récupération des ressources :', error.response ? error.response.data : error.message);
@@ -153,10 +153,9 @@ export default {
     },
 async fetchComments() {
   if (this.selectedResource) {
-    // Vérification si les commentaires sont déjà dans localStorage
     const storedComments = localStorage.getItem(`comments_${this.selectedResource.id_ressource_}`);
     if (storedComments) {
-      this.comments = JSON.parse(storedComments);  // Charger depuis le localStorage
+      this.comments = JSON.parse(storedComments);  
       return;
     }
 
@@ -164,7 +163,6 @@ async fetchComments() {
       const response = await axios.get(`http://localhost:3000/api/comments/${this.selectedResource.id_ressource_}`, this.getAuthHeaders());
       if (response.data && Array.isArray(response.data)) {
         this.comments = response.data;
-        // Sauvegarder les commentaires dans localStorage
         localStorage.setItem(`comments_${this.selectedResource.id_ressource_}`, JSON.stringify(this.comments));
       } else {
         console.warn("Données de commentaires incorrectes ou incomplètes :", response.data);
@@ -174,19 +172,19 @@ async fetchComments() {
     }
   }
 },
-
-async addComment() {
-  const token = localStorage.getItem('token');
-  if (!token) {
+isUserLoggedIn() {
+    return !!localStorage.getItem('token');
+  },
+  async addComment() {
+  if (!this.isUserLoggedIn()) {
     alert('Veuillez vous connecter pour déposer un commentaire.');
     return;
   }
 
   if (this.selectedResource) {
     this.newComment.id_ressource_ = this.selectedResource.id_ressource_;
-    this.newComment.id_utilisateur = this.getUserIdFromToken(); // Ajoute l'ID utilisateur
+    this.newComment.id_utilisateur = this.getUserIdFromToken(); 
 
-    // Récupérer le prénom depuis le JWT stocké dans 'token'
     const decodedToken = JSON.parse(atob(token.split('.')[1])); // Décodage du payload JWT
     const userFirstName = decodedToken.prenom || 'Inconnu';
     this.newComment.prenom_utilisateur = userFirstName;
@@ -194,9 +192,7 @@ async addComment() {
     try {
       const response = await axios.post('http://localhost:3000/api/comments', this.newComment, this.getAuthHeaders());
       this.comments.push(response.data);
-      // Mettre à jour le localStorage avec les nouveaux commentaires
       localStorage.setItem(`comments_${this.selectedResource.id_ressource_}`, JSON.stringify(this.comments));
-      // Réinitialisation de newComment en incluant prenom_utilisateur
       this.newComment = {
         titre_commentaire: '',
         contenu_commentaire: '',
@@ -210,8 +206,8 @@ async addComment() {
     }
   }
 },
+
 replyToComment(comment) {
-  // Si l'objet User existe, on utilise son prenom, sinon on utilise directement le champ prenom_utilisateur
   const prenom = comment.User && comment.User.prenom ? comment.User.prenom : comment.prenom_utilisateur || 'Utilisateur inconnu';
   this.newComment.titre_commentaire = `Re: ${comment.titre_commentaire}`;
   this.newComment.contenu_commentaire = `@${prenom} `;

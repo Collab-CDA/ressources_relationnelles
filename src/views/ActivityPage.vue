@@ -60,14 +60,14 @@ export default {
       }
 
       try {
-        // Vérifiez si une progression existe déjà
+        // Vérifie si une progression existe déjà
         const existingProgress = this.progressions.find(p => p.id_ressource_ === resourceId && p.statut === 'en cours');
 
         if (existingProgress) {
           // Si une progression existe, mettez à jour le pourcentage
           this.completionPercentage = existingProgress.pourcentage_completion;
         } else {
-          // Sinon, créez une nouvelle progression
+          // Sinon, crée une nouvelle progression
           await axios.post('http://localhost:3000/api/progression', {
             id_ressource_: resourceId,
             statut: 'en cours',
@@ -84,7 +84,7 @@ export default {
           } else {
             clearInterval(this.timer);
           }
-        }, 4000);
+        }, 2000);
       } catch (error) {
         console.warn("Erreur lors du démarrage de l'activité :", error.response ? error.response.data : error.message);
       }
