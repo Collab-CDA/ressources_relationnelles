@@ -11,7 +11,10 @@
             <a href="#" @click.prevent="selectResource(favori.id_ressource_)">
               {{ getResourceTitle(favori.id_ressource_) }}
             </a>
-            <button class="delete-button" @click="deleteFavori(favori.id_favori)">
+            <button
+              class="delete-button"
+              @click="deleteFavori(favori.id_favori)"
+            >
               <i class="fas fa-trash-alt"></i>
             </button>
           </li>
@@ -23,9 +26,16 @@
       <div class="progress-dashboard">
         <h2>Progressions</h2>
         <ul>
-          <li v-for="progression in progressions" :key="progression.id_progression">
+          <li
+            v-for="progression in progressions"
+            :key="progression.id_progression"
+          >
             <strong>{{ getResourceTitle(progression.id_ressource_) }}</strong>
-            <p>Pourcentage de complétion : {{ progression.pourcentage_completion }}%</p>
+            <p v-if="progression.pourcentage_completion < 100">
+              Pourcentage de complétion :
+              {{ progression.pourcentage_completion }}% <span class="nonCompleted"> (non exploitée)</span>
+            </p>
+            <p v-else class="completed">exploitée</p>
           </li>
         </ul>
         <p v-if="progressions.length === 0">Aucune progression trouvée</p>
@@ -40,8 +50,14 @@
       <h2>{{ selectedResource.titre }}</h2>
       <p>{{ selectedResource.contenu }}</p>
 
-      <a v-if="selectedResource.lien_video && !isEmbedYouTubeLink(selectedResource.lien_video)"
-         :href="selectedResource.lien_video" target="_blank">
+      <a
+        v-if="
+          selectedResource.lien_video &&
+          !isEmbedYouTubeLink(selectedResource.lien_video)
+        "
+        :href="selectedResource.lien_video"
+        target="_blank"
+      >
         Lien vers la ressource
       </a>
     </div>
@@ -49,16 +65,16 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
-  name: 'ProgressionPage',
+  name: "ProgressionPage",
   data() {
     return {
       favoris: [],
       resources: [],
       selectedResource: null,
-      progressions: []
+      progressions: [],
     };
   },
   methods: {
@@ -70,18 +86,30 @@ export default {
       }
 
       try {
-        const response = await axios.get(`http://localhost:3000/api/favoris/${userId}`, this.getAuthHeaders());
+        const response = await axios.get(
+          `http://localhost:3000/api/favoris/${userId}`,
+          this.getAuthHeaders()
+        );
         this.favoris = response.data;
       } catch (error) {
-        console.warn("Erreur lors de la récupération des favoris :", error.response ? error.response.data : error.message);
+        console.warn(
+          "Erreur lors de la récupération des favoris :",
+          error.response ? error.response.data : error.message
+        );
       }
     },
     async fetchResources() {
       try {
-        const response = await axios.get('http://localhost:3000/api/resources', this.getAuthHeaders());
+        const response = await axios.get(
+          "http://localhost:3000/api/resources",
+          this.getAuthHeaders()
+        );
         this.resources = response.data;
       } catch (error) {
-        console.warn("Erreur lors de la récupération des ressources :", error.response ? error.response.data : error.message);
+        console.warn(
+          "Erreur lors de la récupération des ressources :",
+          error.response ? error.response.data : error.message
+        );
       }
     },
     async fetchProgressions() {
@@ -92,26 +120,42 @@ export default {
       }
 
       try {
-        const response = await axios.get(`http://localhost:3000/api/progression/${userId}`, this.getAuthHeaders());
+        const response = await axios.get(
+          `http://localhost:3000/api/progression/${userId}`,
+          this.getAuthHeaders()
+        );
         this.progressions = response.data;
       } catch (error) {
-        console.warn("Erreur lors de la récupération des progressions :", error.response ? error.response.data : error.message);
+        console.warn(
+          "Erreur lors de la récupération des progressions :",
+          error.response ? error.response.data : error.message
+        );
       }
     },
     getResourceTitle(resourceId) {
-      const resource = this.resources.find(r => r.id_ressource_ === resourceId);
-      return resource ? resource.titre : 'Titre inconnu';
+      const resource = this.resources.find(
+        (r) => r.id_ressource_ === resourceId
+      );
+      return resource ? resource.titre : "Titre inconnu";
     },
     selectResource(resourceId) {
-      this.selectedResource = this.resources.find(r => r.id_ressource_ === resourceId);
+      this.selectedResource = this.resources.find(
+        (r) => r.id_ressource_ === resourceId
+      );
     },
     async deleteFavori(favoriId) {
       try {
-        await axios.delete(`http://localhost:3000/api/favoris/delete/${favoriId}`, this.getAuthHeaders());
-        this.favoris = this.favoris.filter(f => f.id_favori !== favoriId);
+        await axios.delete(
+          `http://localhost:3000/api/favoris/delete/${favoriId}`,
+          this.getAuthHeaders()
+        );
+        this.favoris = this.favoris.filter((f) => f.id_favori !== favoriId);
         alert("Favori supprimé avec succès !");
       } catch (error) {
-        console.warn("Erreur lors de la suppression du favori :", error.response ? error.response.data : error.message);
+        console.warn(
+          "Erreur lors de la suppression du favori :",
+          error.response ? error.response.data : error.message
+        );
       }
     },
     getUserIdFromToken() {
@@ -154,7 +198,6 @@ export default {
 };
 </script>
 
-
 <style scoped>
 h1 {
   font-size: 32px;
@@ -171,7 +214,8 @@ h1 {
   margin: 0 40px;
 }
 
-.favorites-list, .progress-dashboard {
+.favorites-list,
+.progress-dashboard {
   background-color: #f0f0f0;
   padding: 20px;
   border-radius: 5px;
@@ -202,7 +246,7 @@ h1 {
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: red;
+  color: #D0021B;
 }
 
 .resource-details {
@@ -220,7 +264,7 @@ h1 {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #ff0000;
+  color: #333;
   position: absolute;
   top: 10px;
   right: 10px;
@@ -237,6 +281,15 @@ h1 {
   width: 100%;
 }
 
+.completed {
+  color: #7ED321;
+  font-weight: bold;
+}
+
+.nonCompleted {
+  color:#0258BD;
+}
+
 /* Media Query pour les tablettes */
 @media (max-width: 1024px) {
   .card-container {
@@ -245,7 +298,8 @@ h1 {
     margin: 0 20px;
   }
 
-  .favorites-list, .progress-dashboard {
+  .favorites-list,
+  .progress-dashboard {
     width: 100%;
   }
 }
@@ -260,7 +314,8 @@ h1 {
     margin: 0 10px;
   }
 
-  .favorites-list, .progress-dashboard {
+  .favorites-list,
+  .progress-dashboard {
     padding: 15px;
   }
 

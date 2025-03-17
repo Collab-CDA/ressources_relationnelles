@@ -1,15 +1,23 @@
 <template>
-  <div>
+  <div class="main-container">
     <h1>Démarrer une activité</h1>
     <ul>
       <li v-for="activity in activities" :key="activity.id_ressource_">
         {{ activity.titre }}
         <div v-if="activity.id_ressource_ === currentActivityId">
           <span v-if="completionPercentage < 100">{{ completionPercentage }}%</span>
-          <span v-else>Complet</span>
+          <span v-else>Exploitée</span>
           <button @click="stopActivity">Stop</button>
         </div>
-        <button v-else @click="startActivity(activity.id_ressource_)">Démarrer</button>
+        <div v-else>
+          <button
+            @click="startActivity(activity.id_ressource_)"
+            :disabled="isActivityCompleted(activity.id_ressource_)"
+          >
+            Démarrer
+          </button>
+          <span v-if="isActivityCompleted(activity.id_ressource_)" style="color: green; margin-left: 10px;">Exploitée</span>
+        </div>
       </li>
     </ul>
   </div>
@@ -26,18 +34,19 @@ export default {
       currentActivityId: null,
       completionPercentage: 0,
       timer: null,
-      progressions: [] // Ajouté pour stocker les progressions
+      progressions: []
     };
   },
   methods: {
     async fetchActivities() {
-      try {
-        const response = await axios.get('http://localhost:3000/api/resources?type=1', this.getAuthHeaders());
-        this.activities = response.data;
-      } catch (error) {
-        console.warn("Erreur lors de la récupération des activités :", error.response ? error.response.data : error.message);
-      }
-    },
+  try {
+    const response = await axios.get('http://localhost:3000/api/resources', this.getAuthHeaders());
+    this.activities = response.data;
+  } catch (error) {
+    console.warn("Erreur lors de la récupération des activités :", error.response ? error.response.data : error.message);
+  }
+}
+,
     async fetchProgressions() {
       const userId = this.getUserIdFromToken();
       if (!userId) {
@@ -102,6 +111,10 @@ export default {
         console.warn("Erreur lors de l'arrêt de l'activité :", error.response ? error.response.data : error.message);
       }
     },
+    isActivityCompleted(resourceId) {
+      const progress = this.progressions.find(p => p.id_ressource_ === resourceId);
+      return progress ? progress.pourcentage_completion === 100 : false;
+    },
     getAuthHeaders() {
       const token = localStorage.getItem("token");
       return {
@@ -127,18 +140,23 @@ export default {
   },
   mounted() {
     this.fetchActivities();
-    this.fetchProgressions(); 
+    this.fetchProgressions();
   },
 };
 </script>
-
-
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 body {
   font-family: 'Roboto', sans-serif;
+}
+
+.main-container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 h1 {
@@ -163,7 +181,7 @@ li {
   border-radius: 10px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   padding: 15px;
-  width: calc(33.333% - 20px); 
+  width: calc(33.333% - 20px);
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
@@ -187,23 +205,27 @@ button {
   font-size: 14px;
   font-weight: 500;
   transition: background-color 0.3s ease;
-  margin-left: auto; 
+  margin-left: auto;
 }
 
 button:hover {
   background-color: #D4C4E0;
 }
 
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 @media (max-width: 1024px) {
   li {
-    width: calc(50% - 20px); 
+    width: calc(50% - 20px);
   }
 }
 
 @media (max-width: 768px) {
   li {
-    width: 100%; 
+    width: 100%;
   }
 }
 </style>
-
