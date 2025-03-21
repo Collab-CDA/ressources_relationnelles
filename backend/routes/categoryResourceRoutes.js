@@ -5,12 +5,14 @@ const {
   updateCategoryResource,
   deleteCategoryResource
 } = require('../controllers/categoryResourceController');
+const authenticate = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
 router.get('/', getCategoryResources);
-router.post('/', createCategoryResource);
-router.put('/:id', updateCategoryResource);
-router.delete('/:id', deleteCategoryResource);
+
+router.post('/', authenticate, createCategoryResource);
+router.put('/:id', authenticate, updateCategoryResource);
+router.delete('/:id', authenticate, deleteCategoryResource);
 
 module.exports = router;
