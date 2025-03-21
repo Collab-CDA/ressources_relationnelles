@@ -6,7 +6,11 @@
       <label for="typeRelation">Type de relation :</label>
       <select v-model="selectedTypeRelation" id="typeRelation">
         <option value="">Tous</option>
-        <option v-for="type in typesRelation" :key="type.id_relation" :value="type.id_relation">
+        <option
+          v-for="type in typesRelation"
+          :key="type.id_relation"
+          :value="type.id_relation"
+        >
           {{ type.libelle_relation }}
         </option>
       </select>
@@ -14,7 +18,11 @@
       <label for="categoryResource">Catégorie de ressource :</label>
       <select v-model="selectedCategoryResource" id="categoryResource">
         <option value="">Tous</option>
-        <option v-for="category in categoriesResource" :key="category.id_categorie" :value="category.id_categorie">
+        <option
+          v-for="category in categoriesResource"
+          :key="category.id_categorie"
+          :value="category.id_categorie"
+        >
           {{ category.libelle_categorie }}
         </option>
       </select>
@@ -27,19 +35,20 @@
         </option>
       </select>
 
-      <button class="add-resource-button" @click="showUploadModal = !showUploadModal">Ajouter une ressource</button>
-    </div>
-
-    <div v-if="showUploadModal" class="upload-modal">
-      <input type="file" @change="handleFileUpload" accept=".pdf, .jpeg, .jpg, .png, video/*" />
-      <button @click="uploadResource">Télécharger</button>
+      <button class="add-resource-button" @click="redirectToAddResource">
+        Ajouter une ressource
+      </button>
     </div>
 
     <div class="main-container">
       <div class="resource-list">
         <h2>Liste des ressources</h2>
         <ul>
-          <li v-for="resource in filteredResources" :key="resource.id_ressource_" @click="selectResource(resource)">
+          <li
+            v-for="resource in filteredResources"
+            :key="resource.id_ressource_"
+            @click="selectResource(resource)"
+          >
             <a href="#" @click.prevent>{{ resource.titre }}</a>
           </li>
         </ul>
@@ -50,38 +59,95 @@
         <div v-if="selectedResource">
           <h2>{{ selectedResource.titre }}</h2>
           <p>{{ selectedResource.contenu }}</p>
-          <div v-if="isEmbedYouTubeLink(selectedResource.lien_video)" v-html="getEmbedVideo(selectedResource.lien_video)"></div>
+          <div
+            v-if="isEmbedYouTubeLink(selectedResource.lien_video)"
+            v-html="getEmbedVideo(selectedResource.lien_video)"
+          ></div>
           <div v-else-if="selectedResource.nom_image">
-            <img :src="getImageUrl(selectedResource.nom_image)" alt="Image de la ressource" />
+            <div
+              v-for="file in selectedResource.nom_image"
+              :key="file"
+              style="margin-bottom: 10px"
+            >
+              <div v-if="isImage(file)">
+                <img
+                  :src="getFileUrl(file)"
+                  alt="Image de la ressource"
+                  style="max-width: 300px"
+                />
+              </div>
+              <div v-else-if="isPDF(file)">
+                <a :href="getFileUrl(file)" target="_blank" download>
+                  Télécharger PDF : {{ file }}
+                </a>
+              </div>
+              <div v-else>
+                <a :href="getFileUrl(file)" target="_blank" download>
+                  Télécharger le fichier : {{ file }}
+                </a>
+              </div>
+            </div>
           </div>
-          <a v-if="selectedResource.lien_video && !isEmbedYouTubeLink(selectedResource.lien_video)" :href="selectedResource.lien_video" target="_blank">Lien vers la ressource</a>
+          <a
+            v-if="
+              selectedResource.lien_video &&
+              !isEmbedYouTubeLink(selectedResource.lien_video)
+            "
+            :href="selectedResource.lien_video"
+            target="_blank"
+          >
+            Lien vers la ressource
+          </a>
         </div>
         <div v-else>
-          <img src="@/assets/images/ressource_par_defaut.jpg" alt="Image par défaut" style="width: 100%; height: auto;" />
+          <img
+            src="@/assets/images/ressource_par_defaut.jpg"
+            alt="Image par défaut"
+            style="width: 100%; height: auto"
+          />
         </div>
 
         <!-- Section des commentaires -->
         <div class="comments-section">
           <h2>Commentaires</h2>
           <div class="comments-box">
-            <div v-for="comment in comments" :key="comment.id_commentaire" class="comment">
+            <div
+              v-for="comment in comments"
+              :key="comment.id_commentaire"
+              class="comment"
+            >
               <h3>{{ comment.titre_commentaire }}</h3>
               <p>{{ comment.contenu_commentaire }}</p>
-              <p><strong>Posté par:</strong> {{ comment.prenom_utilisateur || 'Utilisateur inconnu' }}</p>
+              <p>
+                <strong>Posté par:</strong>
+                {{ comment.prenom_utilisateur || "Utilisateur inconnu" }}
+              </p>
               <p><strong>Date:</strong> {{ comment.date_creation }}</p>
               <button @click="replyToComment(comment)">Répondre</button>
             </div>
-
-
           </div>
 
-          <form @submit.prevent="addComment">
-            <input v-model="newComment.titre_commentaire" placeholder="Titre du commentaire" required />
-            <textarea v-model="newComment.contenu_commentaire" placeholder="Votre commentaire" required></textarea>
-            <button class="ajout-button" type="submit">Ajouter un commentaire</button>
+          <!-- Afficher le formulaire d'ajout de commentaire uniquement si l'utilisateur est connecté -->
+          <form v-if="isUserLoggedIn" @submit.prevent="addComment">
+            <input
+              v-model="newComment.titre_commentaire"
+              placeholder="Titre du commentaire"
+              required
+            />
+            <textarea
+              v-model="newComment.contenu_commentaire"
+              placeholder="Votre commentaire"
+              required
+            ></textarea>
+            <button class="ajout-button" type="submit">
+              Ajouter un commentaire
+            </button>
           </form>
+          <p v-else>Veuillez vous connecter pour ajouter un commentaire.</p>
 
-          <button class="contact-button" @click="contactParticipant">Contacter un participant</button>
+          <button class="contact-button" @click="contactParticipant">
+            Contacter un participant
+          </button>
         </div>
       </div>
     </div>
@@ -89,10 +155,10 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
-  name: 'CompleteResources',
+  name: "CompleteResources",
   data() {
     return {
       showUploadModal: false,
@@ -100,174 +166,234 @@ export default {
       resources: [],
       typesRelation: [],
       categoriesResource: [],
-      typesResource: ['text', 'pdf', 'video', 'image'],
-      selectedTypeRelation: '',
-      selectedCategoryResource: '',
-      selectedTypeResource: '',
+      typesResource: ["text", "pdf", "video", "image"],
+      selectedTypeRelation: "",
+      selectedCategoryResource: "",
+      selectedTypeResource: "",
       selectedResource: null,
       comments: [],
       newComment: {
-        titre_commentaire: '',
-        contenu_commentaire: '',
+        titre_commentaire: "",
+        contenu_commentaire: "",
         id_ressource_: null,
-        statut_commentaire: 'Validé',
+        statut_commentaire: "Validé",
       },
     };
   },
   computed: {
-  filteredResources() {
-    return this.resources.filter(resource => {
-      const typeRelationMatch = this.selectedTypeRelation ? resource.type_relation === parseInt(this.selectedTypeRelation) : true;
-      const categoryResourceMatch = this.selectedCategoryResource ? resource.id_categorie === parseInt(this.selectedCategoryResource) : true;
-      const typeResourceMatch = this.selectedTypeResource ? resource.type_ressource_ === this.selectedTypeResource : true;
-      const confidentialityMatch = resource.confidentialite === 'Publique'; // Ajout du filtre de confidentialité
-      return typeRelationMatch && categoryResourceMatch && typeResourceMatch && confidentialityMatch;
-    });
-  }
-},
+    filteredResources() {
+      return this.resources.filter((resource) => {
+        const typeRelationMatch = this.selectedTypeRelation
+          ? resource.type_relation === parseInt(this.selectedTypeRelation)
+          : true;
+        const categoryResourceMatch = this.selectedCategoryResource
+          ? resource.id_categorie === parseInt(this.selectedCategoryResource)
+          : true;
+        const typeResourceMatch = this.selectedTypeResource
+          ? resource.type_ressource_ === this.selectedTypeResource
+          : true;
+        const confidentialityMatch = resource.confidentialite === "Publique";
+        return (
+          typeRelationMatch &&
+          categoryResourceMatch &&
+          typeResourceMatch &&
+          confidentialityMatch
+        );
+      });
+    },
+  },
   methods: {
     async fetchResources() {
-  try {
-    const response = await axios.get('http://localhost:3000/api/resources', this.getAuthHeaders());
-    // Filtre les ressources récupérer uniquement les publiques
-    this.resources = response.data.filter(resource => resource.confidentialite === 'Publique');
-  } catch (error) {
-    console.warn('Erreur lors de la récupération des ressources :', error.response ? error.response.data : error.message);
-  }
-},
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/resources",
+          this.getAuthHeaders()
+        );
+        this.resources = response.data.filter(
+          (resource) => resource.confidentialite === "Publique"
+        );
+      } catch (error) {
+        console.warn(
+          "Erreur lors de la récupération des ressources :",
+          error.response ? error.response.data : error.message
+        );
+      }
+    },
     async fetchTypesRelation() {
       try {
-        const response = await axios.get('http://localhost:3000/api/relations', this.getAuthHeaders());
+        const response = await axios.get(
+          "http://localhost:3000/api/relations",
+          this.getAuthHeaders()
+        );
         this.typesRelation = response.data;
       } catch (error) {
-        console.warn('Erreur lors de la récupération des types de relation :', error.response ? error.response.data : error.message);
+        console.warn(
+          "Erreur lors de la récupération des types de relation :",
+          error.response ? error.response.data : error.message
+        );
       }
     },
     async fetchCategoriesResource() {
       try {
-        const response = await axios.get('http://localhost:3000/api/categories', this.getAuthHeaders());
+        const response = await axios.get(
+          "http://localhost:3000/api/categories",
+          this.getAuthHeaders()
+        );
         this.categoriesResource = response.data;
       } catch (error) {
-        console.warn('Erreur lors de la récupération des catégories de ressources :', error.response ? error.response.data : error.message);
+        console.warn(
+          "Erreur lors de la récupération des catégories de ressources :",
+          error.response ? error.response.data : error.message
+        );
       }
     },
-async fetchComments() {
-  if (this.selectedResource) {
-    // Vérification si les commentaires sont déjà dans localStorage
-    const storedComments = localStorage.getItem(`comments_${this.selectedResource.id_ressource_}`);
-    if (storedComments) {
-      this.comments = JSON.parse(storedComments);  // Charger depuis le localStorage
-      return;
-    }
+    async fetchComments() {
+      if (this.selectedResource) {
+        const storedComments = localStorage.getItem(
+          `comments_${this.selectedResource.id_ressource_}`
+        );
+        if (storedComments) {
+          this.comments = JSON.parse(storedComments);
+          return;
+        }
 
-    try {
-      const response = await axios.get(`http://localhost:3000/api/comments/${this.selectedResource.id_ressource_}`, this.getAuthHeaders());
-      if (response.data && Array.isArray(response.data)) {
-        this.comments = response.data;
-        // Sauvegarder les commentaires dans localStorage
-        localStorage.setItem(`comments_${this.selectedResource.id_ressource_}`, JSON.stringify(this.comments));
-      } else {
-        console.warn("Données de commentaires incorrectes ou incomplètes :", response.data);
+        try {
+          const response = await axios.get(
+            `http://localhost:3000/api/comments/${this.selectedResource.id_ressource_}`,
+            this.getAuthHeaders()
+          );
+          if (response.data && Array.isArray(response.data)) {
+            this.comments = response.data;
+            localStorage.setItem(
+              `comments_${this.selectedResource.id_ressource_}`,
+              JSON.stringify(this.comments)
+            );
+          } else {
+            console.warn(
+              "Données de commentaires incorrectes ou incomplètes :",
+              response.data
+            );
+          }
+        } catch (error) {
+          console.warn(
+            "Erreur lors de la récupération des commentaires :",
+            error.response ? error.response.data : error.message
+          );
+        }
       }
-    } catch (error) {
-      console.warn('Erreur lors de la récupération des commentaires :', error.response ? error.response.data : error.message);
-    }
-  }
-},
-
-async addComment() {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('Veuillez vous connecter pour déposer un commentaire.');
-    return;
-  }
-
-  if (this.selectedResource) {
-    this.newComment.id_ressource_ = this.selectedResource.id_ressource_;
-    this.newComment.id_utilisateur = this.getUserIdFromToken(); // Ajoute l'ID utilisateur
-
-    // Récupérer le prénom depuis le JWT stocké dans 'token'
-    const decodedToken = JSON.parse(atob(token.split('.')[1])); // Décodage du payload JWT
-    const userFirstName = decodedToken.prenom || 'Inconnu';
-    this.newComment.prenom_utilisateur = userFirstName;
-
-    try {
-      const response = await axios.post('http://localhost:3000/api/comments', this.newComment, this.getAuthHeaders());
-      this.comments.push(response.data);
-      // Mettre à jour le localStorage avec les nouveaux commentaires
-      localStorage.setItem(`comments_${this.selectedResource.id_ressource_}`, JSON.stringify(this.comments));
-      // Réinitialisation de newComment en incluant prenom_utilisateur
-      this.newComment = {
-        titre_commentaire: '',
-        contenu_commentaire: '',
-        id_ressource_: null,
-        statut_commentaire: 'Validé',
-        id_utilisateur: null,
-        prenom_utilisateur: ''
-      };
-    } catch (error) {
-      console.warn('Erreur lors de l\'ajout du commentaire :', error.response ? error.response.data : error.message);
-    }
-  }
-},
-replyToComment(comment) {
-  // Si l'objet User existe, on utilise son prenom, sinon on utilise directement le champ prenom_utilisateur
-  const prenom = comment.User && comment.User.prenom ? comment.User.prenom : comment.prenom_utilisateur || 'Utilisateur inconnu';
-  this.newComment.titre_commentaire = `Re: ${comment.titre_commentaire}`;
-  this.newComment.contenu_commentaire = `@${prenom} `;
-}
-,
-    handleFileUpload(event) {
-      this.selectedFile = event.target.files[0];
     },
-    uploadResource() {
-      if (this.selectedFile) {
-        console.log('Fichier sélectionné:', this.selectedFile);
-        // Ajoutez ici la logique pour télécharger le fichier
+    isUserLoggedIn() {
+      return !!localStorage.getItem("token");
+    },
+    async addComment() {
+      if (!this.isUserLoggedIn()) {
+        alert("Veuillez vous connecter pour déposer un commentaire.");
+        this.$router.push('/login'); 
+        return;
+      }
+
+      if (this.selectedResource) {
+        this.newComment.id_ressource_ = this.selectedResource.id_ressource_;
+        this.newComment.id_utilisateur = this.getUserIdFromToken();
+
+        const decodedToken = JSON.parse(atob(token.split(".")[1])); // Décodage du payload JWT
+        const userFirstName = decodedToken.prenom || "Inconnu";
+        this.newComment.prenom_utilisateur = userFirstName;
+
+        try {
+          const response = await axios.post(
+            "http://localhost:3000/api/comments",
+            this.newComment,
+            this.getAuthHeaders()
+          );
+          this.comments.push(response.data);
+          localStorage.setItem(
+            `comments_${this.selectedResource.id_ressource_}`,
+            JSON.stringify(this.comments)
+          );
+          this.newComment = {
+            titre_commentaire: "",
+            contenu_commentaire: "",
+            id_ressource_: null,
+            statut_commentaire: "Validé",
+            id_utilisateur: null,
+            prenom_utilisateur: "",
+          };
+        } catch (error) {
+          console.warn(
+            "Erreur lors de l'ajout du commentaire :",
+            error.response ? error.response.data : error.message
+          );
+        }
+      }
+    },
+    replyToComment(comment) {
+      const prenom =
+        comment.User && comment.User.prenom
+          ? comment.User.prenom
+          : comment.prenom_utilisateur || "Utilisateur inconnu";
+      this.newComment.titre_commentaire = `Re: ${comment.titre_commentaire}`;
+      this.newComment.contenu_commentaire = `@${prenom} `;
+    },
+    redirectToAddResource() {
+      if (!this.isUserLoggedIn()) {
+        alert("Vous devez être connecté pour ajouter une ressource");
+        this.$router.push("/login");
       } else {
-        alert('Veuillez sélectionner un fichier.');
+        this.$router.push("/add-resources");
       }
     },
     contactParticipant() {
-      this.$router.push('/messagerie');
-    },
-    getEmbedVideo(url) {
-      return `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
-    },
-    getImageUrl(imageName) {
-      return require(`@/assets/images/${imageName}`);
+      this.$router.push("/messagerie");
     },
     selectResource(resource) {
       this.selectedResource = resource;
       this.fetchComments();
     },
+    getEmbedVideo(url) {
+      return `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+    },
     isEmbedYouTubeLink(url) {
-      return url && url.includes('youtube.com/embed/');
+      return /youtube\.com|youtu\.be/.test(url);
+    },
+    isImage(file) {
+      if (file.startsWith("data:")) return true;
+      return /\.(jpg|jpeg|png|gif)$/i.test(file);
+    },
+    isPDF(file) {
+      if (file.startsWith("data:")) return false;
+      return /\.pdf$/i.test(file);
+    },
+    getFileUrl(file) {
+      if (file.startsWith("data:")) {
+        return file;
+      }
+      return `${window.location.origin}/uploads/${file}`;
     },
     getAuthHeaders() {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        console.error('Token non trouvé dans le localStorage.');
+        console.error("Token non trouvé dans le localStorage.");
         return {};
       }
       return {
         headers: {
-          Authorization: `${token}`
-        }
+          Authorization: `${token}`,
+        },
       };
     },
     getUserIdFromToken() {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (token) {
-        const base64Url = token.split('.')[1]; // Récupère la partie payload du JWT
-        const base64 = base64Url.replace('-', '+').replace('_', '/');
+        const base64Url = token.split(".")[1]; // Récupère la partie payload du JWT
+        const base64 = base64Url.replace("-", "+").replace("_", "/");
         const decodedData = JSON.parse(window.atob(base64));
         return decodedData.id_utilisateur; // Retourne l'ID utilisateur décodé
       }
       return null;
-    }
+    },
   },
-mounted() {
+  mounted() {
     this.fetchResources();
     this.fetchTypesRelation();
     this.fetchCategoriesResource();
@@ -276,9 +402,8 @@ mounted() {
       this.fetchComments();
     }
   },
-  };
+};
 </script>
-
 
 <style scoped>
 h1 {
@@ -397,7 +522,8 @@ form {
   flex-direction: column;
 }
 
-form input, form textarea {
+form input,
+form textarea {
   margin-bottom: 1rem;
   padding: 0.5rem;
   border: 1px solid #ccc;
@@ -441,12 +567,14 @@ form button:hover {
 
   .filter-bar {
     margin: 0 2rem;
-    width: calc(100% - 4rem); 
+    width: calc(100% - 4rem);
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .filter-bar label, .filter-bar select, .add-resource-button {
+  .filter-bar label,
+  .filter-bar select,
+  .add-resource-button {
     margin-bottom: 1rem;
     width: 100%;
   }
@@ -455,7 +583,8 @@ form button:hover {
     flex-direction: column;
   }
 
-  .resource-list, .content-container {
+  .resource-list,
+  .content-container {
     padding: 1rem;
   }
 }
@@ -463,8 +592,8 @@ form button:hover {
 /* Responsive tablettes */
 @media (min-width: 769px) and (max-width: 1024px) {
   .main-container {
-    margin: 2rem 2rem; 
-    width: calc(100% - 4rem); 
+    margin: 2rem 2rem;
+    width: calc(100% - 4rem);
   }
 
   .filter-bar {
@@ -474,7 +603,8 @@ form button:hover {
     flex-wrap: wrap;
   }
 
-  .filter-bar label, .filter-bar select {
+  .filter-bar label,
+  .filter-bar select {
     margin-bottom: 1rem;
     width: calc(50% - 20px);
   }
@@ -487,7 +617,8 @@ form button:hover {
     flex-direction: column;
   }
 
-  .resource-list, .content-container {
+  .resource-list,
+  .content-container {
     padding: 1.5rem;
   }
 }

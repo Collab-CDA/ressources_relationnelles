@@ -11,6 +11,13 @@ exports.startActivityProgress = async (userId, resourceId, status, completionPer
   });
 };
 
+exports.stopActivityProgress = async (userId, resourceId, completionPercentage) => {
+  return await ProgressionActivites.update(
+    { pourcentage_completion: completionPercentage, date_fin: new Date() },
+    { where: { id_utilisateur: userId, id_ressource_: resourceId, statut: 'en cours' } }
+  );
+};
+
 exports.getUserProgress = async (userId) => {
   return await ProgressionActivites.findAll({ where: { id_utilisateur: userId } });
 };

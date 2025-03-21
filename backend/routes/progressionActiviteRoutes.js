@@ -3,8 +3,13 @@ const router = express.Router();
 const progressionActiviteController = require('../controllers/progressionActiviteController');
 const authenticate = require('../middlewares/authMiddleware');
 
-router.post('/progress', authenticate, progressionActiviteController.startActivity);
+// Démarrer une activité
+router.post('/', authenticate, progressionActiviteController.startActivity);
 
-router.get('/progress', authenticate, progressionActiviteController.getUserProgress);
+// Récupérer la progression de l'utilisateur
+router.get('/:userId', authenticate, progressionActiviteController.getUserProgress);
+
+// Arrêter une activité
+router.put('/:id_ressource_', authenticate, progressionActiviteController.stopActivity);
 
 module.exports = router;
