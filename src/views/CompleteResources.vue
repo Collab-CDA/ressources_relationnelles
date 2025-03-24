@@ -61,7 +61,10 @@
       <div class="content-container">
         <div v-if="selectedResource">
           <h2>{{ selectedResource.titre }}</h2>
-          <button class="favorite-button" @click="toggleFavorite(selectedResource)">
+          <button
+            class="favorite-button"
+            @click="toggleFavorite(selectedResource)"
+          >
             <i class="fas fa-heart"></i>
           </button>
           <p>{{ selectedResource.contenu }}</p>
@@ -70,9 +73,17 @@
             v-html="getEmbedVideo(selectedResource.lien_video)"
           ></div>
           <div v-else-if="selectedResource.nom_image">
-            <div v-for="file in selectedResource.nom_image" :key="file" style="margin-bottom:10px;">
+            <div
+              v-for="file in selectedResource.nom_image"
+              :key="file"
+              style="margin-bottom: 10px"
+            >
               <div v-if="isImage(file)">
-                <img :src="getFileUrl(file)" alt="Image de la ressource" style="max-width:300px;" />
+                <img
+                  :src="getFileUrl(file)"
+                  alt="Image de la ressource"
+                  style="max-width: 300px"
+                />
               </div>
               <div v-else-if="isPDF(file)">
                 <a :href="getFileUrl(file)" target="_blank" download>
@@ -87,7 +98,10 @@
             </div>
           </div>
           <a
-            v-if="selectedResource.lien_video && !isEmbedYouTubeLink(selectedResource.lien_video)"
+            v-if="
+              selectedResource.lien_video &&
+              !isEmbedYouTubeLink(selectedResource.lien_video)
+            "
             :href="selectedResource.lien_video"
             target="_blank"
           >
@@ -114,13 +128,32 @@
               <p>{{ comment.contenu }}</p>
               <p>
                 <strong>Posté par :</strong>
-                {{ comment.User ? comment.User.prenom + ' ' + comment.User.nom : "Utilisateur inconnu" }}
+                <span
+                  @click="openUserModal(comment.User)"
+                  style="cursor: pointer; text-decoration: underline"
+                >
+                  {{
+                    comment.User
+                      ? comment.User.prenom + " " + comment.User.nom
+                      : "Utilisateur inconnu"
+                  }}
+                </span>
               </p>
               <p>
                 <strong>Date :</strong>
                 {{ formatDate(comment.date_creation) }}
               </p>
               <button @click="replyToComment(comment)">Répondre</button>
+            </div>
+          </div>
+
+          <!-- Modal de demande d'ami -->
+          <div v-if="showModal" class="modal">
+            <div class="modal-content">
+              <span class="close" @click="closeModal">&times;</span>
+              <p>{{ modalUserName }}</p>
+              <button @click="addFriend">Ajouter en ami</button>
+              <button @click="sendMessage">Envoyer un message</button>
             </div>
           </div>
 
@@ -156,6 +189,9 @@ export default {
   name: "CompleteResources",
   data() {
     return {
+      showModal: false,
+      selectedUser: null,
+      modalUserName: "",
       selectedTypeRelation: "",
       selectedCategoryResource: "",
       selectedTypeResource: "",
@@ -170,8 +206,8 @@ export default {
         contenu: "",
         id_ressource_: null,
         id_commentaire_parent: null,
-        id_utilisateur: null
-      }
+        id_utilisateur: null,
+      },
     };
   },
   computed: {
@@ -188,7 +224,7 @@ export default {
           : true;
         return typeRelationMatch && categoryResourceMatch && typeResourceMatch;
       });
-    }
+    },
   },
   methods: {
     formatDate(dateStr) {
@@ -262,7 +298,10 @@ export default {
           if (response.data && Array.isArray(response.data)) {
             this.comments = response.data;
           } else {
-            console.warn("Données de commentaires incorrectes ou incomplètes :", response.data);
+            console.warn(
+              "Données de commentaires incorrectes ou incomplètes :",
+              response.data
+            );
           }
         } catch (error) {
           console.warn(
@@ -290,7 +329,7 @@ export default {
             contenu: "",
             id_ressource_: null,
             id_commentaire_parent: null,
-            id_utilisateur: null
+            id_utilisateur: null,
           };
         } catch (error) {
           console.warn(
@@ -301,7 +340,8 @@ export default {
       }
     },
     replyToComment(comment) {
-      const prenom = (comment.User && comment.User.prenom) || "Utilisateur inconnu";
+      const prenom =
+        (comment.User && comment.User.prenom) || "Utilisateur inconnu";
       this.newComment.titre = `Re: ${comment.titre}`;
       this.newComment.contenu = `@${prenom} `;
       this.newComment.id_commentaire_parent = comment.id_commentaire;
@@ -337,7 +377,7 @@ export default {
       if (token) {
         try {
           const decodedToken = JSON.parse(atob(token.split(".")[1]));
-          return decodedToken.id; 
+          return decodedToken.id;
         } catch (error) {
           console.error("Erreur lors du décodage du token :", error);
           return null;
@@ -350,14 +390,16 @@ export default {
       const token = localStorage.getItem("token");
       return {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       };
     },
     async toggleFavorite(resource) {
       const userId = this.getUserIdFromToken();
       if (!userId) {
-        alert("Vous devez être connecté pour ajouter une ressource aux favoris.");
+        alert(
+          "Vous devez être connecté pour ajouter une ressource aux favoris."
+        );
         return;
       }
       try {
@@ -377,18 +419,75 @@ export default {
     selectResource(resource) {
       this.selectedResource = resource;
       this.fetchComments();
+    },
+    openUserModal(user) {
+    if (!user) {
+      alert("Utilisateur inconnu");
+      return;
     }
+    this.selectedUser = user;
+    this.modalUserName = `${user.prenom} ${user.nom}`;
+    this.showModal = true;
+  },
+
+  closeModal() {
+    this.showModal = false;
+    this.selectedUser = null;
+    this.modalUserName = '';
+  },
+
+  async addFriend() {
+    try {
+      const invitationData = {
+        id_utilisateur_inviteur: this.getUserIdFromToken(),
+        id_utilisateur_invite: this.selectedUser.id,
+        id_ressource_: this.selectedResource.id_ressource_,
+        statut_invitation: 'envoyée'
+      };
+      await axios.post("http://localhost:3000/api/invitations/create", invitationData, this.getAuthHeaders());
+      alert("Invitation envoyée avec succès !");
+      this.closeModal();
+    } catch (error) {
+      console.warn("Erreur lors de l'envoi de l'invitation :", error.response ? error.response.data : error.message);
+    }
+  },
+
+  sendMessage() {
+    const userId = this.getUserIdFromToken();
+    if (!this.isFriend(this.selectedUser.id)) {
+      alert("Vous devez être ami pour échanger des messages.");
+      return;
+    }
+    this.openChatWithUser(this.selectedUser.id);
+    this.closeModal();
+  },
+
+  async isFriend(userId) {
+    try {
+      const currentUserId = this.getUserIdFromToken();
+      const response = await axios.post(
+        "http://localhost:3000/api/friendships/check",
+        { userId1: currentUserId, userId2: userId },
+        this.getAuthHeaders()
+      );
+      return response.data.isFriend;
+    } catch (error) {
+      console.warn("Erreur lors de la vérification de l'amitié :", error.response ? error.response.data : error.message);
+      return false;
+    }
+  },
+  openChatWithUser(userId) {
+    this.$router.push(`/messagerie/${userId}`);
+  },
   },
   mounted() {
     this.fetchResources();
     this.fetchTypesRelation();
     this.fetchCategoriesResource();
     this.fetchTypesResource();
-  }
+  },
 };
 </script>
-
-
 
 <style scoped>
 h1 {
@@ -561,6 +660,44 @@ form button:hover {
   background-color: #d4c4e0;
 }
 
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 300px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 /* Responsive mobiles */
 @media (max-width: 768px) {
   .main-container {
@@ -570,12 +707,14 @@ form button:hover {
 
   .filter-bar {
     margin: 0 2rem;
-    width: calc(100% - 4rem); 
+    width: calc(100% - 4rem);
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .filter-bar label, .filter-bar select, .add-resource-button {
+  .filter-bar label,
+  .filter-bar select,
+  .add-resource-button {
     margin-bottom: 1rem;
     width: 100%;
   }
@@ -584,7 +723,8 @@ form button:hover {
     flex-direction: column;
   }
 
-  .resource-list, .content-container {
+  .resource-list,
+  .content-container {
     padding: 1rem;
   }
 }
@@ -592,8 +732,8 @@ form button:hover {
 /* Responsive tablettes */
 @media (min-width: 769px) and (max-width: 1024px) {
   .main-container {
-    margin: 2rem 2rem; 
-    width: calc(100% - 4rem); 
+    margin: 2rem 2rem;
+    width: calc(100% - 4rem);
   }
 
   .filter-bar {
@@ -603,7 +743,8 @@ form button:hover {
     flex-wrap: wrap;
   }
 
-  .filter-bar label, .filter-bar select {
+  .filter-bar label,
+  .filter-bar select {
     margin-bottom: 1rem;
     width: calc(50% - 20px);
   }
@@ -616,9 +757,9 @@ form button:hover {
     flex-direction: column;
   }
 
-  .resource-list, .content-container {
+  .resource-list,
+  .content-container {
     padding: 1.5rem;
   }
 }
-
 </style>
