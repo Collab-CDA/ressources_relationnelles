@@ -4,7 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
-const multer = require('multer'); 
+const multer = require('multer');
 
 const sequelize = require('./db/sequelize');
 const commentRoutes = require('./routes/commentRoutes');
@@ -14,7 +14,9 @@ const relationRoutes = require('./routes/relationRoutes');
 const categoryResourceRoutes = require('./routes/categoryResourceRoutes');
 const typesResourceRoutes = require('./routes/typesResourceRoutes');
 const favorisRoutes = require('./routes/favorisRoutes');
-const progressionActiviteRoutes = require('./routes/progressionActiviteRoutes'); 
+const progressionActiviteRoutes = require('./routes/progressionActiviteRoutes');
+const invitationRoutes = require('./routes/invitationsRoutes');
+const friendshipRoutes = require('./routes/friendshipRoutes');
 
 const jwt = require('jsonwebtoken');
 
@@ -23,7 +25,7 @@ const PORT = process.env.PORT || 3000;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); 
+    cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname);
@@ -76,7 +78,9 @@ app.use('/api/categories', categoryResourceRoutes);
 app.use('/api/favoris', favorisRoutes);
 app.use('/api/types_ressource', typesResourceRoutes);
 app.use('/api/comments', commentRoutes);
-app.use('/api/progression', progressionActiviteRoutes); 
+app.use('/api/progression', progressionActiviteRoutes);
+app.use('/api/invitations', invitationRoutes); 
+app.use('/api/friendships', friendshipRoutes);
 
 app.use((err, req, res, next) => {
   console.error('Erreur interne du serveur :', err.message);
