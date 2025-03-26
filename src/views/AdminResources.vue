@@ -2,37 +2,36 @@
   <div>
     <h1 class="title-container">
       Gestion des ressources
-      <button class="add-user-button" @click="openModal">
-        Ajouter une ressource
-      </button>
+      <button class="add-user-button" @click="openModal">Ajouter une ressource</button>
     </h1>
-   
+
     <div class="filter-bar">
-  <label for="typeRelation">Type de relation :</label>
-  <select v-model="selectedTypeRelation" id="typeRelation">
-    <option value="">Tous</option>
-    <option v-for="type in typesRelation" :key="type.id_relation" :value="type.id_relation">
-      {{ type.libelle_relation }}
-    </option>
-  </select>
+      <label for="typeRelation">Type de relation :</label>
+      <select v-model="selectedTypeRelation" id="typeRelation">
+        <option value="">Tous</option>
+        <option v-for="type in typesRelation" :key="type.id_relation" :value="type.id_relation">
+          {{ type.libelle_relation }}
+        </option>
+      </select>
 
-  <label for="categoryResource">Catégorie :</label>
-  <select v-model="selectedCategoryResource" id="categoryResource">
-    <option value="">Toutes</option>
-    <option v-for="category in categoriesResource" :key="category.id_categorie" :value="category.id_categorie">
-      {{ category.libelle_categorie }}
-    </option>
-  </select>
+      <label for="categoryResource">Catégorie :</label>
+      <select v-model="selectedCategoryResource" id="categoryResource">
+        <option value="">Toutes</option>
+        <option v-for="category in categoriesResource" :key="category.id_categorie" :value="category.id_categorie">
+          {{ category.libelle_categorie }}
+        </option>
+      </select>
 
-  <label for="typeResource">Type de ressource :</label>
-  <select v-model="selectedTypeResource" id="typeResource">
-    <option value="">Tous</option>
-    <option v-for="type in typesResource" :key="type.id_typesRessource" :value="type.id_typesRessource">
-      {{ type.libelle_typesRessource }}
-    </option>
-  </select>
-</div>
+      <label for="typeResource">Type de ressource :</label>
+      <select v-model="selectedTypeResource" id="typeResource">
+        <option value="">Tous</option>
+        <option v-for="type in typesResource" :key="type.id_typesRessource" :value="type.id_typesRessource">
+          {{ type.libelle_typesRessource }}
+        </option>
+      </select>
+    </div>
 
+    <!-- Modale d'ajout de ressource -->
     <div v-if="showModal" class="modal">
       <div class="modal-content">
         <span class="close-button" @click="closeModal">&times;</span>
@@ -44,25 +43,13 @@
           </div>
           <div class="form-group">
             <label for="contenu">Contenu :</label>
-            <textarea
-              id="contenu"
-              v-model="resource.contenu"
-              required
-            ></textarea>
+            <textarea id="contenu" v-model="resource.contenu" required></textarea>
           </div>
           <div class="form-group">
             <label for="typeResource">Type de ressource :</label>
-            <select
-              v-model="resource.id_typeRessource"
-              id="typeResource"
-              required
-            >
+            <select v-model="resource.id_typeRessource" id="typeResource" required>
               <option value="" disabled>Sélectionnez un type</option>
-              <option
-                v-for="type in typesResource"
-                :key="type.id_typesRessource"
-                :value="type.id_typesRessource"
-              >
+              <option v-for="type in typesResource" :key="type.id_typesRessource" :value="type.id_typesRessource">
                 {{ type.libelle_typesRessource }}
               </option>
             </select>
@@ -71,28 +58,16 @@
             <label for="typeRelation">Type de relation :</label>
             <select v-model="resource.type_relation" id="typeRelation" required>
               <option value="" disabled>Sélectionnez un type</option>
-              <option
-                v-for="type in typesRelation"
-                :key="type.id_relation"
-                :value="type.id_relation"
-              >
+              <option v-for="type in typesRelation" :key="type.id_relation" :value="type.id_relation">
                 {{ type.libelle_relation }}
               </option>
             </select>
           </div>
           <div class="form-group">
             <label for="categoryResource">Catégorie de ressource :</label>
-            <select
-              v-model="resource.id_categorie"
-              id="categoryResource"
-              required
-            >
+            <select v-model="resource.id_categorie" id="categoryResource" required>
               <option value="" disabled>Sélectionnez une catégorie</option>
-              <option
-                v-for="category in categoriesResource"
-                :key="category.id_categorie"
-                :value="category.id_categorie"
-              >
+              <option v-for="category in categoriesResource" :key="category.id_categorie" :value="category.id_categorie">
                 {{ category.libelle_categorie }}
               </option>
             </select>
@@ -102,16 +77,8 @@
             <input type="url" id="lien_video" v-model="resource.lien_video" />
           </div>
           <div class="file-upload-container">
-            <label for="file" class="file-upload-label">
-              Ajouter une image
-            </label>
-            <input
-              type="file"
-              id="file"
-              @change="handleFileUpload"
-              accept=".jpeg, .jpg, .png"
-              class="file-upload-input"
-            />
+            <label for="file" class="file-upload-label">Ajouter une image</label>
+            <input type="file" id="file" @change="handleFileUpload" accept=".jpeg, .jpg, .png" class="file-upload-input" />
           </div>
           <div class="button-container">
             <button type="submit" class="btn">Ajouter</button>
@@ -119,6 +86,64 @@
         </form>
       </div>
     </div>
+
+    <!-- Modale d'édition de ressource -->
+    <div v-if="showEditModal" class="modal">
+      <div class="modal-content">
+        <span class="close-button" @click="closeEditModal">&times;</span>
+        <h4>Modifier la ressource</h4>
+        <form @submit.prevent="submitEditResource">
+          <div class="form-group">
+            <label for="edit_titre">Titre :</label>
+            <input type="text" id="edit_titre" v-model="editResource.titre" required />
+          </div>
+          <div class="form-group">
+            <label for="edit_contenu">Contenu :</label>
+            <textarea id="edit_contenu" v-model="editResource.contenu" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="edit_typeResource">Type de ressource :</label>
+            <select v-model="editResource.id_typeRessource" id="edit_typeResource" required>
+              <option value="" disabled>Sélectionnez un type</option>
+              <option v-for="type in typesResource" :key="type.id_typesRessource" :value="type.id_typesRessource">
+                {{ type.libelle_typesRessource }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="edit_typeRelation">Type de relation :</label>
+            <select v-model="editResource.type_relation" id="edit_typeRelation" required>
+              <option value="" disabled>Sélectionnez un type</option>
+              <option v-for="type in typesRelation" :key="type.id_relation" :value="type.id_relation">
+                {{ type.libelle_relation }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="edit_categoryResource">Catégorie de ressource :</label>
+            <select v-model="editResource.id_categorie" id="edit_categoryResource" required>
+              <option value="" disabled>Sélectionnez une catégorie</option>
+              <option v-for="category in categoriesResource" :key="category.id_categorie" :value="category.id_categorie">
+                {{ category.libelle_categorie }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="edit_lien_video">Lien :</label>
+            <input type="url" id="edit_lien_video" v-model="editResource.lien_video" />
+          </div>
+          <div class="file-upload-container">
+            <label for="edit_file" class="file-upload-label">Modifier l'image</label>
+            <input type="file" id="edit_file" @change="handleEditFileUpload" accept=".jpeg, .jpg, .png" class="file-upload-input" />
+          </div>
+          <div class="button-container">
+            <button type="submit" class="btn">Enregistrer les modifications</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Liste des ressources -->
     <div class="main-container">
       <div class="resource-list">
         <h3>Titre des ressources</h3>
@@ -136,13 +161,8 @@
                 >
                   {{ resource.statut_ }}
                 </button>
-                <button @click="editResource(resource.id_ressource_)">
-                  Modifier
-                </button>
-                <button
-                  @click="deleteResource(resource.id_ressource_)"
-                  class="delete"
-                >
+                <button @click="openEditModal(resource)">Modifier</button>
+                <button @click="deleteResource(resource.id_ressource_)" class="delete">
                   <i class="fa fa-trash"></i>
                 </button>
               </div>
@@ -157,7 +177,6 @@
 
 <script>
 import axios from "axios";
-
 export default {
   name: "AdminResources",
   data() {
@@ -167,7 +186,21 @@ export default {
       selectedTypeResource: "",
       resources: [],
       showModal: false,
+      showEditModal: false,
+      // Formulaire d'ajout
       resource: {
+        titre: "",
+        contenu: "",
+        id_typeRessource: "",
+        type_relation: "",
+        id_categorie: "",
+        lien_video: "",
+        nom_image: "",
+        selectedFile: null,
+      },
+      // Formulaire d'édition
+      editResource: {
+        id_ressource_: null,
         titre: "",
         contenu: "",
         id_typeRessource: "",
@@ -186,22 +219,23 @@ export default {
     this.fetchResources();
   },
   computed: {
-  filteredResources() {
-    return this.resources.filter((resource) => {
-      const typeRelationMatch = this.selectedTypeRelation
-        ? resource.type_relation === parseInt(this.selectedTypeRelation)
-        : true;
-      const categoryResourceMatch = this.selectedCategoryResource
-        ? resource.id_categorie === parseInt(this.selectedCategoryResource)
-        : true;
-      const typeResourceMatch = this.selectedTypeResource
-        ? resource.id_typeRessource === parseInt(this.selectedTypeResource)
-        : true;
-      return typeRelationMatch && categoryResourceMatch && typeResourceMatch;
-    });
-  }
-},
+    filteredResources() {
+      return this.resources.filter((resource) => {
+        const typeRelationMatch = this.selectedTypeRelation
+          ? resource.type_relation === parseInt(this.selectedTypeRelation)
+          : true;
+        const categoryResourceMatch = this.selectedCategoryResource
+          ? resource.id_categorie === parseInt(this.selectedCategoryResource)
+          : true;
+        const typeResourceMatch = this.selectedTypeResource
+          ? resource.id_typeRessource === parseInt(this.selectedTypeResource)
+          : true;
+        return typeRelationMatch && categoryResourceMatch && typeResourceMatch;
+      });
+    },
+  },
   methods: {
+    // Modale d'ajout
     openModal() {
       this.showModal = true;
     },
@@ -221,46 +255,51 @@ export default {
         selectedFile: null,
       };
     },
+    // Modale d'édition
+    openEditModal(resource) {
+      // Copie des données de la ressource sélectionnée dans l'objet d'édition
+      this.editResource = { ...resource, selectedFile: null };
+      this.showEditModal = true;
+    },
+    closeEditModal() {
+      this.showEditModal = false;
+      this.resetEditResource();
+    },
+    resetEditResource() {
+      this.editResource = {
+        id_ressource_: null,
+        titre: "",
+        contenu: "",
+        id_typeRessource: "",
+        type_relation: "",
+        id_categorie: "",
+        lien_video: "",
+        nom_image: "",
+        selectedFile: null,
+      };
+    },
     async fetchTypesResource() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/types_ressource",
-          this.getAuthHeaders()
-        );
+        const response = await axios.get("http://localhost:3000/api/types_ressource", this.getAuthHeaders());
         this.typesResource = response.data;
       } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des types de ressource :",
-          error.response?.data || error.message
-        );
+        console.error("Erreur lors de la récupération des types de ressource :", error.response?.data || error.message);
       }
     },
     async fetchTypesRelation() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/relations",
-          this.getAuthHeaders()
-        );
+        const response = await axios.get("http://localhost:3000/api/relations", this.getAuthHeaders());
         this.typesRelation = response.data;
       } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des types de relation :",
-          error.response?.data || error.message
-        );
+        console.error("Erreur lors de la récupération des types de relation :", error.response?.data || error.message);
       }
     },
     async fetchCategoriesResource() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/categories",
-          this.getAuthHeaders()
-        );
+        const response = await axios.get("http://localhost:3000/api/categories", this.getAuthHeaders());
         this.categoriesResource = response.data;
       } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des catégories de ressources :",
-          error.response?.data || error.message
-        );
+        console.error("Erreur lors de la récupération des catégories de ressources :", error.response?.data || error.message);
       }
     },
     async fetchResources() {
@@ -268,15 +307,11 @@ export default {
         const response = await axios.get("http://localhost:3000/api/resources");
         this.resources = response.data;
       } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des ressources :",
-          error.response?.data || error.message
-        );
+        console.error("Erreur lors de la récupération des ressources :", error.response?.data || error.message);
       }
     },
     async toggleStatus(resource) {
-      const newStatus =
-        resource.statut_ === "disponible" ? "suspendue" : "disponible";
+      const newStatus = resource.statut_ === "disponible" ? "suspendue" : "disponible";
       try {
         await axios.put(
           `http://localhost:3000/api/resources/status/${resource.id_ressource_}`,
@@ -285,38 +320,31 @@ export default {
         );
         resource.statut_ = newStatus;
       } catch (error) {
-        console.error(
-          "Erreur lors de la mise à jour du statut :",
-          error.response?.data || error.message
-        );
+        console.error("Erreur lors de la mise à jour du statut :", error.response?.data || error.message);
       }
     },
-    editResource(id) {
-      this.$router.push({ name: "editResource", params: { id } });
-    },
     async deleteResource(id) {
-      const confirmation = confirm(
-        "Êtes-vous sûr de vouloir supprimer cette ressource ?"
-      );
+      const confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette ressource ?");
       if (confirmation) {
         try {
-          await axios.delete(
-            `http://localhost:3000/api/resources/delete/${id}`,
-            this.getAuthHeaders()
-          );
+          await axios.delete(`http://localhost:3000/api/resources/delete/${id}`, this.getAuthHeaders());
           this.fetchResources();
         } catch (error) {
-          console.error(
-            "Erreur lors de la suppression de la ressource :",
-            error.response?.data || error.message
-          );
+          console.error("Erreur lors de la suppression de la ressource :", error.response?.data || error.message);
         }
       }
     },
+    // Gestion des fichiers pour l'ajout
     handleFileUpload(event) {
       const file = event.target.files[0];
       this.resource.selectedFile = file;
       this.resource.nom_image = file ? file.name : "";
+    },
+    // Gestion des fichiers pour l'édition
+    handleEditFileUpload(event) {
+      const file = event.target.files[0];
+      this.editResource.selectedFile = file;
+      this.editResource.nom_image = file ? file.name : this.editResource.nom_image;
     },
     decodeToken(token) {
       try {
@@ -370,20 +398,40 @@ export default {
         }
         const headers = this.getAuthHeaders();
         headers.headers["Content-Type"] = "multipart/form-data";
-        const response = await axios.post(
-          "http://localhost:3000/api/resources/create",
-          formData,
-          headers
-        );
+        const response = await axios.post("http://localhost:3000/api/resources/create", formData, headers);
         console.log("Ressource ajoutée avec succès :", response.data);
         alert("Ressource ajoutée avec succès !");
         this.closeModal();
         this.fetchResources();
       } catch (error) {
-        console.error(
-          "Erreur lors de l'ajout de la ressource :",
-          error.response ? error.response.data : error.message
-        );
+        console.error("Erreur lors de l'ajout de la ressource :", error.response ? error.response.data : error.message);
+      }
+    },
+    async submitEditResource() {
+      // Pour l'édition, on utilise l'id de la ressource sélectionnée
+      if (!this.editResource.id_ressource_) return;
+      try {
+        const formData = new FormData();
+        formData.append("titre", this.editResource.titre);
+        formData.append("contenu", this.editResource.contenu);
+        formData.append("id_typeRessource", this.editResource.id_typeRessource);
+        formData.append("type_relation", this.editResource.type_relation);
+        formData.append("id_categorie", this.editResource.id_categorie);
+        formData.append("lien_video", this.editResource.lien_video);
+        formData.append("nom_image", this.editResource.nom_image);
+        // Note : Si votre service d'édition ne gère pas la modification de l'image,
+        // vous pouvez choisir de ne pas renvoyer "files" si aucun nouveau fichier n'est sélectionné.
+        if (this.editResource.selectedFile) {
+          formData.append("files", this.editResource.selectedFile);
+        }
+        const headers = this.getAuthHeaders();
+        headers.headers["Content-Type"] = "multipart/form-data";
+        await axios.put(`http://localhost:3000/api/resources/update/${this.editResource.id_ressource_}`, formData, headers);
+        alert("Ressource modifiée avec succès !");
+        this.closeEditModal();
+        this.fetchResources();
+      } catch (error) {
+        console.error("Erreur lors de la modification de la ressource :", error.response ? error.response.data : error.message);
       }
     },
   },
@@ -417,12 +465,27 @@ h1 {
   margin-bottom: 2rem;
 }
 
-.main-container {
+.title-container {
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin: 2rem auto;
-  max-width: 1200px;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-user-button {
+  margin-left: 2rem;
+  font-size: 1.2rem;
+  background-color: #b0a2ba;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-user-button:hover {
+  background-color: #d4c4e0;
+  color: black;
 }
 
 .filter-bar {
@@ -438,6 +501,14 @@ h1 {
 
 .filter-bar select {
   margin-right: 20px;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
 }
 
 .resource-list {
@@ -512,19 +583,7 @@ button.suspended {
   color: white;
 }
 
-/* Modal ajout ressource */
-.title-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-}
-
-.add-user-button {
-  margin-left: 2rem;
-  font-size: 1.2rem;
-}
-
+/* Modal styles */
 .modal {
   position: fixed;
   top: 0;
@@ -535,6 +594,7 @@ button.suspended {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
@@ -621,11 +681,9 @@ button.suspended {
   h1 {
     font-size: 28px;
   }
-
   .main-container {
     margin: 1rem;
   }
-
   button {
     width: 100%;
     padding: 12px 0;
@@ -636,7 +694,6 @@ button.suspended {
   h1 {
     font-size: 30px;
   }
-
   .main-container {
     margin: 2rem auto;
   }
@@ -646,7 +703,6 @@ button.suspended {
   h1 {
     font-size: 32px;
   }
-
   .main-container {
     max-width: 1200px;
   }
