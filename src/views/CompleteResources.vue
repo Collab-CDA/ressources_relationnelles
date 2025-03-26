@@ -420,7 +420,7 @@ export default {
       this.selectedResource = resource;
       this.fetchComments();
     },
-    openUserModal(user) {
+   openUserModal(user) {
     if (!user) {
       alert("Utilisateur inconnu");
       return;
@@ -438,12 +438,19 @@ export default {
 
   async addFriend() {
     try {
+      // Vérifiez que selectedUser est défini
+      if (!this.selectedUser || !this.selectedUser.id_utilisateur) {
+        alert("Erreur : Utilisateur sélectionné non défini.");
+        return;
+      }
+
       const invitationData = {
         id_utilisateur_inviteur: this.getUserIdFromToken(),
-        id_utilisateur_invite: this.selectedUser.id,
+        id_utilisateur_invite: this.selectedUser.id_utilisateur,
         id_ressource_: this.selectedResource.id_ressource_,
         statut_invitation: 'envoyée'
       };
+
       await axios.post("http://localhost:3000/api/invitations/create", invitationData, this.getAuthHeaders());
       alert("Invitation envoyée avec succès !");
       this.closeModal();
@@ -451,7 +458,6 @@ export default {
       console.warn("Erreur lors de l'envoi de l'invitation :", error.response ? error.response.data : error.message);
     }
   },
-
   sendMessage() {
     const userId = this.getUserIdFromToken();
     if (!this.isFriend(this.selectedUser.id)) {

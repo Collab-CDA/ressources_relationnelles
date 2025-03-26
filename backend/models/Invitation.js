@@ -17,7 +17,7 @@ const Invitation = sequelize.define('Invitation', {
   },
   id_ressource_: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true
   },
   statut_invitation: {
     type: DataTypes.ENUM('envoyée', 'acceptée', 'refusée'),
