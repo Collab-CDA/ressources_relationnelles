@@ -143,7 +143,12 @@
                 <strong>Date :</strong>
                 {{ formatDate(comment.date_creation) }}
               </p>
-              <button @click="replyToComment(comment)">Répondre</button>
+              <button
+                class="add-resource-button"
+                @click="replyToComment(comment)"
+              >
+                Répondre
+              </button>
             </div>
           </div>
 
@@ -152,8 +157,15 @@
             <div class="modal-content">
               <span class="close" @click="closeModal">&times;</span>
               <p>{{ modalUserName }}</p>
-              <button @click="addFriend">Ajouter en ami</button>
-              <button @click="sendMessage">Envoyer un message</button>
+              <button
+                class="resource-button"
+                @click="addFriend(selectedUser.id_utilisateur)"
+              >
+                Ajouter en ami
+              </button>
+              <button class="resource-button" @click="sendMessage">
+                Envoyer un message
+              </button>
             </div>
           </div>
 
@@ -316,14 +328,12 @@ export default {
         this.newComment.id_ressource_ = this.selectedResource.id_ressource_;
         this.newComment.id_utilisateur = this.getUserIdFromToken();
         try {
-          // On poste le commentaire puis on re-fait une récupération complète
           await axios.post(
             "http://localhost:3000/api/comments",
             this.newComment,
             this.getAuthHeaders()
           );
-          this.fetchComments(); // recharge les commentaires pour afficher le post fraîchement ajouté
-          // Réinitialiser le formulaire
+          this.fetchComments();
           this.newComment = {
             titre: "",
             contenu: "",
@@ -420,71 +430,81 @@ export default {
       this.selectedResource = resource;
       this.fetchComments();
     },
-   openUserModal(user) {
-    if (!user) {
-      alert("Utilisateur inconnu");
-      return;
-    }
-    this.selectedUser = user;
-    this.modalUserName = `${user.prenom} ${user.nom}`;
-    this.showModal = true;
-  },
-
-  closeModal() {
-    this.showModal = false;
-    this.selectedUser = null;
-    this.modalUserName = '';
-  },
-
-  async addFriend() {
-    try {
-      // Vérifiez que selectedUser est défini
-      if (!this.selectedUser || !this.selectedUser.id_utilisateur) {
+    openUserModal(user) {
+      if (!user) {
+        alert("Utilisateur inconnu");
+        return;
+      }
+      this.selectedUser = user;
+      this.modalUserName = `${user.prenom} ${user.nom}`;
+      this.showModal = true;
+      console.log("User selected:", this.selectedUser); // Vérifiez que selectedUser est défini
+    },
+    closeModal() {
+      this.showModal = false;
+      this.selectedUser = null;
+      this.modalUserName = "";
+    },
+    async addFriend(userId) {
+      console.log("addFriend called with userId:", userId);
+      if (!userId) {
+        console.log("Utilisateur non défini");
         alert("Erreur : Utilisateur sélectionné non défini.");
         return;
       }
 
       const invitationData = {
         id_utilisateur_inviteur: this.getUserIdFromToken(),
-        id_utilisateur_invite: this.selectedUser.id_utilisateur,
+        id_utilisateur_invite: userId,
         id_ressource_: this.selectedResource.id_ressource_,
-        statut_invitation: 'envoyée'
+        statut_invitation: "envoyée",
       };
 
-      await axios.post("http://localhost:3000/api/invitations/create", invitationData, this.getAuthHeaders());
-      alert("Invitation envoyée avec succès !");
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/api/invitations/create",
+          invitationData,
+          this.getAuthHeaders()
+        );
+        console.log("Réponse du serveur :", response.data);
+        alert("Invitation envoyée avec succès !");
+        this.closeModal();
+      } catch (error) {
+        console.warn(
+          "Erreur lors de l'envoi de l'invitation :",
+          error.response ? error.response.data : error.message
+        );
+      }
+    },
+    sendMessage() {
+      const userId = this.getUserIdFromToken();
+      if (!this.isFriend(this.selectedUser.id)) {
+        alert("Vous devez être ami pour échanger des messages.");
+        return;
+      }
+      this.openChatWithUser(this.selectedUser.id);
       this.closeModal();
-    } catch (error) {
-      console.warn("Erreur lors de l'envoi de l'invitation :", error.response ? error.response.data : error.message);
-    }
-  },
-  sendMessage() {
-    const userId = this.getUserIdFromToken();
-    if (!this.isFriend(this.selectedUser.id)) {
-      alert("Vous devez être ami pour échanger des messages.");
-      return;
-    }
-    this.openChatWithUser(this.selectedUser.id);
-    this.closeModal();
-  },
-
-  async isFriend(userId) {
-    try {
-      const currentUserId = this.getUserIdFromToken();
-      const response = await axios.post(
-        "http://localhost:3000/api/friendships/check",
-        { userId1: currentUserId, userId2: userId },
-        this.getAuthHeaders()
-      );
-      return response.data.isFriend;
-    } catch (error) {
-      console.warn("Erreur lors de la vérification de l'amitié :", error.response ? error.response.data : error.message);
-      return false;
-    }
-  },
-  openChatWithUser(userId) {
-    this.$router.push(`/messagerie/${userId}`);
-  },
+    },
+    async isFriend(userId) {
+      try {
+        const currentUserId = this.getUserIdFromToken();
+        const response = await axios.post(
+          "http://localhost:3000/api/friendships/check",
+          { userId1: currentUserId, userId2: userId },
+          this.getAuthHeaders()
+        );
+        return response.data.isFriend;
+      } catch (error) {
+        console.warn(
+          "Erreur lors de la vérification de l'amitié :",
+          error.response ? error.response.data : error.message
+        );
+        return false;
+      }
+    },
+    openChatWithUser(userId) {
+      this.$router.push(`/messagerie/${userId}`);
+    },
   },
   mounted() {
     this.fetchResources();
@@ -533,6 +553,18 @@ h2 {
 }
 
 .add-resource-button:hover {
+  background-color: #d4c4e0;
+}
+
+.resource-button {
+  padding: 4px 12px;
+  background-color: #b0a2ba;
+  border: none;
+  border-radius: 5px;
+  margin-top: 1rem;
+}
+
+.resource-button:hover {
   background-color: #d4c4e0;
 }
 
@@ -677,8 +709,8 @@ form button:hover {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .modal-content {
