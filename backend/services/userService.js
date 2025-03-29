@@ -57,6 +57,13 @@ exports.trouverTousUtilisateurs = async () => {
     });
 };
 
+exports.trouverUtilisateurParNomEtPrenom = async (prenom, nom) => {
+    return await Utilisateur.findOne({
+      where: { prenom, nom }
+    });
+  };
+  
+
 exports.modifierUtilisateur = async (id, data) => {
     const utilisateur = await Utilisateur.findByPk(id);
     if (!utilisateur) {

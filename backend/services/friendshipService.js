@@ -1,16 +1,17 @@
 const Friendship = require('../models/Friendship');
 const { Op } = require('sequelize');
 
+// Fonction pour créer une demande d'amitié
 exports.createFriendship = async (data) => {
   try {
     const { id_utilisateur1, id_utilisateur2 } = data;
 
-    // Création de l'amitié avec un statut "en attente"
     const friendship = await Friendship.create({
-      id_utilisateur1: Math.min(id_utilisateur1, id_utilisateur2), 
+      id_utilisateur1: Math.min(id_utilisateur1, id_utilisateur2),
       id_utilisateur2: Math.max(id_utilisateur1, id_utilisateur2),
       status: 'en_attente'
     });
+
     return friendship;
   } catch (error) {
     throw new Error("Erreur lors de la création de la demande d'amitié: " + error.message);

@@ -131,18 +131,14 @@
                 <span
                   v-if="comment.User"
                   @click="openModal(comment.User)"
-                  style="
-                    cursor: pointer;
-                    color: blue;
-                    text-decoration: underline;
-                  "
+                  style="cursor: pointer; text-decoration: underline"
                 >
                   {{ comment.User.prenom }} {{ comment.User.nom }}
                 </span>
                 <span v-else>Utilisateur inconnu</span>
               </p>
 
-              <!-- MODAL -->
+              <!-- MODAL ajout ami -->
               <div v-if="isModalOpen" class="modal-overlay">
                 <div class="modal">
                   <span class="close-modal" @click="closeModal">&times;</span>
@@ -198,6 +194,7 @@
 
 <script>
 import axios from "axios";
+import { toRaw } from 'vue';
 
 export default {
   name: "CompleteResources",
@@ -248,12 +245,10 @@ export default {
     },
     async fetchResources() {
       try {
-        console.log("Tentative de récupération des ressources...");
         const response = await axios.get(
           "http://localhost:3000/api/resources",
           this.getAuthHeaders()
         );
-        console.log("Ressources récupérées :", response.data);
         this.resources = response.data;
       } catch (error) {
         console.warn(
@@ -264,12 +259,10 @@ export default {
     },
     async fetchTypesRelation() {
       try {
-        console.log("Tentative de récupération des types de relation...");
         const response = await axios.get(
           "http://localhost:3000/api/relations",
           this.getAuthHeaders()
         );
-        console.log("Types de relation récupérés :", response.data);
         this.typesRelation = response.data;
       } catch (error) {
         console.warn(
@@ -280,14 +273,11 @@ export default {
     },
     async fetchCategoriesResource() {
       try {
-        console.log(
-          "Tentative de récupération des catégories de ressources..."
-        );
+        
         const response = await axios.get(
           "http://localhost:3000/api/categories",
           this.getAuthHeaders()
         );
-        console.log("Catégories de ressources récupérées :", response.data);
         this.categoriesResource = response.data;
       } catch (error) {
         console.warn(
@@ -298,12 +288,10 @@ export default {
     },
     async fetchTypesResource() {
       try {
-        console.log("Tentative de récupération des types de ressources...");
         const response = await axios.get(
           "http://localhost:3000/api/types_ressource",
           this.getAuthHeaders()
         );
-        console.log("Types de ressources récupérés :", response.data);
         this.typesResource = response.data;
       } catch (error) {
         console.warn(
@@ -314,17 +302,13 @@ export default {
     },
     async fetchComments() {
       if (this.selectedResource) {
-        console.log(
-          "Tentative de récupération des commentaires pour la ressource ID",
-          this.selectedResource.id_ressource_
-        );
+  
         try {
           const response = await axios.get(
             `http://localhost:3000/api/comments/resource/${this.selectedResource.id_ressource_}`,
             this.getAuthHeaders()
           );
           if (response.data && Array.isArray(response.data)) {
-            console.log("Commentaires récupérés :", response.data);
             this.comments = response.data;
           } else {
             console.warn(
@@ -342,10 +326,6 @@ export default {
     },
     async addComment() {
       if (this.selectedResource) {
-        console.log(
-          "Ajout d'un commentaire pour la ressource ID",
-          this.selectedResource.id_ressource_
-        );
         this.newComment.id_ressource_ = this.selectedResource.id_ressource_;
         this.newComment.id_utilisateur = this.getUserIdFromToken();
         try {
@@ -354,7 +334,6 @@ export default {
             this.newComment,
             this.getAuthHeaders()
           );
-          console.log("Commentaire ajouté avec succès !");
           this.fetchComments();
           this.newComment = {
             titre: "",
@@ -380,33 +359,26 @@ export default {
       console.log("Réponse au commentaire préparée :", this.newComment);
     },
     redirectToAddResource() {
-      console.log("Redirection vers l'ajout de ressource...");
       this.$router.push("/add-resources");
     },
     contactParticipant() {
-      console.log("Redirection vers la messagerie...");
       this.$router.push("/messagerie");
     },
     getEmbedVideo(url) {
-      console.log("Génération d'embed vidéo pour l'URL :", url);
       return `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
     },
     isEmbedYouTubeLink(url) {
-      console.log("Vérification si lien YouTube :", url);
       return /youtube\.com|youtu\.be/.test(url);
     },
     isImage(file) {
-      console.log("Vérification si fichier image :", file);
       if (file.startsWith("data:")) return true;
       return /\.(jpg|jpeg|png|gif)$/i.test(file);
     },
     isPDF(file) {
-      console.log("Vérification si fichier PDF :", file);
       if (file.startsWith("data:")) return false;
       return /\.pdf$/i.test(file);
     },
     getFileUrl(file) {
-      console.log("Génération de l'URL du fichier :", file);
       if (file.startsWith("data:")) {
         return file;
       }
@@ -429,7 +401,6 @@ export default {
     },
     getAuthHeaders() {
       const token = localStorage.getItem("token");
-      console.log("En-têtes d'authentification envoyés.");
       return {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -444,10 +415,6 @@ export default {
         );
         return;
       }
-      console.log(
-        "Ajout de la ressource aux favoris pour l'utilisateur ID :",
-        userId
-      );
       try {
         await axios.post(
           "http://localhost:3000/api/favoris/create",
@@ -463,51 +430,75 @@ export default {
       }
     },
     selectResource(resource) {
-      console.log("Ressource sélectionnée :", resource);
       this.selectedResource = resource;
       this.fetchComments();
     },
-    openModal(user) {
-      this.selectedUser = user;
-      this.isModalOpen = true;
-    },
+    async openModal(user) {
+    if (user && user.prenom && user.nom) {
+        try {
+            const response = await axios.get('http://localhost:3000/api/users/search', {
+                params: { prenom: user.prenom, nom: user.nom },
+                headers: this.getAuthHeaders().headers
+            });
+
+            console.log("Réponse du serveur :", response.data);
+
+            if (response.data && response.data.id_utilisateur) {
+                this.selectedUser = response.data;
+                this.selectedUserId = toRaw(response.data.id_utilisateur); // Assurer un accès direct
+                console.log("ID utilisateur sélectionné :", this.selectedUserId);
+                this.isModalOpen = true;
+            } else {
+                console.error("Utilisateur non trouvé :", user);
+                alert("Utilisateur non trouvé.");
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération de l'utilisateur :", error);
+            alert("Erreur lors de la récupération de l'utilisateur.");
+        }
+    } else {
+        console.error("Nom ou prénom de l'utilisateur invalide :", user);
+    }
+},
+async sendFriendRequest() {
+  const currentUserId = this.getUserIdFromToken();  // ID de l'utilisateur actuel depuis le token
+  const selectedUserId = this.selectedUser?.id_utilisateur || this.selectedUserId;  // ID de l'utilisateur cible (sélectionné)
+
+  // Ajoutez une validation plus stricte
+  if (!currentUserId || !selectedUserId) {
+    console.error("Les IDs des utilisateurs sont manquants. Vérifiez les valeurs.");
+    alert("Les deux IDs des utilisateurs sont requis.");
+    return;
+  }
+
+  // Vérifiez les valeurs des IDs avant l'envoi
+  console.log("ID utilisateur actuel :", currentUserId);
+  console.log("ID utilisateur invité :", selectedUserId);
+
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/api/friendships/create",  
+      {
+        id_utilisateur1: currentUserId,  // Assurez-vous que le nom des propriétés est correct dans le corps de la requête
+        id_utilisateur2: selectedUserId, 
+      },
+      this.getAuthHeaders()  
+    );
+    
+    console.log("Réponse du serveur :", response.data);
+    alert("Invitation envoyée avec succès !");
+    this.closeModal();
+  } catch (error) {
+    console.error("Erreur lors de l'envoi de l'invitation :", error.response ? error.response.data : error.message);
+    alert("Une erreur est survenue lors de l'envoi de l'invitation.");
+  }
+},
     closeModal() {
       this.isModalOpen = false;
       this.selectedUser = null;
     },
-    async sendFriendRequest(userId) {
-      const currentUserId = this.getUserIdFromToken();
-      if (!currentUserId) {
-        alert("Vous devez être connecté pour ajouter un ami.");
-        return;
-      }
-
-      if (!userId) {
-        console.error("L'ID de l'utilisateur cible est invalide.");
-        alert("ID de l'utilisateur cible invalide.");
-        return;
-      }
-
-      console.log("Envoi de la demande d'ami pour l'utilisateur ID :", userId);
-      try {
-        const response = await axios.post(
-          "http://localhost:3000/api/friendships/create",
-          {
-            id_utilisateur_1: currentUserId,
-            id_utilisateur_2: userId,
-          },
-          this.getAuthHeaders()
-        );
-        alert("Invitation d'ami envoyée avec succès !");
-        this.closeModal();
-      } catch (error) {
-        console.error("Erreur lors de l'envoi de l'invitation :", error);
-        alert("Une erreur est survenue lors de l'envoi de l'invitation.");
-      }
-    },
   },
   mounted() {
-    console.log("Composant monté. Récupération des données...");
     this.fetchResources();
     this.fetchTypesRelation();
     this.fetchCategoriesResource();
@@ -730,7 +721,6 @@ form button:hover {
   font-size: 18px;
   text-align: center;
 }
-
 
 .button-modal {
   background-color: #b0a2ba;

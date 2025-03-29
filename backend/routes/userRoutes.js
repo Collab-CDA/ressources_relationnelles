@@ -6,7 +6,8 @@ const {
     obtenirUtilisateurParId,
     mettreAJourUtilisateur,
     supprimerUtilisateur,
-    telechargerAvatar
+    telechargerAvatar,
+    getUserByFullName  
 } = require('../controllers/userController');
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
@@ -16,6 +17,7 @@ const router = express.Router();
 router.post('/register', creerUtilisateur);
 router.post('/login', authentifierUtilisateur);
 router.get('/', obtenirTousUtilisateurs);
+router.get('/search', getUserByFullName); 
 router.get('/:id', obtenirUtilisateurParId);
 router.put('/:id', mettreAJourUtilisateur);
 router.delete('/:id', supprimerUtilisateur);

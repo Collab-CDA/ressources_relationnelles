@@ -1,4 +1,4 @@
-const { creerUtilisateur, authentifierUtilisateur, trouverUtilisateurParId, modifierUtilisateur, effacerUtilisateur, telechargerAvatar } = require('../services/userService');
+const { creerUtilisateur, authentifierUtilisateur, trouverUtilisateurParId, modifierUtilisateur, effacerUtilisateur, telechargerAvatar, trouverUtilisateurParNomEtPrenom  } = require('../services/userService');
 
 
 exports.creerUtilisateur = async (req, res) => {
@@ -50,6 +50,29 @@ exports.obtenirUtilisateurParId = async (req, res) => {
     }
 };
 
+exports.getUserByFullName = async (req, res) => {
+    const { prenom, nom } = req.query;
+  
+    console.log("Recherche de l'utilisateur avec prénom :", prenom, "et nom :", nom);
+  
+    if (!prenom || !nom) {
+      return res.status(400).json({ message: "Le prénom et le nom sont requis." });
+    }
+  
+    try {
+      const utilisateur = await trouverUtilisateurParNomEtPrenom(prenom, nom);
+      if (!utilisateur) {
+        console.log("Aucun utilisateur trouvé avec prénom :", prenom, "et nom :", nom);
+        return res.status(404).json({ message: "Utilisateur non trouvé." });
+      }
+      res.status(200).json(utilisateur);
+    } catch (err) {
+      console.error("Erreur lors de la récupération de l'utilisateur :", err);
+      res.status(500).json({ message: err.message });
+    }
+  };
+  
+  
 exports.mettreAJourUtilisateur = async (req, res) => {
     const { id } = req.params;
     try {

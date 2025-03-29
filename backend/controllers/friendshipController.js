@@ -1,18 +1,36 @@
-const { 
-  areFriends, 
-  deleteFriendship 
-} = require('../services/friendshipService');
+const { createFriendship, areFriends, deleteFriendship } = require('../services/friendshipService');
 
-// Vérification de l'amitié via le corps de la requête
-exports.checkFriendshipByBody = async (req, res) => {
+// Exemple de méthode de création d'une demande d'amitié
+exports.createFriendship = async (req, res) => {
   try {
-    const { userId1, userId2 } = req.body;
+    const { id_utilisateur1, id_utilisateur2 } = req.body;
 
-    if (!userId1 || !userId2) {
+    if (!id_utilisateur1 || !id_utilisateur2) {
       return res.status(400).json({ message: "Les deux IDs des utilisateurs sont requis." });
     }
 
-    const isFriend = await areFriends(Math.min(userId1, userId2), Math.max(userId1, userId2));
+    const friendship = await createFriendship({ id_utilisateur1, id_utilisateur2 });
+
+    res.status(201).json({
+      message: "Demande d'amitié envoyée avec succès.",
+      friendship
+    });
+  } catch (error) {
+    console.error("Erreur serveur:", error);
+    res.status(500).json({ message: "Erreur lors de la création de la demande d'amitié." });
+  }
+};
+
+// Fonction de vérification d'amitié
+exports.checkFriendshipByBody = async (req, res) => {
+  try {
+    const { id_utilisateur_1, id_utilisateur_2 } = req.body;
+
+    if (!id_utilisateur_1 || !id_utilisateur_2) {
+      return res.status(400).json({ message: "Les deux IDs des utilisateurs sont requis." });
+    }
+
+    const isFriend = await areFriends(Math.min(id_utilisateur_1, id_utilisateur_2), Math.max(id_utilisateur_1, id_utilisateur_2));
     res.status(200).json({ isFriend });
   } catch (error) {
     res.status(500).json({ message: "Erreur lors de la vérification de l'amitié." });
