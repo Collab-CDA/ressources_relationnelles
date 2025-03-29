@@ -69,6 +69,9 @@
                 <router-link to="/messagerie" class="dropdown-item">Messagerie</router-link>
               </li>
               <li>
+                <router-link to="/amis" class="dropdown-item">Amis</router-link> <!-- Lien mis à jour -->
+              </li>
+              <li>
                 <a @click.prevent="logout" class="dropdown-item logout-link">Déconnexion</a>
               </li>
             </ul>
@@ -79,15 +82,16 @@
   </nav>
 </template>
 
+
+
 <script>
 export default {
   name: "Header2",
-  emits: ['logout'], // Déclarez l'événement ici
+  emits: ['logout'], 
   methods: {
     logout() {
       // Retirer le token du localStorage
       localStorage.removeItem("token");
-      // Émettre un événement pour notifier le composant parent
       this.$emit('logout');
     }
   }

@@ -6,6 +6,7 @@ exports.createFriendship = async (data) => {
   try {
     const { id_utilisateur1, id_utilisateur2 } = data;
 
+
     const friendship = await Friendship.create({
       id_utilisateur1: Math.min(id_utilisateur1, id_utilisateur2),
       id_utilisateur2: Math.max(id_utilisateur1, id_utilisateur2),

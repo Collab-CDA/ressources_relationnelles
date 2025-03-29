@@ -6,4 +6,6 @@ router.post('/create', createFriendship);
 router.post('/check', checkFriendshipByBody);
 router.post('/delete', deleteFriendship);
 
+
+
 module.exports = router;

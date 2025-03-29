@@ -445,7 +445,7 @@ export default {
 
             if (response.data && response.data.id_utilisateur) {
                 this.selectedUser = response.data;
-                this.selectedUserId = toRaw(response.data.id_utilisateur); // Assurer un accès direct
+                this.selectedUserId = toRaw(response.data.id_utilisateur); 
                 console.log("ID utilisateur sélectionné :", this.selectedUserId);
                 this.isModalOpen = true;
             } else {
@@ -461,17 +461,15 @@ export default {
     }
 },
 async sendFriendRequest() {
-  const currentUserId = this.getUserIdFromToken();  // ID de l'utilisateur actuel depuis le token
-  const selectedUserId = this.selectedUser?.id_utilisateur || this.selectedUserId;  // ID de l'utilisateur cible (sélectionné)
+  const currentUserId = this.getUserIdFromToken(); 
+  const selectedUserId = this.selectedUser?.id_utilisateur || this.selectedUserId;  
 
-  // Ajoutez une validation plus stricte
   if (!currentUserId || !selectedUserId) {
     console.error("Les IDs des utilisateurs sont manquants. Vérifiez les valeurs.");
     alert("Les deux IDs des utilisateurs sont requis.");
     return;
   }
 
-  // Vérifiez les valeurs des IDs avant l'envoi
   console.log("ID utilisateur actuel :", currentUserId);
   console.log("ID utilisateur invité :", selectedUserId);
 
@@ -479,7 +477,7 @@ async sendFriendRequest() {
     const response = await axios.post(
       "http://localhost:3000/api/friendships/create",  
       {
-        id_utilisateur1: currentUserId,  // Assurez-vous que le nom des propriétés est correct dans le corps de la requête
+        id_utilisateur1: currentUserId,  
         id_utilisateur2: selectedUserId, 
       },
       this.getAuthHeaders()  
