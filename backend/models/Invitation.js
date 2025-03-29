@@ -9,15 +9,21 @@ const Invitation = sequelize.define('Invitation', {
   },
   id_utilisateur_inviteur: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
+    references: {
+      model: 'utilisateur', 
+      key: 'id_utilisateur'
+    },
+    onDelete: 'CASCADE'
   },
   id_utilisateur_invite: {
     type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  id_ressource_: {
-    type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: false,
+    references: {
+      model: 'utilisateur',
+      key: 'id_utilisateur'
+    },
+    onDelete: 'CASCADE'
   },
   statut_invitation: {
     type: DataTypes.ENUM('envoyée', 'acceptée', 'refusée'),
@@ -25,8 +31,8 @@ const Invitation = sequelize.define('Invitation', {
   },
   date_invitation: {
     type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-    allowNull: true
+    allowNull: false,
+    defaultValue: DataTypes.NOW
   }
 }, {
   tableName: 'invitations',

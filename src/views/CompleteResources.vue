@@ -129,16 +129,35 @@
               <p>
                 <strong>Posté par :</strong>
                 <span
-                  @click="openUserModal(comment.User)"
-                  style="cursor: pointer; text-decoration: underline"
+                  v-if="comment.User"
+                  @click="openModal(comment.User)"
+                  style="
+                    cursor: pointer;
+                    color: blue;
+                    text-decoration: underline;
+                  "
                 >
-                  {{
-                    comment.User
-                      ? comment.User.prenom + " " + comment.User.nom
-                      : "Utilisateur inconnu"
-                  }}
+                  {{ comment.User.prenom }} {{ comment.User.nom }}
                 </span>
+                <span v-else>Utilisateur inconnu</span>
               </p>
+
+              <!-- MODAL -->
+              <div v-if="isModalOpen" class="modal-overlay">
+                <div class="modal">
+                  <span class="close-modal" @click="closeModal">&times;</span>
+                  <h2>
+                    Profil de {{ selectedUser.prenom }} {{ selectedUser.nom }}
+                  </h2>
+                  <button
+                    class="button-modal"
+                    @click="sendFriendRequest(selectedUser.id)"
+                  >
+                    Demander en ami
+                  </button>
+                </div>
+              </div>
+
               <p>
                 <strong>Date :</strong>
                 {{ formatDate(comment.date_creation) }}
@@ -148,23 +167,6 @@
                 @click="replyToComment(comment)"
               >
                 Répondre
-              </button>
-            </div>
-          </div>
-
-          <!-- Modal de demande d'ami -->
-          <div v-if="showModal" class="modal">
-            <div class="modal-content">
-              <span class="close" @click="closeModal">&times;</span>
-              <p>{{ modalUserName }}</p>
-              <button
-                class="resource-button"
-                @click="addFriend(selectedUser.id_utilisateur)"
-              >
-                Ajouter en ami
-              </button>
-              <button class="resource-button" @click="sendMessage">
-                Envoyer un message
               </button>
             </div>
           </div>
@@ -201,7 +203,7 @@ export default {
   name: "CompleteResources",
   data() {
     return {
-      showModal: false,
+      isModalOpen: false,
       selectedUser: null,
       modalUserName: "",
       selectedTypeRelation: "",
@@ -246,10 +248,12 @@ export default {
     },
     async fetchResources() {
       try {
+        console.log("Tentative de récupération des ressources...");
         const response = await axios.get(
           "http://localhost:3000/api/resources",
           this.getAuthHeaders()
         );
+        console.log("Ressources récupérées :", response.data);
         this.resources = response.data;
       } catch (error) {
         console.warn(
@@ -260,10 +264,12 @@ export default {
     },
     async fetchTypesRelation() {
       try {
+        console.log("Tentative de récupération des types de relation...");
         const response = await axios.get(
           "http://localhost:3000/api/relations",
           this.getAuthHeaders()
         );
+        console.log("Types de relation récupérés :", response.data);
         this.typesRelation = response.data;
       } catch (error) {
         console.warn(
@@ -274,10 +280,14 @@ export default {
     },
     async fetchCategoriesResource() {
       try {
+        console.log(
+          "Tentative de récupération des catégories de ressources..."
+        );
         const response = await axios.get(
           "http://localhost:3000/api/categories",
           this.getAuthHeaders()
         );
+        console.log("Catégories de ressources récupérées :", response.data);
         this.categoriesResource = response.data;
       } catch (error) {
         console.warn(
@@ -288,10 +298,12 @@ export default {
     },
     async fetchTypesResource() {
       try {
+        console.log("Tentative de récupération des types de ressources...");
         const response = await axios.get(
           "http://localhost:3000/api/types_ressource",
           this.getAuthHeaders()
         );
+        console.log("Types de ressources récupérés :", response.data);
         this.typesResource = response.data;
       } catch (error) {
         console.warn(
@@ -302,12 +314,17 @@ export default {
     },
     async fetchComments() {
       if (this.selectedResource) {
+        console.log(
+          "Tentative de récupération des commentaires pour la ressource ID",
+          this.selectedResource.id_ressource_
+        );
         try {
           const response = await axios.get(
             `http://localhost:3000/api/comments/resource/${this.selectedResource.id_ressource_}`,
             this.getAuthHeaders()
           );
           if (response.data && Array.isArray(response.data)) {
+            console.log("Commentaires récupérés :", response.data);
             this.comments = response.data;
           } else {
             console.warn(
@@ -325,6 +342,10 @@ export default {
     },
     async addComment() {
       if (this.selectedResource) {
+        console.log(
+          "Ajout d'un commentaire pour la ressource ID",
+          this.selectedResource.id_ressource_
+        );
         this.newComment.id_ressource_ = this.selectedResource.id_ressource_;
         this.newComment.id_utilisateur = this.getUserIdFromToken();
         try {
@@ -333,6 +354,7 @@ export default {
             this.newComment,
             this.getAuthHeaders()
           );
+          console.log("Commentaire ajouté avec succès !");
           this.fetchComments();
           this.newComment = {
             titre: "",
@@ -355,28 +377,36 @@ export default {
       this.newComment.titre = `Re: ${comment.titre}`;
       this.newComment.contenu = `@${prenom} `;
       this.newComment.id_commentaire_parent = comment.id_commentaire;
+      console.log("Réponse au commentaire préparée :", this.newComment);
     },
     redirectToAddResource() {
+      console.log("Redirection vers l'ajout de ressource...");
       this.$router.push("/add-resources");
     },
     contactParticipant() {
+      console.log("Redirection vers la messagerie...");
       this.$router.push("/messagerie");
     },
     getEmbedVideo(url) {
+      console.log("Génération d'embed vidéo pour l'URL :", url);
       return `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
     },
     isEmbedYouTubeLink(url) {
+      console.log("Vérification si lien YouTube :", url);
       return /youtube\.com|youtu\.be/.test(url);
     },
     isImage(file) {
+      console.log("Vérification si fichier image :", file);
       if (file.startsWith("data:")) return true;
       return /\.(jpg|jpeg|png|gif)$/i.test(file);
     },
     isPDF(file) {
+      console.log("Vérification si fichier PDF :", file);
       if (file.startsWith("data:")) return false;
       return /\.pdf$/i.test(file);
     },
     getFileUrl(file) {
+      console.log("Génération de l'URL du fichier :", file);
       if (file.startsWith("data:")) {
         return file;
       }
@@ -387,6 +417,7 @@ export default {
       if (token) {
         try {
           const decodedToken = JSON.parse(atob(token.split(".")[1]));
+          console.log("ID de l'utilisateur depuis le token :", decodedToken.id);
           return decodedToken.id;
         } catch (error) {
           console.error("Erreur lors du décodage du token :", error);
@@ -398,6 +429,7 @@ export default {
     },
     getAuthHeaders() {
       const token = localStorage.getItem("token");
+      console.log("En-têtes d'authentification envoyés.");
       return {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -412,6 +444,10 @@ export default {
         );
         return;
       }
+      console.log(
+        "Ajout de la ressource aux favoris pour l'utilisateur ID :",
+        userId
+      );
       try {
         await axios.post(
           "http://localhost:3000/api/favoris/create",
@@ -427,86 +463,51 @@ export default {
       }
     },
     selectResource(resource) {
+      console.log("Ressource sélectionnée :", resource);
       this.selectedResource = resource;
       this.fetchComments();
     },
-    openUserModal(user) {
-      if (!user) {
-        alert("Utilisateur inconnu");
-        return;
-      }
+    openModal(user) {
       this.selectedUser = user;
-      this.modalUserName = `${user.prenom} ${user.nom}`;
-      this.showModal = true;
-      console.log("User selected:", this.selectedUser); // Vérifiez que selectedUser est défini
+      this.isModalOpen = true;
     },
     closeModal() {
-      this.showModal = false;
+      this.isModalOpen = false;
       this.selectedUser = null;
-      this.modalUserName = "";
     },
-    async addFriend(userId) {
-      console.log("addFriend called with userId:", userId);
-      if (!userId) {
-        console.log("Utilisateur non défini");
-        alert("Erreur : Utilisateur sélectionné non défini.");
+    async sendFriendRequest(userId) {
+      const currentUserId = this.getUserIdFromToken();
+      if (!currentUserId) {
+        alert("Vous devez être connecté pour ajouter un ami.");
         return;
       }
 
-      const invitationData = {
-        id_utilisateur_inviteur: this.getUserIdFromToken(),
-        id_utilisateur_invite: userId,
-        id_ressource_: this.selectedResource.id_ressource_,
-        statut_invitation: "envoyée",
-      };
+      if (!userId) {
+        console.error("L'ID de l'utilisateur cible est invalide.");
+        alert("ID de l'utilisateur cible invalide.");
+        return;
+      }
 
+      console.log("Envoi de la demande d'ami pour l'utilisateur ID :", userId);
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/invitations/create",
-          invitationData,
+          "http://localhost:3000/api/friendships/create",
+          {
+            id_utilisateur_1: currentUserId,
+            id_utilisateur_2: userId,
+          },
           this.getAuthHeaders()
         );
-        console.log("Réponse du serveur :", response.data);
-        alert("Invitation envoyée avec succès !");
+        alert("Invitation d'ami envoyée avec succès !");
         this.closeModal();
       } catch (error) {
-        console.warn(
-          "Erreur lors de l'envoi de l'invitation :",
-          error.response ? error.response.data : error.message
-        );
+        console.error("Erreur lors de l'envoi de l'invitation :", error);
+        alert("Une erreur est survenue lors de l'envoi de l'invitation.");
       }
-    },
-    sendMessage() {
-      const userId = this.getUserIdFromToken();
-      if (!this.isFriend(this.selectedUser.id)) {
-        alert("Vous devez être ami pour échanger des messages.");
-        return;
-      }
-      this.openChatWithUser(this.selectedUser.id);
-      this.closeModal();
-    },
-    async isFriend(userId) {
-      try {
-        const currentUserId = this.getUserIdFromToken();
-        const response = await axios.post(
-          "http://localhost:3000/api/friendships/check",
-          { userId1: currentUserId, userId2: userId },
-          this.getAuthHeaders()
-        );
-        return response.data.isFriend;
-      } catch (error) {
-        console.warn(
-          "Erreur lors de la vérification de l'amitié :",
-          error.response ? error.response.data : error.message
-        );
-        return false;
-      }
-    },
-    openChatWithUser(userId) {
-      this.$router.push(`/messagerie/${userId}`);
     },
   },
   mounted() {
+    console.log("Composant monté. Récupération des données...");
     this.fetchResources();
     this.fetchTypesRelation();
     this.fetchCategoriesResource();
@@ -698,42 +699,65 @@ form button:hover {
   background-color: #d4c4e0;
 }
 
-.modal {
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
 }
 
-.modal-content {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  max-width: 300px;
+.modal {
+  background-color: #dad8d8;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
+.modal h2 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  text-align: center;
 }
 
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
+
+.button-modal {
+  background-color: #b0a2ba;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
+}
+
+.button-modal:hover {
+  background-color: #d4c4e0;
+}
+
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: black;
+}
+
+.close-modal:hover {
+  color: red;
 }
 
 /* Responsive mobiles */

@@ -11,21 +11,19 @@ const Friendship = sequelize.define('Friendship', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Utilisateur', 
+      model: 'utilisateur', 
       key: 'id_utilisateur'
-    }
+    },
+    onDelete: 'CASCADE'
   },
   id_utilisateur2: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Utilisateur',
+      model: 'utilisateur',
       key: 'id_utilisateur'
-    }
-  },
-  status: {
-    type: DataTypes.ENUM('en_attente', 'acceptée'),
-    allowNull: false
+    },
+    onDelete: 'CASCADE'
   }
 }, {
   tableName: 'friendships',

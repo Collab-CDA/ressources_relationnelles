@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const friendshipController = require('../controllers/friendshipController');
-const authenticate = require('../middlewares/authMiddleware');
+const friendshipController = require('../controllers/friendshipController'); 
 
-router.post('/create', authenticate, friendshipController.createFriendship);
-// Route pour vérifier si deux utilisateurs sont amis
-router.post('/check', authenticate, friendshipController.checkFriendship);
-router.put('/accept/:id', authenticate, friendshipController.acceptFriendship);
-router.delete('/delete/:id', authenticate, friendshipController.deleteFriendship);
+// Route pour vérifier l'amitié via POST (utilisation du corps de la requête)
+router.post('/check', friendshipController.checkFriendshipByBody);
+
+// Route pour supprimer l'amitié via POST (utilisation du corps de la requête)
+router.post('/delete', friendshipController.deleteFriendship);
 
 module.exports = router;
