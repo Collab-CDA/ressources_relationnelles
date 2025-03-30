@@ -69,7 +69,7 @@
                 <router-link to="/messagerie" class="dropdown-item">Messagerie</router-link>
               </li>
               <li>
-                <router-link to="/amis" class="dropdown-item">Amis</router-link> <!-- Lien mis à jour -->
+                <router-link to="/amis" class="dropdown-item">Amis</router-link>
               </li>
               <li>
                 <a @click.prevent="logout" class="dropdown-item logout-link">Déconnexion</a>

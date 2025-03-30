@@ -86,9 +86,26 @@ export default {
 </script>
 
 <style scoped>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+}
+
 h1 {
+  font-family: 'Roboto', sans-serif;
+  font-size: 32px;
+  font-weight: bold;
+  color: #0258bd;
   text-align: center;
-  color: #0258BD;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .user-table {
@@ -119,17 +136,17 @@ button {
 }
 
 button.active {
-  background-color: #28a745;
+  background-color: #7ED321;
   color: white;
 }
 
 button.suspended {
-  background-color: #dc3545;
+  background-color: #D0021B;
   color: white;
 }
 
 .delete-btn {
-  background-color: #d0021b;
+  background-color: #D0021B;
   color: white;
 }
 

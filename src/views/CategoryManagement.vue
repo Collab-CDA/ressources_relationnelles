@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="title-container">
-      Gestion des catégories (admin)
+      Gestion des catégories
       <button class="add-user-button" @click="openModal">
         Ajouter une catégorie
       </button>

@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <h1 class="dashboard-title">Tableau de bord - Statistiques</h1>
+    <h1>Tableau de bord - Statistiques</h1>
     
     <div class="filters">
       <h2>Choisissez les indicateurs à afficher</h2>
@@ -173,23 +173,49 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
+  font-family: 'Roboto', sans-serif;
+  color: #000000;
+  background-color: #FFFFFF;
 }
-.dashboard-title {
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+h1 {
+  font-family: 'Roboto', sans-serif;
+  font-size: 32px;
+  font-weight: bold;
+  color: #0258bd;
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
+
 .filters {
-  border: 1px solid #ddd;
+  border: 1px solid #dad8d8;
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 2rem;
+  background-color: #80ADA0;
 }
+
 .filters h2 {
+  font-size: 20px;
+  font-weight: 600;
   margin-bottom: 0.75rem;
   text-align: center;
+  color: #000000;
 }
+
 .checkbox-group {
   display: flex;
   flex-wrap: wrap;
@@ -197,75 +223,110 @@ export default {
   justify-content: center;
   margin-bottom: 1rem;
 }
+
 .checkbox-group label {
+  font-size: 16px;
   font-weight: normal;
   cursor: pointer;
 }
+
 .filter-buttons {
   display: flex;
   justify-content: center;
   gap: 1rem;
 }
+
 .btn {
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
 }
-.btn-filter { background-color: #007bff; color: #fff; }
-.btn-refresh { background-color: #6c757d; color: #fff; }
-.btn-export { background-color: #28a745; color: #fff; }
-.btn-select { background-color: #ffc107; color: #333; }
+
+.btn-filter,
+.btn-select,
+.btn-refresh,
+.btn-export {
+  background-color: #B0A2BA;
+  color: #FFFFFF;
+}
+
+.btn-filter:hover,
+.btn-select:hover,
+.btn-refresh:hover,
+.btn-export:hover {
+  background-color: #D4C4E0;
+}
+
 .cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
+
 .card {
-  background: #fff;
+  background: #FFFFFF;
   border: 1px solid #e0e0e0;
   padding: 1rem;
   border-radius: 8px;
   text-align: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease;
 }
-.card:hover { transform: translateY(-3px); }
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
 .card h3 {
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
   color: #555;
 }
+
 .card-value {
   font-size: 1.5rem;
   font-weight: bold;
   color: #333;
 }
+
 .chart-container {
   height: 500px;
   margin: 0 auto 5rem;
   max-width: 800px;
 }
+
 .chart-container h2 {
+  font-size: 20px;
+  font-weight: 600;
   text-align: center;
   margin-bottom: 1rem;
+  color: #0258BD;
 }
+
 .metric-list {
   text-align: center;
   margin-bottom: 2rem;
 }
+
 .metric-list ul {
   list-style: none;
   padding: 0;
 }
+
 .metric-list li {
   margin: 0.5rem 0;
   font-size: 1.1rem;
 }
+
 .loading {
   text-align: center;
   font-style: italic;
   margin-top: 1rem;
+  color: #000000;
 }
 </style>

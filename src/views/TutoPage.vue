@@ -3,7 +3,7 @@
     <img src="../assets/images/filtreTuto.jpg" alt="Illustration filtre" class="image-left" />
     <img src="../assets/images/objectifs.png" alt="Illustration des objectifs" class="image-left-objectifs" />
     <div class="tutorial-container">
-      <h1 class="main-title">Tutoriel de la plateforme</h1>
+      <h1>Tutoriel de la plateforme</h1>
       <p class="intro-text">On vous explique tout !</p>
 
       <!-- Introduction -->
@@ -124,10 +124,26 @@ export default {
   position: relative;
 }
 
-.main-title {
-  font-size: 28px;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+h1 {
+  font-family: 'Roboto', sans-serif;
+  font-size: 32px;
   font-weight: bold;
-  color: #0258BD;
+  color: #0258bd;
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 .intro-text {

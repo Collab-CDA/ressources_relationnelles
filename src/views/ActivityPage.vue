@@ -148,9 +148,6 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-body {
-  font-family: 'Roboto', sans-serif;
-}
 
 .main-container {
   width: 80%;
@@ -159,10 +156,23 @@ body {
   box-sizing: border-box;
 }
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+}
+
 h1 {
+  font-family: 'Roboto', sans-serif;
   font-size: 32px;
   font-weight: bold;
-  color: #0258BD;
+  color: #0258bd;
   text-align: center;
   margin-top: 2rem;
   margin-bottom: 2rem;

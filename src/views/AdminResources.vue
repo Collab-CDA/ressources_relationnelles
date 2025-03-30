@@ -451,12 +451,13 @@ export default {
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   background-color: #ffffff;
   color: #000000;
 }
 
 h1 {
+  font-family: 'Roboto', sans-serif;
   font-size: 32px;
   font-weight: bold;
   color: #0258bd;
@@ -574,12 +575,12 @@ button.delete:hover {
 }
 
 button.available {
-  background-color: #28a745;
+  background-color: #7ED321;
   color: white;
 }
 
 button.suspended {
-  background-color: #dc3545;
+  background-color: #D0021B;
   color: white;
 }
 
