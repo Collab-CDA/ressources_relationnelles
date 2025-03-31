@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const { createResource, getAllResources, updateResource, updateResourceStatus, deleteResource } = require('../controllers/resourceController');
+const { createResource, getAllResources, getUserResources, updateResource, updateResourceStatus, deleteResource } = require('../controllers/resourceController');
 const authenticate = require('../middlewares/authMiddleware');
 const checkRole = require('../middlewares/checkRole');
 
@@ -17,6 +17,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.get('/', getAllResources);
+router.get('/my-resources', authenticate, getUserResources);
 router.post('/create', authenticate, upload.array('files', 10), createResource);
 router.put('/update/:id', authenticate, checkRole(['Admin', 'Super-Admin']), upload.array('files', 10), updateResource);
 router.put('/status/:id', authenticate, checkRole(['Admin', 'Super-Admin']), updateResourceStatus);

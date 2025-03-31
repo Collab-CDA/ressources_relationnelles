@@ -23,6 +23,7 @@ import ContactUsPage from "@/views/ContactUsPage.vue";
 import FaqsPage from "@/views/FaqsPage.vue"
 import PersonalDataPage from "@/views/PersonalDataPage.vue";
 import FriendsPage from '@/views/FriendsPage.vue';
+import MyResources from '@/views/MyResources.vue';
 
 const routes = [
   { path: "/", name: "HomePage", component: HomePage },
@@ -47,7 +48,9 @@ const routes = [
   { path: "/admin/user", name: "UserManagement", component: UserManagement },
   { path: '/admin/resources/edit/:id', name: 'editResource', component: EditResource, props: true },
   { path: "/add-resources", name: "AddResources", component: AddResources },
-  { path: '/amis', name: 'FriendsPage', component: FriendsPage }
+  { path: '/amis', name: 'FriendsPage', component: FriendsPage },
+  { path: '/my-resources', name: 'MyResources', component: MyResources },
+
 ];
 
 const router = createRouter({

@@ -17,7 +17,7 @@ const favorisRoutes = require('./routes/favorisRoutes');
 const progressionActiviteRoutes = require('./routes/progressionActiviteRoutes');
 const invitationRoutes = require('./routes/invitationsRoutes');
 const friendshipRoutes = require('./routes/friendshipRoutes');
-const dashboardRoutes = require('./routes/dashboardRoutes'); // Ajouté ici
+const dashboardRoutes = require('./routes/dashboardRoutes');
 
 const jwt = require('jsonwebtoken');
 
@@ -82,7 +82,7 @@ app.use('/api/comments', commentRoutes);
 app.use('/api/progression', progressionActiviteRoutes);
 app.use('/api/invitations', invitationRoutes); 
 app.use('/api/friendships', friendshipRoutes);
-app.use('/api/dashboard', dashboardRoutes); // Route du tableau de bord ajoutée
+app.use('/api/dashboard', dashboardRoutes); 
 
 app.use((err, req, res, next) => {
   console.error('Erreur interne du serveur :', err.message);

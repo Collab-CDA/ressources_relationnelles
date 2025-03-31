@@ -48,6 +48,9 @@
               <li>
                 <router-link to="/progression" class="dropdown-item">Progression</router-link>
               </li>
+              <li>
+                <router-link to="/my-resources" class="dropdown-item">Mes ressources</router-link>
+              </li>
             </ul>
           </li>
           <li class="nav-item dropdown">

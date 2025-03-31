@@ -1,4 +1,4 @@
-const { createResource, getAllResources, updateResource, updateResourceStatus, deleteResource } = require('../services/resourceService');
+const { createResource, getAllResources, getUserResources, updateResource, updateResourceStatus, deleteResource } = require('../services/resourceService');
 
 exports.createResource = async (req, res) => {
     try {
@@ -17,6 +17,16 @@ exports.getAllResources = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.getUserResources = async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const resources = await getUserResources(userId);
+      res.status(200).json(resources);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
 
 exports.updateResource = async (req, res) => {
     try {
