@@ -17,9 +17,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.get('/', getAllResources);
-router.get('/my-resources', authenticate, getUserResources);
+router.get('/user/:id', getUserResources);
 router.post('/create', authenticate, upload.array('files', 10), createResource);
-router.put('/update/:id', authenticate, checkRole(['Admin', 'Super-Admin']), upload.array('files', 10), updateResource);
+router.put('/update/:id', authenticate, upload.array('files', 10), updateResource);
 router.put('/status/:id', authenticate, checkRole(['Admin', 'Super-Admin']), updateResourceStatus);
 router.delete('/delete/:id', authenticate, checkRole(['Admin', 'Super-Admin']), deleteResource);
 

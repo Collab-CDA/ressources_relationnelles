@@ -28,6 +28,17 @@ exports.getUserResources = async (req, res) => {
     }
   };
 
+  exports.getUserResources = async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const resources = await getUserResources(userId);
+      res.status(200).json(resources);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  
+
 exports.updateResource = async (req, res) => {
     try {
         const resource = await updateResource(req.params.id, req.body, req.files);

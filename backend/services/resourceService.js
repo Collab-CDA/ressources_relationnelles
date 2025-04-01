@@ -101,6 +101,17 @@ exports.getUserResources = async (userId) => {
   }
 };
 
+exports.getUserResources = async (userId) => {
+  try {
+    const resources = await Resource.findAll({
+      where: { id_utilisateur: userId }
+    });
+    return resources;
+  } catch (error) {
+    throw new Error('Erreur lors de la récupération des ressources de l\'utilisateur: ' + error.message);
+  }
+};
+
 exports.updateResource = async (id, data, files) => {
   try {
     const resource = await Resource.findByPk(id);

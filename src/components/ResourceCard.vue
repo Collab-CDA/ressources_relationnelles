@@ -1,1 +1,0 @@
-<!--Composant pour afficher une ressource-->
