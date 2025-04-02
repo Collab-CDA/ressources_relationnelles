@@ -78,10 +78,6 @@ export default {
 </script>
 
 <style scoped>
-body,
-.login-page {
-  font-family: "Roboto", sans-serif;
-}
 
 .login-page {
   max-width: 600px;

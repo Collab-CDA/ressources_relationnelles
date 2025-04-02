@@ -224,12 +224,35 @@ export default {
 </script>
 
 <style scoped>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+h1 {
+  font-family: 'Roboto', sans-serif;
+  font-size: 32px;
+  font-weight: bold;
+  color: #0258bd;
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
 .resource-list {
   background-color: #f0f0f0;
   color: black;
   padding: 20px;
   border-radius: 5px;
-  width: 100%;
+  width: 50%;
+  margin: 0 auto;
 }
 
 .resource-item {
@@ -345,10 +368,22 @@ export default {
 }
 
 .button-container {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
+  background-color: #b0a2ba;
+  border: none;
+  border-radius: 5px;
+  padding: 2px 0;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  color: white;
+  width: 62%;
+  margin: 0 auto;
+}
+
+.button-container:hover {
+  background-color: #d4c4e0;
+  color: black;
 }
 </style>
 
