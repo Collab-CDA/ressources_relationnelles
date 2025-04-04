@@ -24,12 +24,15 @@ import FaqsPage from "@/views/FaqsPage.vue"
 import PersonalDataPage from "@/views/PersonalDataPage.vue";
 import FriendsPage from '@/views/FriendsPage.vue';
 import MyResources from '@/views/MyResources.vue';
+import ChoixHeader from '@/views/ChoixHeader.vue';
+
 
 const routes = [
   { path: "/", name: "HomePage", component: HomePage },
   { path: "/tuto", name: "TutoPage", component: TutoPage },
   { path: "/register", name: "RegisterPage", component: RegisterPage },
   { path: "/login", name: "LoginPage", component: LoginPage },
+  { path: '/choix-header', component: ChoixHeader },
   { path: "/profile", name: "ProfilePage", component: ProfilePage },
   { path: "/messagerie", name: "MessageriePage", component: MessageriePage },
   { path: "/resources-public", name: "PublicResources", component: PublicResources },

@@ -1,9 +1,8 @@
 <template>
   <div class="app-container">
-    <!-- On vérifie si l'utilisateur est connecté pour afficher le bon header -->
     <component :is="headerComponent" @logout="handleLogout" />
     <div class="content">
-      <router-view />
+      <router-view @header-selected="updateHeaderComponent" />
     </div>
     <Footer />
   </div>
@@ -36,11 +35,11 @@ export default {
     checkUserAuthentication() {
       const token = localStorage.getItem('token');
       const role = localStorage.getItem('role');
+      const headerChoisi = localStorage.getItem('headerChoisi');
 
       if (token) {
-        // Si l'utilisateur est un administrateur
-        if (role === 'Admin') {
-          this.headerComponent = this.HeaderAdmin;
+        if (role === 'Admin' && headerChoisi) {
+          this.headerComponent = headerChoisi === 'HeaderAdmin' ? this.HeaderAdmin : this.Header2;
         } else {
           this.headerComponent = this.Header2;  // Affiche Header2 pour utilisateur connecté
         }
@@ -50,7 +49,8 @@ export default {
     },
     handleLogout() {
       localStorage.removeItem('token');
-      localStorage.removeItem('role'); 
+      localStorage.removeItem('role');
+      localStorage.removeItem('headerChoisi');
       this.checkUserAuthentication();
       this.$router.push('/');
     }
@@ -62,6 +62,8 @@ export default {
   }
 };
 </script>
+
+
 
 <style>
 .app-container {

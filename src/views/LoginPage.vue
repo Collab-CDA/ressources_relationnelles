@@ -62,20 +62,27 @@ export default {
         );
         const { utilisateur, token } = response.data;
         alert(`Bienvenue ${utilisateur.prenom}!`);
-        localStorage.setItem('token', token); 
-        localStorage.setItem('role', utilisateur.role_);  
-        this.$router.push("/");
+        localStorage.setItem('token', token);
+        localStorage.setItem('role', utilisateur.role_);
+
+        // Rediriger vers la page de choix si l'utilisateur est un administrateur
+        if (utilisateur.role_ === 'Admin') {
+          this.$router.push("/choix-header");
+        } else {
+          this.$router.push("/");
+        }
       } catch (error) {
         this.errorMessage =
           error.response?.data?.message || "Une erreur est survenue.";
       }
     },
     goToRegister() {
-      this.$router.push("/register"); 
+      this.$router.push("/register");
     },
   },
 };
 </script>
+
 
 <style scoped>
 

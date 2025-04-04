@@ -60,15 +60,6 @@
           {{ errors.confirmPassword }}
         </p>
       </div>
-      <div class="form-group">
-        <label for="role_">Rôle</label>
-        <select id="role_" v-model="form.role_" required>
-          <option value="utilisateur">Utilisateur</option>
-          <option value="Admin">Administrateur</option>
-          <option value="Super-Admin">Super administrateur</option>
-        </select>
-        <p v-if="errors.role" class="error-message">{{ errors.role }}</p>
-      </div>
       <div class="form-group checkbox-group">
         <input type="checkbox" id="accept-cgu" v-model="acceptCgu" required />
         <label for="accept-cgu">
@@ -106,12 +97,12 @@ export default {
         prenom: "",
         email: "",
         mot_de_passe: "",
-        role_: "utilisateur",
+        role_: "utilisateur",  // Le rôle est défini automatiquement comme "utilisateur"
       },
       confirmPassword: "",
       acceptCgu: false,
       passwordError: "",
-      errors: {}, 
+      errors: {},
       errorMessage: "",
     };
   },
@@ -156,7 +147,7 @@ export default {
         isValid = false;
       }
 
-      this.validatePassword(); 
+      this.validatePassword();
       const confirmPasswordError = this.validateConfirmPassword();
       if (confirmPasswordError) {
         this.errors.confirmPassword = confirmPasswordError;
@@ -175,7 +166,7 @@ export default {
       const isValid = this.validateFields();
 
       if (!isValid) {
-        return; 
+        return;
       }
 
       try {
@@ -189,7 +180,7 @@ export default {
           dataToSend
         );
         alert("Inscription réussie !");
-        this.$router.push("/login"); 
+        this.$router.push("/login");
       } catch (error) {
         console.log("Erreur de réponse du serveur:", error.response);
 
