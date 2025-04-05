@@ -50,9 +50,11 @@
           <li
             v-for="resource in filteredResources"
             :key="resource.id_ressource_"
-            @click="selectResource(resource)"
+            @click="resource.statut_ !== 'suspendue' && selectResource(resource)"
           >
-            <a href="#" @click.prevent>{{ resource.titre }}</a>
+            <a href="#" @click.prevent :class="{ suspended: resource.statut_ === 'suspendue' }">
+              {{ resource.titre }}
+            </a>
           </li>
         </ul>
         <p v-if="filteredResources.length === 0">Aucun résultat</p>
@@ -273,7 +275,6 @@ export default {
     },
     async fetchCategoriesResource() {
       try {
-        
         const response = await axios.get(
           "http://localhost:3000/api/categories",
           this.getAuthHeaders()
@@ -302,7 +303,6 @@ export default {
     },
     async fetchComments() {
       if (this.selectedResource) {
-  
         try {
           const response = await axios.get(
             `http://localhost:3000/api/comments/resource/${this.selectedResource.id_ressource_}`,
@@ -434,63 +434,66 @@ export default {
       this.fetchComments();
     },
     async openModal(user) {
-    if (user && user.prenom && user.nom) {
+      if (user && user.prenom && user.nom) {
         try {
-            const response = await axios.get('http://localhost:3000/api/users/search', {
-                params: { prenom: user.prenom, nom: user.nom },
-                headers: this.getAuthHeaders().headers
-            });
-
-            console.log("Réponse du serveur :", response.data);
-
-            if (response.data && response.data.id_utilisateur) {
-                this.selectedUser = response.data;
-                this.selectedUserId = toRaw(response.data.id_utilisateur); 
-                console.log("ID utilisateur sélectionné :", this.selectedUserId);
-                this.isModalOpen = true;
-            } else {
-                console.error("Utilisateur non trouvé :", user);
-                alert("Utilisateur non trouvé.");
+          const response = await axios.get(
+            'http://localhost:3000/api/users/search',
+            {
+              params: { prenom: user.prenom, nom: user.nom },
+              headers: this.getAuthHeaders().headers
             }
+          );
+
+          console.log("Réponse du serveur :", response.data);
+
+          if (response.data && response.data.id_utilisateur) {
+            this.selectedUser = response.data;
+            this.selectedUserId = toRaw(response.data.id_utilisateur); 
+            console.log("ID utilisateur sélectionné :", this.selectedUserId);
+            this.isModalOpen = true;
+          } else {
+            console.error("Utilisateur non trouvé :", user);
+            alert("Utilisateur non trouvé.");
+          }
         } catch (error) {
-            console.error("Erreur lors de la récupération de l'utilisateur :", error);
-            alert("Erreur lors de la récupération de l'utilisateur.");
+          console.error("Erreur lors de la récupération de l'utilisateur :", error);
+          alert("Erreur lors de la récupération de l'utilisateur.");
         }
-    } else {
+      } else {
         console.error("Nom ou prénom de l'utilisateur invalide :", user);
-    }
-},
-async sendFriendRequest() {
-  const currentUserId = this.getUserIdFromToken(); 
-  const selectedUserId = this.selectedUser?.id_utilisateur || this.selectedUserId;  
+      }
+    },
+    async sendFriendRequest() {
+      const currentUserId = this.getUserIdFromToken(); 
+      const selectedUserId = this.selectedUser?.id_utilisateur || this.selectedUserId;  
 
-  if (!currentUserId || !selectedUserId) {
-    console.error("Les IDs des utilisateurs sont manquants. Vérifiez les valeurs.");
-    alert("Les deux IDs des utilisateurs sont requis.");
-    return;
-  }
+      if (!currentUserId || !selectedUserId) {
+        console.error("Les IDs des utilisateurs sont manquants. Vérifiez les valeurs.");
+        alert("Les deux IDs des utilisateurs sont requis.");
+        return;
+      }
 
-  console.log("ID utilisateur actuel :", currentUserId);
-  console.log("ID utilisateur invité :", selectedUserId);
+      console.log("ID utilisateur actuel :", currentUserId);
+      console.log("ID utilisateur invité :", selectedUserId);
 
-  try {
-    const response = await axios.post(
-      "http://localhost:3000/api/friendships/create",  
-      {
-        id_utilisateur1: currentUserId,  
-        id_utilisateur2: selectedUserId, 
-      },
-      this.getAuthHeaders()  
-    );
-    
-    console.log("Réponse du serveur :", response.data);
-    alert("Invitation envoyée avec succès !");
-    this.closeModal();
-  } catch (error) {
-    console.error("Erreur lors de l'envoi de l'invitation :", error.response ? error.response.data : error.message);
-    alert("Une erreur est survenue lors de l'envoi de l'invitation.");
-  }
-},
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/api/friendships/create",  
+          {
+            id_utilisateur1: currentUserId,  
+            id_utilisateur2: selectedUserId, 
+          },
+          this.getAuthHeaders()  
+        );
+        
+        console.log("Réponse du serveur :", response.data);
+        alert("Invitation envoyée avec succès !");
+        this.closeModal();
+      } catch (error) {
+        console.error("Erreur lors de l'envoi de l'invitation :", error.response ? error.response.data : error.message);
+        alert("Une erreur est survenue lors de l'envoi de l'invitation.");
+      }
+    },
     closeModal() {
       this.isModalOpen = false;
       this.selectedUser = null;
@@ -570,6 +573,12 @@ h2 {
 
 .resource-button:hover {
   background-color: #d4c4e0;
+}
+
+/* Style pour les ressources suspenduees */
+.suspended {
+  color: red; /* ou utilisez 'gray' pour une apparence grisée */
+  pointer-events: none; /* Empêche le clic */
 }
 
 .upload-modal {

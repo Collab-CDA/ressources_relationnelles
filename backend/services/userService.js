@@ -1,8 +1,8 @@
+// userService.js
+
 const Utilisateur = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const fs = require('fs');
-const path = require('path');
 
 exports.creerUtilisateur = async (data) => {
     const { email, mot_de_passe } = data;
@@ -28,6 +28,11 @@ exports.authentifierUtilisateur = async (email, mot_de_passe) => {
     const motDePasseValide = await bcrypt.compare(mot_de_passe, utilisateur.mot_de_passe);
     if (!motDePasseValide) {
         throw new Error('Mot de passe incorrect.');
+    }
+
+    // Vérification du statut de l'utilisateur
+    if (utilisateur.statut === "suspendu") {
+        throw new Error("Votre compte a été suspendu temporairement");
     }
 
     const token = jwt.sign(
@@ -61,8 +66,7 @@ exports.trouverUtilisateurParNomEtPrenom = async (prenom, nom) => {
     return await Utilisateur.findOne({
       where: { prenom, nom }
     });
-  };
-  
+};
 
 exports.modifierUtilisateur = async (id, data) => {
     const utilisateur = await Utilisateur.findByPk(id);
@@ -87,12 +91,9 @@ exports.telechargerAvatar = async (id, file) => {
     if (!utilisateur) {
         return null;
     }
-
     const uploadPath = path.join(__dirname, '../uploads', `${id}_${file.originalname}`);
     fs.writeFileSync(uploadPath, file.buffer);
-
     utilisateur.avatar = `${id}_${file.originalname}`;
     await utilisateur.save();
-
     return utilisateur;
 };

@@ -47,9 +47,11 @@
           <li
             v-for="resource in filteredResources"
             :key="resource.id_ressource_"
-            @click="selectResource(resource)"
+            @click="resource.statut_ !== 'suspendue' && selectResource(resource)"
           >
-            <a href="#" @click.prevent>{{ resource.titre }}</a>
+            <a href="#" @click.prevent :class="{ suspended: resource.statut_ === 'suspendue' }">
+              {{ resource.titre }}
+            </a>
           </li>
         </ul>
         <p v-if="filteredResources.length === 0">Aucun résultat</p>
@@ -89,10 +91,7 @@
             </div>
           </div>
           <a
-            v-if="
-              selectedResource.lien_video &&
-              !isEmbedYouTubeLink(selectedResource.lien_video)
-            "
+            v-if="selectedResource.lien_video && !isEmbedYouTubeLink(selectedResource.lien_video)"
             :href="selectedResource.lien_video"
             target="_blank"
           >
@@ -256,7 +255,6 @@ export default {
           this.comments = JSON.parse(storedComments);
           return;
         }
-
         try {
           const response = await axios.get(
             `http://localhost:3000/api/comments/${this.selectedResource.id_ressource_}`,
@@ -288,15 +286,16 @@ export default {
     async addComment() {
       if (!this.isUserLoggedIn()) {
         alert("Veuillez vous connecter pour déposer un commentaire.");
-        this.$router.push('/login'); 
+        this.$router.push('/login');
         return;
       }
-
       if (this.selectedResource) {
         this.newComment.id_ressource_ = this.selectedResource.id_ressource_;
         this.newComment.id_utilisateur = this.getUserIdFromToken();
 
-        const decodedToken = JSON.parse(atob(token.split(".")[1])); // Décodage du payload JWT
+        // Exemple de décodage du token pour récupérer le prénom (à adapter si besoin)
+        const token = localStorage.getItem("token");
+        const decodedToken = JSON.parse(atob(token.split(".")[1]));
         const userFirstName = decodedToken.prenom || "Inconnu";
         this.newComment.prenom_utilisateur = userFirstName;
 
@@ -329,9 +328,9 @@ export default {
     },
     replyToComment(comment) {
       const prenom =
-        comment.User && comment.User.prenom
-          ? comment.User.prenom
-          : comment.prenom_utilisateur || "Utilisateur inconnu";
+        (comment.User && comment.User.prenom) ||
+        comment.prenom_utilisateur ||
+        "Utilisateur inconnu";
       this.newComment.titre_commentaire = `Re: ${comment.titre_commentaire}`;
       this.newComment.contenu_commentaire = `@${prenom} `;
     },
@@ -385,10 +384,10 @@ export default {
     getUserIdFromToken() {
       const token = localStorage.getItem("token");
       if (token) {
-        const base64Url = token.split(".")[1]; // Récupère la partie payload du JWT
+        const base64Url = token.split(".")[1];
         const base64 = base64Url.replace("-", "+").replace("_", "/");
         const decodedData = JSON.parse(window.atob(base64));
-        return decodedData.id_utilisateur; // Retourne l'ID utilisateur décodé
+        return decodedData.id_utilisateur;
       }
       return null;
     },
@@ -397,7 +396,6 @@ export default {
     this.fetchResources();
     this.fetchTypesRelation();
     this.fetchCategoriesResource();
-    // Ajoutez cette ligne pour charger les commentaires dès le début si une ressource est sélectionnée
     if (this.selectedResource) {
       this.fetchComments();
     }
@@ -570,6 +568,12 @@ form button:hover {
 
 .contact-button:hover {
   background-color: #d4c4e0;
+}
+
+/* Style pour les ressources suspenduees */
+.suspended {
+  color: red; /* ou 'gray' pour un effet grisé */
+  pointer-events: none;
 }
 
 /* Responsive mobiles */
