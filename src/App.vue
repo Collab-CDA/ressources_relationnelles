@@ -12,6 +12,7 @@
 import { markRaw } from 'vue';
 import Footer from './components/Footer.vue';
 import HeaderAdmin from './components/HeaderAdmin.vue';
+import HeaderModo from './components/HeaderModo.vue';
 
 export default {
   name: 'App',
@@ -24,6 +25,7 @@ export default {
       Header: null,
       Header2: null,
       HeaderAdmin: markRaw(HeaderAdmin),
+      HeaderModo: markRaw(HeaderModo),
     };
   },
   async created() {
@@ -37,9 +39,20 @@ export default {
       const role = localStorage.getItem('role');
       const headerChoisi = localStorage.getItem('headerChoisi');
 
+      console.log('Token:', token);
+      console.log('Role:', role);
+      console.log('Header Choisi:', headerChoisi);
+
       if (token) {
         if (role === 'Admin' && headerChoisi) {
           this.headerComponent = headerChoisi === 'HeaderAdmin' ? this.HeaderAdmin : this.Header2;
+        } else if (role === 'Modérateur') {
+          if (!headerChoisi) {
+            // Rediriger vers ChoixHeader si aucun choix n'a été fait
+            this.$router.push('/choix-header');
+          } else {
+            this.headerComponent = headerChoisi === 'HeaderModo' ? this.HeaderModo : this.Header2;
+          }
         } else {
           this.headerComponent = this.Header2;  // Affiche Header2 pour utilisateur connecté
         }
@@ -62,8 +75,6 @@ export default {
   }
 };
 </script>
-
-
 
 <style>
 .app-container {

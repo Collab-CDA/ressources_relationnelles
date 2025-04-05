@@ -25,6 +25,8 @@ import PersonalDataPage from "@/views/PersonalDataPage.vue";
 import FriendsPage from '@/views/FriendsPage.vue';
 import MyResources from '@/views/MyResources.vue';
 import ChoixHeader from '@/views/ChoixHeader.vue';
+import CommentManagement from "@/views/CommentManagement.vue";
+import ModoResources from "@/views/ModoResources.vue";
 
 
 const routes = [
@@ -53,6 +55,10 @@ const routes = [
   { path: "/add-resources", name: "AddResources", component: AddResources },
   { path: '/amis', name: 'FriendsPage', component: FriendsPage },
   { path: '/my-resources', name: 'MyResources', component: MyResources },
+  { path: '/commentaires', component: CommentManagement },
+  { path: "/modo/resources", name: "ModoResources", component: ModoResources },
+
+
 
 ];
 
