@@ -25,7 +25,7 @@
               <router-link to="/admin/dashboard" class="nav-link">Dashboard</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/admin/user" class="nav-link">Gestion des utilisateurs</router-link>
+              <router-link to="/super-admin/user" class="nav-link">Gestion des utilisateurs</router-link>
             </li>
             <li class="nav-item">
               <router-link to="/admin/resources" class="nav-link">Gestion des ressources</router-link>

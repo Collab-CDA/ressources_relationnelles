@@ -4,6 +4,8 @@
     <button @click="choisirHeader('Header2')">Interface Utilisateur</button>
     <button v-if="isAdmin" @click="choisirHeader('HeaderAdmin')">Interface Admin</button>
     <button v-if="isModo" @click="choisirHeader('HeaderModo')">Interface Modo</button>
+    <button v-if="isSuperAdmin" @click="choisirHeader('HeaderSuperAdmin')">Interface Super-Admin</button>
+
   </div>
 </template>
 
@@ -16,12 +18,14 @@ export default {
     },
     isModo() {
       return localStorage.getItem('role') === 'Modérateur';
+    },
+    isSuperAdmin() {
+      return localStorage.getItem('role') === 'Super-Admin';
     }
   },
   methods: {
     choisirHeader(header) {
       localStorage.setItem('headerChoisi', header);
-      console.log('Header choisi:', header);
       this.$router.push("/");
     }
   }

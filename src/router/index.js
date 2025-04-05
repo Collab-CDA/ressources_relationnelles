@@ -27,6 +27,7 @@ import MyResources from '@/views/MyResources.vue';
 import ChoixHeader from '@/views/ChoixHeader.vue';
 import CommentManagement from "@/views/CommentManagement.vue";
 import ModoResources from "@/views/ModoResources.vue";
+import SuperAdminUserManagement from "@/views/SuperAdminUserManagement.vue";
 
 
 const routes = [
@@ -57,9 +58,7 @@ const routes = [
   { path: '/my-resources', name: 'MyResources', component: MyResources },
   { path: '/commentaires', component: CommentManagement },
   { path: "/modo/resources", name: "ModoResources", component: ModoResources },
-
-
-
+  { path: "/super-admin/user", name: "SuperAdminUserManagement", component: SuperAdminUserManagement }
 ];
 
 const router = createRouter({

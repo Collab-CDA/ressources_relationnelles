@@ -1,8 +1,6 @@
 <template>
   <div>
     <h1 class="title-container">Gestion des utilisateurs
-      <button class="add-user-button" @click="openModal">Ajouter un utilisateur</button>
-
     </h1>
 
 
@@ -39,45 +37,6 @@
         </tbody>
       </table>
     </div>
-
-
-    <!-- Modale d'ajout d'utilisateur -->
-    <div v-if="showModal" class="modal">
-      <div class="modal-content">
-        <span class="close-button" @click="closeModal">&times;</span>
-        <h4>Ajouter un utilisateur</h4>
-        <form @submit.prevent="submitUser">
-          <div class="form-group">
-            <label for="nom">Nom :</label>
-            <input type="text" id="nom" v-model="newUser.nom" required />
-          </div>
-          <div class="form-group">
-            <label for="prenom">Prénom :</label>
-            <input type="text" id="prenom" v-model="newUser.prenom" required />
-          </div>
-          <div class="form-group">
-            <label for="email">Email :</label>
-            <input type="email" id="email" v-model="newUser.email" required />
-          </div>
-          <div class="form-group">
-            <label for="mot_de_passe">Mot de passe :</label>
-            <input type="password" id="mot_de_passe" v-model="newUser.mot_de_passe" required />
-          </div>
-          <div class="form-group">
-            <label for="role_">Rôle :</label>
-            <select id="role_" v-model="newUser.role_" required>
-              <option value="utilisateur">Utilisateur</option>
-              <option value="Modérateur">Modérateur</option>
-              <option value="Admin">Administrateur</option>
-              <option value="Super-Admin">Super administrateur</option>
-            </select>
-          </div>
-          <div class="button-container">
-            <button type="submit" class="btn">Ajouter</button>
-          </div>
-        </form>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -89,14 +48,6 @@ export default {
   data() {
     return {
       users: [],
-      showModal: false,
-      newUser: {
-        nom: '',
-        prenom: '',
-        email: '',
-        mot_de_passe: '',
-        role_: 'utilisateur',
-      },
     };
   },
   created() {
@@ -111,7 +62,6 @@ export default {
         console.error("Erreur lors de la récupération des utilisateurs:", error);
       }
     },
-
     async toggleStatus(user) {
       const newStatus = user.statut === 'actif' ? 'suspendu' : 'actif';
       try {
@@ -121,7 +71,6 @@ export default {
         console.error("Erreur lors de la mise à jour du statut:", error);
       }
     },
-
     async deleteUser(userId) {
       if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
         try {
@@ -129,44 +78,6 @@ export default {
           this.users = this.users.filter(user => user.id_utilisateur !== userId);
         } catch (error) {
           console.error("Erreur lors de la suppression de l'utilisateur:", error);
-        }
-      }
-    },
-
-    openModal() {
-      this.showModal = true;
-    },
-
-    closeModal() {
-      this.showModal = false;
-      this.resetUserForm();
-    },
-
-    resetUserForm() {
-      this.newUser = {
-        nom: '',
-        prenom: '',
-        email: '',
-        mot_de_passe: '',
-        role_: 'utilisateur',
-      };
-    },
-
-    async submitUser() {
-      try {
-        const response = await axios.post('http://localhost:3000/api/utilisateurs/register', {
-          ...this.newUser,
-          statut: 'actif',
-        });
-        alert("Utilisateur ajouté avec succès !");
-        this.closeModal();
-        this.fetchUsers();
-      } catch (error) {
-        console.error("Erreur lors de l'ajout de l'utilisateur:", error);
-        if (error.response && error.response.data && error.response.data.message === "Un compte existe déjà avec cet email.") {
-          alert("Un compte existe déjà avec cet email.");
-        } else {
-          alert("Une erreur est survenue.");
         }
       }
     },
