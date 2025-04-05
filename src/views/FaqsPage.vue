@@ -165,7 +165,7 @@ h1 {
 }
 
 .faq-container {
-  padding: 20px;
+  padding: 30px;
 }
 
 .faq-item {
