@@ -1,11 +1,19 @@
 <template>
-  <div>
+  <div class="profile-page">
     <h1>Mes amis</h1>
     <ul>
-      <li v-for="friend in friends" :key="friend.id_utilisateur">
+      <li v-for="friend in filteredFriends" :key="friend.id_utilisateur" class="card">
         <div class="friend-item">
-          <img :src="friend.avatar" alt="Avatar" class="avatar" />
-          <span>{{ friend.nom }} {{ friend.prenom }}</span>
+          <div class="avatar-container">
+            <img :src="getAvatarUrl(friend.avatar)" alt="Avatar" class="avatar" />
+          </div>
+          <div class="friend-info">
+            <div class="text-info">
+              <p><strong>Nom:</strong> {{ friend.nom }}</p>
+              <p><strong>Prénom:</strong> {{ friend.prenom }}</p>
+            </div>
+            <button @click="goToMessagerie(friend.id_utilisateur)" class="btn">Contacter</button>
+          </div>
         </div>
       </li>
     </ul>
@@ -19,8 +27,14 @@ export default {
   name: "FriendsPage",
   data() {
     return {
-      friends: []
+      friends: [],
+      userId: null
     };
+  },
+  computed: {
+    filteredFriends() {
+      return this.friends.filter(friend => friend.id_utilisateur !== this.userId);
+    }
   },
   methods: {
     getUserIdFromToken() {
@@ -44,16 +58,22 @@ export default {
         },
       };
     },
+    getAvatarUrl(avatar) {
+      return avatar ? `http://localhost:3000/uploads/${avatar}` : '';
+    },
     async fetchFriends() {
-      const userId = this.getUserIdFromToken();
-      if (userId) {
+      this.userId = this.getUserIdFromToken();
+      if (this.userId) {
         try {
-          const response = await axios.get(`http://localhost:3000/api/friends/${userId}`, this.getAuthHeaders());
+          const response = await axios.get(`http://localhost:3000/api/friends/${this.userId}`, this.getAuthHeaders());
           this.friends = response.data;
         } catch (error) {
           console.error("Erreur lors de la récupération des amis :", error);
         }
       }
+    },
+    goToMessagerie(friendId) {
+      this.$router.push({ name: 'MessageriePage', params: { friendId: friendId } });
     }
   },
   mounted() {
@@ -63,9 +83,6 @@ export default {
 </script>
 
 <style scoped>
-.amis-container {
-  padding: 20px;
-}
 * {
   box-sizing: border-box;
   margin: 0;
@@ -88,26 +105,80 @@ h1 {
   margin-bottom: 2rem;
 }
 
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
 ul {
   list-style-type: none;
   padding: 0;
+  width: 100%;
+  max-width: 600px;
 }
-li {
-  background-color: #f8f9fa;
-  margin-bottom: 10px;
+
+.card {
+  background-color: #DAD8D8;
   padding: 10px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  border-radius: 10px;
+  text-align: left;
 }
+
 .friend-item {
   display: flex;
   align-items: center;
 }
+
+.avatar-container {
+  margin-right: 1rem;
+}
+
 .avatar {
-  width: 50px;
-  height: 50px;
+  width: 4rem;
+  height: 4rem;
+  border: solid 5px #80ADA0;
   border-radius: 50%;
-  margin-right: 10px;
+  object-fit: cover;
+}
+
+.friend-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+
+.text-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.friend-info p {
+  margin: 5px 0;
+}
+
+.friend-info p,
+.friend-info strong {
+  color: #000000;
+}
+
+.btn {
+  background-color: #B0A2BA;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 1rem;
+  margin-top: 0;
+}
+
+.btn:hover {
+  background-color: #D4C4E0;
 }
 </style>

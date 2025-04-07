@@ -81,6 +81,7 @@ app.use('/api/types_ressource', typesResourceRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/progression', progressionActiviteRoutes);
 app.use('/api/invitations', invitationRoutes); 
+app.use('/api/friendships', friendshipRoutes);
 app.use('/api', friendshipRoutes);
 app.use('/api/dashboard', dashboardRoutes); 
 

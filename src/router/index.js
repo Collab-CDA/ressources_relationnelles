@@ -20,7 +20,7 @@ import MessageriePage from "@/views/utilisateurs/MessageriePage.vue";
 import EditResource from "@/views/utilisateurs/EditResource.vue";
 import AddResources from "@/views/utilisateurs/AddResources.vue";
 import ContactUsPage from "@/views/footer/ContactUsPage.vue";
-import FaqsPage from "@/views/footer/FaqsPage.vue"
+import FaqsPage from "@/views/footer/FaqsPage.vue";
 import PersonalDataPage from "@/views/footer/PersonalDataPage.vue";
 import FriendsPage from '@/views/utilisateurs/FriendsPage.vue';
 import MyResources from '@/views/utilisateurs/MyResources.vue';
@@ -29,7 +29,6 @@ import CommentManagement from "@/views/administration/CommentManagement.vue";
 import ModoResources from "@/views/administration/ModoResources.vue";
 import SuperAdminUserManagement from "@/views/administration/SuperAdminUserManagement.vue";
 
-
 const routes = [
   { path: "/", name: "HomePage", component: HomePage },
   { path: "/tuto", name: "TutoPage", component: TutoPage },
@@ -37,7 +36,7 @@ const routes = [
   { path: "/login", name: "LoginPage", component: LoginPage },
   { path: '/choix-header', component: ChoixHeader },
   { path: "/profile", name: "ProfilePage", component: ProfilePage },
-  { path: "/messagerie", name: "MessageriePage", component: MessageriePage },
+  { path: "/messagerie/:friendId", name: "MessageriePage", component: MessageriePage, props: true }, // Correction ici
   { path: "/resources-public", name: "PublicResources", component: PublicResources },
   { path: "/complete-resources", name: "CompleteResources", component: CompleteResources },
   { path: "/resource-detail/:id", name: "ResourceDetail", component: ResourceDetail },
