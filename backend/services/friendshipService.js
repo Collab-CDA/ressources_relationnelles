@@ -1,4 +1,5 @@
 const Friendship = require('../models/Friendship');
+const Utilisateur = require('../models/User');
 const { Op } = require('sequelize');
 
 // Fonction pour créer une demande d'amitié
@@ -50,6 +51,36 @@ exports.acceptFriendship = async (id) => {
     throw new Error("Erreur lors de l'acceptation de la demande d'amitié: " + error.message);
   }
 };
+
+
+exports.getFriends = async (userId) => {
+  try {
+    // Récupérer les relations d'amitié où l'utilisateur est soit id_utilisateur1 soit id_utilisateur2
+    const friendships = await Friendship.findAll({
+      where: {
+        [Op.or]: [
+          { id_utilisateur1: userId },
+          { id_utilisateur2: userId }
+        ]
+      }
+    });
+
+    // Extraire les IDs des amis
+    const friendIds = friendships.map(friendship =>
+      friendship.id_utilisateur1 === userId ? friendship.id_utilisateur2 : friendship.id_utilisateur1
+    );
+
+    // Récupérer les informations des amis
+    const friends = await Utilisateur.findAll({
+      where: { id_utilisateur: friendIds }
+    });
+
+    return friends;
+  } catch (error) {
+    throw new Error("Erreur lors de la récupération des amis: " + error.message);
+  }
+};
+
 
 exports.deleteFriendship = async (id_utilisateur1, id_utilisateur2) => {
   try {

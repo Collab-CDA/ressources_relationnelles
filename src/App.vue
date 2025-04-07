@@ -41,9 +41,7 @@ export default {
       const role = localStorage.getItem('role');
       const headerChoisi = localStorage.getItem('headerChoisi');
 
-      console.log('Token:', token);
       console.log('Role:', role);
-      console.log('Header Choisi:', headerChoisi);
 
       if (token) {
         if (role === 'Admin' && headerChoisi) {
