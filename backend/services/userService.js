@@ -1,5 +1,5 @@
-// userService.js
-
+const path = require('path');
+const fs = require('fs');
 const Utilisateur = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');

@@ -78,12 +78,12 @@ export default {
   methods: {
     async fetchUtilisateur() {
       try {
-        const token = localStorage.getItem('token'); // Récupérez le token du localStorage
+        const token = localStorage.getItem('token'); 
         if (!token) {
           throw new Error('Token manquant dans le localStorage.');
         }
         const decodedToken = jwtDecode(token);
-        const userId = decodedToken.id; // Récupérez l'ID de l'utilisateur à partir du token
+        const userId = decodedToken.id; 
 
         const response = await axios.get(`http://localhost:3000/api/utilisateurs/${userId}`, {
           headers: {
@@ -111,12 +111,12 @@ export default {
     },
     async uploadAvatar() {
       try {
-        const token = localStorage.getItem('token'); // Récupérez le token du localStorage
+        const token = localStorage.getItem('token'); 
         if (!token) {
           throw new Error('Token manquant dans le localStorage.');
         }
         const decodedToken = jwtDecode(token);
-        const userId = decodedToken.id; // Récupérez l'ID de l'utilisateur à partir du token
+        const userId = decodedToken.id; 
 
         const formData = new FormData();
         formData.append('avatar', this.selectedFile);
@@ -134,12 +134,12 @@ export default {
     },
     async updateUtilisateur() {
       try {
-        const token = localStorage.getItem('token'); // Récupérez le token du localStorage
+        const token = localStorage.getItem('token'); 
         if (!token) {
           throw new Error('Token manquant dans le localStorage.');
         }
         const decodedToken = jwtDecode(token);
-        const userId = decodedToken.id; // Récupérez l'ID de l'utilisateur à partir du token
+        const userId = decodedToken.id;
 
         const response = await axios.put(`http://localhost:3000/api/utilisateurs/${userId}`, this.editedUtilisateur, {
           headers: {
@@ -159,20 +159,20 @@ export default {
     },
     async deleteUtilisateur() {
       try {
-        const token = localStorage.getItem('token'); // Récupérez le token du localStorage
+        const token = localStorage.getItem('token');
         if (!token) {
           throw new Error('Token manquant dans le localStorage.');
         }
         const decodedToken = jwtDecode(token);
-        const userId = decodedToken.id; // Récupérez l'ID de l'utilisateur à partir du token
+        const userId = decodedToken.id;
 
         await axios.delete(`http://localhost:3000/api/utilisateurs/${userId}`, {
           headers: {
             Authorization: token,
           },
         });
-        localStorage.removeItem('token'); // Supprimez le token du localStorage
-        this.$router.push('/login'); // Redirigez l'utilisateur vers la page de connexion
+        localStorage.removeItem('token'); 
+        this.$router.push('/login'); 
       } catch (error) {
         console.error('Erreur lors de la suppression du profil:', error);
       }
