@@ -182,8 +182,6 @@ export default {
         alert("Inscription réussie !");
         this.$router.push("/login");
       } catch (error) {
-        console.log("Erreur de réponse du serveur:", error.response);
-
         if (
           error.response &&
           error.response.data &&

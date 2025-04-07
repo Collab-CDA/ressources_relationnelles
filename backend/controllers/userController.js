@@ -52,9 +52,7 @@ exports.obtenirUtilisateurParId = async (req, res) => {
 
 exports.getUserByFullName = async (req, res) => {
     const { prenom, nom } = req.query;
-  
-    console.log("Recherche de l'utilisateur avec prénom :", prenom, "et nom :", nom);
-  
+    
     if (!prenom || !nom) {
       return res.status(400).json({ message: "Le prénom et le nom sont requis." });
     }
@@ -62,7 +60,6 @@ exports.getUserByFullName = async (req, res) => {
     try {
       const utilisateur = await trouverUtilisateurParNomEtPrenom(prenom, nom);
       if (!utilisateur) {
-        console.log("Aucun utilisateur trouvé avec prénom :", prenom, "et nom :", nom);
         return res.status(404).json({ message: "Utilisateur non trouvé." });
       }
       res.status(200).json(utilisateur);

@@ -10,11 +10,11 @@ import CompleteResources from "@/views/utilisateurs/CompleteResources.vue";
 import ResourceDetail from "@/views/utilisateurs/ResourceDetail.vue";
 import ProgressionPage from "../views/utilisateurs/ProgressionPage.vue";
 import CguPage from "../views/footer/cguPage.vue";
-import Statistics from "@/views/admin/Statistics.vue";
-import AdminDashboard from "@/views/admin/AdminDashboard.vue";
-import AdminResources from "@/views/admin/AdminResources.vue";
-import CategoryManagement from "@/views/admin/CategoryManagement.vue";
-import UserManagement from "@/views/admin/UserManagement.vue";
+import Statistics from "@/views/administration/Statistics.vue";
+import AdminDashboard from "@/views/administration/AdminDashboard.vue";
+import AdminResources from "@/views/administration/AdminResources.vue";
+import CategoryManagement from "@/views/administration/CategoryManagement.vue";
+import UserManagement from "@/views/administration/UserManagement.vue";
 import ActivityPage from "@/views/utilisateurs/ActivityPage.vue";
 import MessageriePage from "@/views/utilisateurs/MessageriePage.vue";
 import EditResource from "@/views/utilisateurs/EditResource.vue";
@@ -24,10 +24,10 @@ import FaqsPage from "@/views/footer/FaqsPage.vue"
 import PersonalDataPage from "@/views/footer/PersonalDataPage.vue";
 import FriendsPage from '@/views/utilisateurs/FriendsPage.vue';
 import MyResources from '@/views/utilisateurs/MyResources.vue';
-import ChoixHeader from '@/views/admin/ChoixHeader.vue';
-import CommentManagement from "@/views/admin/CommentManagement.vue";
-import ModoResources from "@/views/admin/ModoResources.vue";
-import SuperAdminUserManagement from "@/views/admin/SuperAdminUserManagement.vue";
+import ChoixHeader from '@/views/administration/ChoixHeader.vue';
+import CommentManagement from "@/views/administration/CommentManagement.vue";
+import ModoResources from "@/views/administration/ModoResources.vue";
+import SuperAdminUserManagement from "@/views/administration/SuperAdminUserManagement.vue";
 
 
 const routes = [

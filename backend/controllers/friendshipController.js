@@ -22,7 +22,7 @@ exports.createFriendship = async (req, res) => {
   }
 };
 
-// Fonction de vérification d'amitié
+// Vérifie l'amitié
 exports.checkFriendshipByBody = async (req, res) => {
   try {
     const { id_utilisateur_1, id_utilisateur_2 } = req.body;

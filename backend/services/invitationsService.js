@@ -5,7 +5,6 @@ exports.createInvitation = async (data) => {
   try {
     const { id_utilisateur_inviteur, id_utilisateur_invite, statut_invitation } = data;
 
-    // Création de l'invitation sans le champ id_ressource_ (supprimé dans le modèle)
     const invitation = await Invitation.create({
       id_utilisateur_inviteur,
       id_utilisateur_invite,
@@ -19,7 +18,6 @@ exports.createInvitation = async (data) => {
 
 exports.getInvitationsByUser = async (userId) => {
   try {
-    // Recherche des invitations envoyées et reçues par l'utilisateur
     const invitations = await Invitation.findAll({
       where: {
         [Op.or]: [

@@ -50,9 +50,15 @@
           <li
             v-for="resource in filteredResources"
             :key="resource.id_ressource_"
-            @click="resource.statut_ !== 'suspendue' && selectResource(resource)"
+            @click="
+              resource.statut_ !== 'suspendue' && selectResource(resource)
+            "
           >
-            <a href="#" @click.prevent :class="{ suspended: resource.statut_ === 'suspendue' }">
+            <a
+              href="#"
+              @click.prevent
+              :class="{ suspended: resource.statut_ === 'suspendue' }"
+            >
               {{ resource.titre }}
             </a>
           </li>
@@ -63,6 +69,9 @@
       <div class="content-container">
         <div v-if="selectedResource">
           <h2>{{ selectedResource.titre }}</h2>
+          <button class="share-button" @click="shareResource">
+            <i class="fas fa-share-alt"></i> Partager
+          </button>
           <button
             class="favorite-button"
             @click="toggleFavorite(selectedResource)"
@@ -196,12 +205,13 @@
 
 <script>
 import axios from "axios";
-import { toRaw } from 'vue';
+import { toRaw } from "vue";
 
 export default {
   name: "CompleteResources",
   data() {
     return {
+      favorites: [],
       isModalOpen: false,
       selectedUser: null,
       modalUserName: "",
@@ -240,6 +250,9 @@ export default {
     },
   },
   methods: {
+    shareResource() {
+      alert("Publication partagée");
+    },
     formatDate(dateStr) {
       if (!dateStr || dateStr === "CURRENT_TIMESTAMP") return "";
       const dateObj = new Date(dateStr);
@@ -356,7 +369,6 @@ export default {
       this.newComment.titre = `Re: ${comment.titre}`;
       this.newComment.contenu = `@${prenom} `;
       this.newComment.id_commentaire_parent = comment.id_commentaire;
-      console.log("Réponse au commentaire préparée :", this.newComment);
     },
     redirectToAddResource() {
       this.$router.push("/add-resources");
@@ -389,10 +401,8 @@ export default {
       if (token) {
         try {
           const decodedToken = JSON.parse(atob(token.split(".")[1]));
-          console.log("ID de l'utilisateur depuis le token :", decodedToken.id);
           return decodedToken.id;
         } catch (error) {
-          console.error("Erreur lors du décodage du token :", error);
           return null;
         }
       }
@@ -408,27 +418,38 @@ export default {
       };
     },
     async toggleFavorite(resource) {
-      const userId = this.getUserIdFromToken();
-      if (!userId) {
-        alert(
-          "Vous devez être connecté pour ajouter une ressource aux favoris."
-        );
-        return;
-      }
-      try {
-        await axios.post(
-          "http://localhost:3000/api/favoris/create",
-          { id_utilisateur: userId, id_ressource_: resource.id_ressource_ },
-          this.getAuthHeaders()
-        );
-        alert("Ressource ajoutée aux favoris avec succès !");
-      } catch (error) {
-        console.warn(
-          "Erreur lors de l'ajout aux favoris :",
-          error.response ? error.response.data : error.message
-        );
-      }
-    },
+    const userId = this.getUserIdFromToken();
+    if (!userId) {
+      alert("Vous devez être connecté pour ajouter une ressource aux favoris.");
+      return;
+    }
+
+    // Vérifiez si la ressource est déjà dans les favoris
+    const isFavorite = this.isResourceInFavorites(resource.id_ressource_);
+    if (isFavorite) {
+      alert("Ressource déjà ajoutée aux favoris !");
+      return;
+    }
+
+    try {
+      await axios.post(
+        "http://localhost:3000/api/favoris/create",
+        { id_utilisateur: userId, id_ressource_: resource.id_ressource_ },
+        this.getAuthHeaders()
+      );
+      alert("Ressource ajoutée aux favoris avec succès !");
+    } catch (error) {
+      console.warn(
+        "Erreur lors de l'ajout aux favoris :",
+        error.response ? error.response.data : error.message
+      );
+    }
+  },
+
+  isResourceInFavorites(resourceId) {
+    return this.favorites.some(fav => fav.id_ressource_ === resourceId);
+  },
+
     selectResource(resource) {
       this.selectedResource = resource;
       this.fetchComments();
@@ -437,26 +458,26 @@ export default {
       if (user && user.prenom && user.nom) {
         try {
           const response = await axios.get(
-            'http://localhost:3000/api/users/search',
+            "http://localhost:3000/api/users/search",
             {
               params: { prenom: user.prenom, nom: user.nom },
-              headers: this.getAuthHeaders().headers
+              headers: this.getAuthHeaders().headers,
             }
           );
 
-          console.log("Réponse du serveur :", response.data);
-
           if (response.data && response.data.id_utilisateur) {
             this.selectedUser = response.data;
-            this.selectedUserId = toRaw(response.data.id_utilisateur); 
-            console.log("ID utilisateur sélectionné :", this.selectedUserId);
+            this.selectedUserId = toRaw(response.data.id_utilisateur);
             this.isModalOpen = true;
           } else {
             console.error("Utilisateur non trouvé :", user);
             alert("Utilisateur non trouvé.");
           }
         } catch (error) {
-          console.error("Erreur lors de la récupération de l'utilisateur :", error);
+          console.error(
+            "Erreur lors de la récupération de l'utilisateur :",
+            error
+          );
           alert("Erreur lors de la récupération de l'utilisateur.");
         }
       } else {
@@ -464,11 +485,14 @@ export default {
       }
     },
     async sendFriendRequest() {
-      const currentUserId = this.getUserIdFromToken(); 
-      const selectedUserId = this.selectedUser?.id_utilisateur || this.selectedUserId;  
+      const currentUserId = this.getUserIdFromToken();
+      const selectedUserId =
+        this.selectedUser?.id_utilisateur || this.selectedUserId;
 
       if (!currentUserId || !selectedUserId) {
-        console.error("Les IDs des utilisateurs sont manquants. Vérifiez les valeurs.");
+        console.error(
+          "Les IDs des utilisateurs sont manquants. Vérifiez les valeurs."
+        );
         alert("Les deux IDs des utilisateurs sont requis.");
         return;
       }
@@ -478,19 +502,21 @@ export default {
 
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/friendships/create",  
+          "http://localhost:3000/api/friendships/create",
           {
-            id_utilisateur1: currentUserId,  
-            id_utilisateur2: selectedUserId, 
+            id_utilisateur1: currentUserId,
+            id_utilisateur2: selectedUserId,
           },
-          this.getAuthHeaders()  
+          this.getAuthHeaders()
         );
-        
-        console.log("Réponse du serveur :", response.data);
+
         alert("Invitation envoyée avec succès !");
         this.closeModal();
       } catch (error) {
-        console.error("Erreur lors de l'envoi de l'invitation :", error.response ? error.response.data : error.message);
+        console.error(
+          "Erreur lors de l'envoi de l'invitation :",
+          error.response ? error.response.data : error.message
+        );
         alert("Une erreur est survenue lors de l'envoi de l'invitation.");
       }
     },
@@ -498,12 +524,30 @@ export default {
       this.isModalOpen = false;
       this.selectedUser = null;
     },
+    async fetchFavorites() {
+    const userId = this.getUserIdFromToken();
+    if (!userId) return;
+
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/favoris/${userId}`,
+        this.getAuthHeaders()
+      );
+      this.favorites = response.data;
+    } catch (error) {
+      console.warn(
+        "Erreur lors de la récupération des favoris :",
+        error.response ? error.response.data : error.message
+      );
+    }
+  },
   },
   mounted() {
     this.fetchResources();
     this.fetchTypesRelation();
     this.fetchCategoriesResource();
     this.fetchTypesResource();
+    this.fetchFavorites();
   },
 };
 </script>
@@ -516,13 +560,13 @@ export default {
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   background-color: #ffffff;
   color: #000000;
 }
 
 h1 {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 32px;
   font-weight: bold;
   color: #0258bd;
@@ -771,6 +815,20 @@ form button:hover {
   color: red;
 }
 
+.share-button {
+  position: absolute;
+  top: 10px;
+  right: 50px; 
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: blue;
+}
+
+.share-button:hover {
+  color: darkblue;
+}
 /* Responsive mobiles */
 @media (max-width: 768px) {
   .main-container {

@@ -40,7 +40,7 @@ const {
     try {
       const { id } = req.params;
       await deleteCategoryResourceService(id);
-      res.status(204).send(); // Nessun contenuto
+      res.status(204).send();
     } catch (error) {
       console.error('Errore durante l\'eliminazione della categoria:', error.message);
       res.status(500).json({ message: 'Errore del server.' });

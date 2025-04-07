@@ -93,7 +93,6 @@ export default {
   emits: ['logout'], 
   methods: {
     logout() {
-      // Retirer le token du localStorage
       localStorage.removeItem("token");
       this.$emit('logout');
     }
@@ -102,11 +101,10 @@ export default {
 </script>
 
 <style scoped>
-/* Styles pour le header */
 header {
   background-color: #0258bd;
   padding: 20px;
-  position: relative; /* Nécessaire pour positionner le nom sur le logo */
+  position: relative; 
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -117,10 +115,10 @@ header {
   font-weight: bold;
   color: white;
   position: absolute;
-  top: 50%; /* Centré verticalement */
+  top: 50%; 
   left: 45px;
-  transform: translateY(-50%); /* Ajuste la position verticale */
-  z-index: 1; /* Assure que le texte soit au-dessus du logo */
+  transform: translateY(-50%); 
+  z-index: 1; 
   margin: 0;
 }
 

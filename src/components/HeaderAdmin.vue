@@ -68,8 +68,8 @@
     emits: ['logout'],
     methods: {
       logout() {
-        localStorage.removeItem("token"); // Retire le token du localStorage
-        localStorage.removeItem("role");  // Supprime le rôle du localStorage
+        localStorage.removeItem("token"); 
+        localStorage.removeItem("role");  
         this.$emit('logout');
       }
     }

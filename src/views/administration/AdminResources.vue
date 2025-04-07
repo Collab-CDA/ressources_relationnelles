@@ -399,7 +399,6 @@ export default {
         const headers = this.getAuthHeaders();
         headers.headers["Content-Type"] = "multipart/form-data";
         const response = await axios.post("http://localhost:3000/api/resources/create", formData, headers);
-        console.log("Ressource ajoutée avec succès :", response.data);
         alert("Ressource ajoutée avec succès !");
         this.closeModal();
         this.fetchResources();
@@ -408,7 +407,6 @@ export default {
       }
     },
     async submitEditResource() {
-      // Pour l'édition, on utilise l'id de la ressource sélectionnée
       if (!this.editResource.id_ressource_) return;
       try {
         const formData = new FormData();
@@ -419,8 +417,6 @@ export default {
         formData.append("id_categorie", this.editResource.id_categorie);
         formData.append("lien_video", this.editResource.lien_video);
         formData.append("nom_image", this.editResource.nom_image);
-        // Note : Si votre service d'édition ne gère pas la modification de l'image,
-        // vous pouvez choisir de ne pas renvoyer "files" si aucun nouveau fichier n'est sélectionné.
         if (this.editResource.selectedFile) {
           formData.append("files", this.editResource.selectedFile);
         }

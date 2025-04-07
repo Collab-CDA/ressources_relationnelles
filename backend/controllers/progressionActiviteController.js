@@ -1,5 +1,6 @@
 const progressionActiviteService = require('../services/progressionActiviteService');
 
+// Début l'activité
 exports.startActivity = async (req, res) => {
   const { id_ressource_, statut, pourcentage_completion } = req.body;
   const userId = req.user.id;
@@ -12,7 +13,7 @@ exports.startActivity = async (req, res) => {
   }
 };
 
-// Arrêter une activité
+// Arrête l'activité
 exports.stopActivity = async (req, res) => {
   const { id_ressource_ } = req.params;
   const { pourcentage_completion } = req.body;
@@ -26,7 +27,7 @@ exports.stopActivity = async (req, res) => {
   }
 };
 
-// Récupérer la progression de l'utilisateur
+// Récupére la progression de l'utilisateur
 exports.getUserProgress = async (req, res) => {
   const userId = req.user.id;
 

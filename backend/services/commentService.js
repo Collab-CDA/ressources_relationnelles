@@ -10,7 +10,7 @@ const getCommentsByResource = async (id_ressource_) => {
         include: [{
             model: User,
             as: 'User',
-            attributes: ['prenom', 'nom'] // RECUP ID POUR INVITATIONS ??
+            attributes: ['prenom', 'nom']
         }]
     });
 };

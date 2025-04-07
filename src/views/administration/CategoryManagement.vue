@@ -7,7 +7,6 @@
       </button>
     </h1>
 
-    <!-- Liste des catégories -->
     <div class="main-container">
       <div class="resource-list">
         <h3>Liste des catégories</h3>
@@ -28,7 +27,7 @@
       </div>
     </div>
 
-    <!-- Modal pour créer/éditer une catégorie -->
+    <!-- Modal création/édition catégorie -->
     <div v-if="showModal" class="modal">
       <div class="modal-content">
         <span class="close-button" @click="closeModal">&times;</span>
@@ -44,7 +43,6 @@
               required
             />
           </div>
-          <!-- Vous pouvez ajouter d'autres champs si nécessaire -->
           <div class="button-container">
             <button type="submit" class="btn">
               {{ isEditing ? "Modifier" : "Ajouter" }}
@@ -66,11 +64,9 @@ export default {
       categories: [],
       showModal: false,
       isEditing: false,
-      // Formulaire de création/édition
       categoryForm: {
         libelle_categorie: "",
       },
-      // Conserver l'id de la catégorie en cours d'édition
       editingCategoryId: null,
     };
   },
@@ -78,7 +74,6 @@ export default {
     this.fetchCategories();
   },
   methods: {
-    // Récupère la liste des catégories
     async fetchCategories() {
       try {
         const response = await axios.get("http://localhost:3000/api/categories", this.getAuthHeaders());
@@ -87,37 +82,31 @@ export default {
         console.error("Erreur lors de la récupération des catégories :", error.response?.data || error.message);
       }
     },
-    // Ouvre la modal en mode création
     openModal() {
       this.resetForm();
       this.isEditing = false;
       this.showModal = true;
     },
-    // Ferme la modal et réinitialise le formulaire
     closeModal() {
       this.showModal = false;
       this.resetForm();
     },
-    // Réinitialise le formulaire
     resetForm() {
       this.categoryForm = {
         libelle_categorie: "",
       };
       this.editingCategoryId = null;
     },
-    // Envoi du formulaire pour créer ou modifier une catégorie
     async submitCategory() {
       const headers = this.getAuthHeaders();
       try {
         if (this.isEditing && this.editingCategoryId) {
-          // Edition : appel PUT
           await axios.put(
             `http://localhost:3000/api/categories/${this.editingCategoryId}`,
             this.categoryForm,
             headers
           );
         } else {
-          // Création : appel POST
           await axios.post("http://localhost:3000/api/categories", this.categoryForm, headers);
         }
         this.closeModal();
@@ -126,7 +115,6 @@ export default {
         console.error("Erreur lors de la soumission du formulaire :", error.response?.data || error.message);
       }
     },
-    // Prépare la modal pour l'édition d'une catégorie
     editCategory(category) {
       this.categoryForm = {
         libelle_categorie: category.libelle_categorie,
@@ -135,7 +123,6 @@ export default {
       this.isEditing = true;
       this.showModal = true;
     },
-    // Supprime une catégorie après confirmation
     async deleteCategory(categoryId) {
       const confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette catégorie ?");
       if (!confirmation) return;
@@ -146,7 +133,6 @@ export default {
         console.error("Erreur lors de la suppression de la catégorie :", error.response?.data || error.message);
       }
     },
-    // Récupère les headers d'authentification
     getAuthHeaders() {
       const token = localStorage.getItem("token");
       if (!token) {

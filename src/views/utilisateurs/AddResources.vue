@@ -167,7 +167,6 @@ export default {
           formData,
           headers
         );
-        console.log("Ressource ajoutée avec succès :", response.data);
         alert("Ressource ajoutée avec succès !");
       } catch (error) {
         console.error(
