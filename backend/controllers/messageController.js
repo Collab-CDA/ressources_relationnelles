@@ -1,34 +1,23 @@
-const Message = require('../models/Message');
+const messageService = require('../services/messageService');
 
 exports.getMessages = async (req, res) => {
   const { userId, friendId } = req.params;
   try {
-    const messages = await Message.findAll({
-      where: {
-        [Op.or]: [
-          { sender: userId, receiver: friendId },
-          { sender: friendId, receiver: userId }
-        ]
-      },
-      order: [['date_envoi', 'ASC']]
-    });
-    res.json(messages);
+    const messages = await messageService.getMessages(userId, friendId);
+    res.status(200).json(messages);
   } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la récupération des messages' });
+    console.error("Erreur lors de la récupération des messages :", error);
+    res.status(500).json({ message: 'Erreur lors de la récupération des messages.' });
   }
 };
 
 exports.sendMessage = async (req, res) => {
-  const { sender, receiver, contenu_message } = req.body;
+  const { id_utilisateur1, id_utilisateur2, contenu_message } = req.body;
   try {
-    const message = await Message.create({
-      sender,
-      receiver,
-      contenu_message,
-      date_envoi: new Date()
-    });
-    res.json(message);
+    const message = await messageService.sendMessage(id_utilisateur1, id_utilisateur2, contenu_message);
+    res.status(201).json(message);
   } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de l\'envoi du message' });
+    console.error("Erreur lors de l'envoi du message :", error);
+    res.status(500).json({ message: 'Erreur lors de l\'envoi du message.' });
   }
 };

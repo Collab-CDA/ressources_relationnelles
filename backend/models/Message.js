@@ -8,28 +8,21 @@ const Message = sequelize.define('Message', {
     autoIncrement: true
   },
   contenu_message: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: false
   },
   date_envoi: {
     type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW
+  },
+  id_utilisateur1: {
+    type: DataTypes.INTEGER,
     allowNull: false
   },
-  sender: {
+  id_utilisateur2: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'utilisateur',
-      key: 'id_utilisateur'
-    }
-  },
-  receiver: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'utilisateur',
-      key: 'id_utilisateur'
-    }
+    allowNull: false
   }
 }, {
   tableName: 'messagerie',

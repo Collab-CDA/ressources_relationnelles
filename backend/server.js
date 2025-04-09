@@ -18,6 +18,8 @@ const progressionActiviteRoutes = require('./routes/progressionActiviteRoutes');
 const invitationRoutes = require('./routes/invitationsRoutes');
 const friendshipRoutes = require('./routes/friendshipRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const messageRoutes = require('./routes/messageRoutes');
+
 
 const jwt = require('jsonwebtoken');
 
@@ -84,6 +86,7 @@ app.use('/api/invitations', invitationRoutes);
 app.use('/api/friendships', friendshipRoutes);
 app.use('/api', friendshipRoutes);
 app.use('/api/dashboard', dashboardRoutes); 
+app.use('/api', messageRoutes);
 
 app.use((err, req, res, next) => {
   console.error('Erreur interne du serveur :', err.message);

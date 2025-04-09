@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const MessageController = require('../controllers/messageController');
+const messageController = require('../controllers/messageController');
 
-router.get('/messages/:userId/:friendId', MessageController.getMessages);
-router.post('/messages', MessageController.sendMessage);
+router.get('/messages/:userId/:friendId', messageController.getMessages);
+router.post('/messages', messageController.sendMessage);
 
 module.exports = router;
