@@ -2,6 +2,8 @@ const { createFriendship, areFriends, deleteFriendship } = require('../services/
 
 
 
+
+// Exemple de méthode de création d'une demande d'amitié
 exports.createFriendship = async (req, res) => {
   try {
     const { id_utilisateur1, id_utilisateur2 } = req.body;
@@ -22,7 +24,7 @@ exports.createFriendship = async (req, res) => {
   }
 };
 
-// Vérifie l'amitié
+// Fonction de vérification d'amitié
 exports.checkFriendshipByBody = async (req, res) => {
   try {
     const { id_utilisateur_1, id_utilisateur_2 } = req.body;

@@ -570,9 +570,9 @@ form button:hover {
   background-color: #d4c4e0;
 }
 
-/* Style pour les ressources suspenduees */
+/* ressources suspendues */
 .suspended {
-  color: red; /* ou 'gray' pour un effet grisé */
+  color: red; 
   pointer-events: none;
 }
 

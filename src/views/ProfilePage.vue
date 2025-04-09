@@ -317,4 +317,66 @@ h1 {
   gap: 10px;
   margin-top: 20px;
 }
+
+/* Responsive écrans mobiles */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 24px;
+  }
+  .card {
+    width: 90%;
+    padding: 15px;
+  }
+  .avatar {
+    width: 6rem;
+    height: 6rem;
+  }
+  .btn {
+    font-size: 14px;
+  }
+  .edit-form {
+    width: 90%;
+  }
+}
+
+@media (max-width: 390px) {
+  h1 {
+    font-size: 18px;
+  }
+  .card {
+    width: 85%;
+    padding: 10px;
+  }
+  .avatar {
+    width: 5rem;
+    height: 5rem;
+  }
+  .btn {
+    font-size: 12px;
+  }
+  .edit-form {
+    width: 85%;
+  }
+}
+
+/* Responsive tablettes */
+@media (min-width: 769px) and (max-width: 1024px) {
+  h1 {
+    font-size: 28px;
+  }
+  .card {
+    width: 80%;
+    padding: 18px;
+  }
+  .avatar {
+    width: 7rem;
+    height: 7rem;
+  }
+  .btn {
+    font-size: 15px;
+  }
+  .edit-form {
+    width: 80%;
+  }
+}
 </style>

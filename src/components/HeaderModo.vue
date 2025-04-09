@@ -22,9 +22,6 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <router-link to="/admin/dashboard" class="nav-link">Dashboard</router-link>
-            </li>
-            <li class="nav-item">
               <router-link to="/modo/resources" class="nav-link">Gestion des ressources</router-link>
             </li>
             <li class="nav-item">

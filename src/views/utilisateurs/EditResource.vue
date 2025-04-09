@@ -130,6 +130,7 @@ h1 {
     background-color: #D4C4E0; 
   }
   
+  /* Responsive */
   @media (max-width: 768px) {
     h1 {
       font-size: 28px;

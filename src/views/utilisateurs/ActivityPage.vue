@@ -227,6 +227,7 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* Responsive */
 @media (max-width: 1024px) {
   li {
     width: calc(50% - 20px);

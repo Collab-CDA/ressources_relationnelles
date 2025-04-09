@@ -230,6 +230,7 @@ h1 {
   transform: rotate(5deg);
 }
 
+/* Responsive */
 @media (max-width: 1200px) {
   .image-left, .image-right, .image-left-objectifs, .image-right-bienvenue {
     display: none;

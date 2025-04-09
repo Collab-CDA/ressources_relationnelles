@@ -281,7 +281,6 @@ h1 {
   background-color: #d4c4e0;
 }
 
-/* Modal styles */
 .modal {
   position: fixed;
   top: 0;

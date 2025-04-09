@@ -22,9 +22,6 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <router-link to="/admin/dashboard" class="nav-link">Dashboard</router-link>
-            </li>
-            <li class="nav-item">
               <router-link to="/super-admin/user" class="nav-link">Gestion des utilisateurs</router-link>
             </li>
             <li class="nav-item">

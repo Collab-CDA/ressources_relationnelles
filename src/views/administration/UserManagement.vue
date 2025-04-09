@@ -177,7 +177,6 @@ button.suspended {
   color: black;
 }
 
-/* Modal styles */
 .modal {
   position: fixed;
   top: 0;

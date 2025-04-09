@@ -9,6 +9,9 @@ exports.createInvitation = async (req, res) => {
   try {
     const { id_utilisateur_inviteur, id_utilisateur_invite, statut_invitation } = req.body;
 
+    console.log("ID de l'utilisateur inviteur :", id_utilisateur_inviteur);
+    console.log("ID de l'utilisateur invité :", id_utilisateur_invite);
+
     if (!id_utilisateur_inviteur || !id_utilisateur_invite) {
       return res.status(400).json({ message: "Les IDs des utilisateurs sont requis." });
     }
@@ -25,7 +28,7 @@ exports.createInvitation = async (req, res) => {
 exports.getInvitationsByUser = async (req, res) => {
   try {
     const { userId } = req.params;
-    
+
     if (!userId) {
       return res.status(400).json({ message: "L'ID de l'utilisateur est requis." });
     }
@@ -56,7 +59,7 @@ exports.updateInvitation = async (req, res) => {
 exports.deleteInvitation = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     if (!id) {
       return res.status(400).json({ message: "L'ID de l'invitation est requis." });
     }

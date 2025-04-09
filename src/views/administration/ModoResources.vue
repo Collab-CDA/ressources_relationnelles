@@ -332,7 +332,6 @@
     color: white;
   }
   
-  /* Modal styles */
   .modal {
     position: fixed;
     top: 0;

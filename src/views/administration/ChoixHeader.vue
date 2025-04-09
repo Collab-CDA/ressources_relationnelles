@@ -67,7 +67,7 @@ button:hover {
   background-color: #d4c4e0;
 }
 
-/* Media queries pour les écrans mobiles */
+/* Responsive écrans mobiles */
 @media (max-width: 768px) {
   .choix-header {
     width: 90%;

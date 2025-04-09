@@ -304,7 +304,7 @@ h1 {
   color:#0258BD;
 }
 
-/* Media Query pour les tablettes */
+/* Responsive tablettes */
 @media (max-width: 1024px) {
   .card-container {
     flex-direction: column;
@@ -318,7 +318,7 @@ h1 {
   }
 }
 
-/* Media Query pour les mobiles */
+/* Responsive mobiles */
 @media (max-width: 768px) {
   h1 {
     font-size: 24px;

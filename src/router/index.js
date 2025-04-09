@@ -11,7 +11,6 @@ import ResourceDetail from "@/views/utilisateurs/ResourceDetail.vue";
 import ProgressionPage from "../views/utilisateurs/ProgressionPage.vue";
 import CguPage from "../views/footer/cguPage.vue";
 import Statistics from "@/views/administration/Statistics.vue";
-import AdminDashboard from "@/views/administration/AdminDashboard.vue";
 import AdminResources from "@/views/administration/AdminResources.vue";
 import CategoryManagement from "@/views/administration/CategoryManagement.vue";
 import UserManagement from "@/views/administration/UserManagement.vue";
@@ -47,7 +46,6 @@ const routes = [
   { path: "/faqs", name: "FaqsPage", component: FaqsPage },
   { path: "/contactus", name: "ContactUsPage", component: ContactUsPage },
   { path: "/statistics", name: "Statistics", component: Statistics },
-  { path: "/admin/dashboard", name: "AdminDashboard", component: AdminDashboard },
   { path: "/admin/resources", name: "AdminResources", component: AdminResources },
   { path: "/admin/category", name: "CategoryManagement", component: CategoryManagement },
   { path: "/admin/user", name: "UserManagement", component: UserManagement },

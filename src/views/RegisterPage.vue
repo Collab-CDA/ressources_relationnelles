@@ -306,4 +306,65 @@ button {
   background-color: black;
   margin: 20px auto;
 }
+
+/* Responsive écrans mobiles */
+@media (max-width: 768px) {
+  .register-page {
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+  .redirect-btn {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+  .checkbox-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .checkbox-group label {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 390px) {
+  .register-page {
+    width: 85%;
+    margin-left: 7.5%;
+    margin-right: 7.5%;
+  }
+
+  h1 {
+    font-size: 18px;
+  }
+  .btn {
+    padding: 8px;
+    font-size: 14px;
+  }
+  .checkbox-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .form-group input {
+    font-size: 14px;
+  }
+  .checkbox-group label {
+    font-size: 12px;
+  }
+}
+
+/* Responsive tablettes */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .register-page {
+    width: 80%;
+  }
+  .redirect-btn {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
+  .checkbox-group label {
+    font-size: 14px;
+  }
+}
 </style>

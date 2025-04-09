@@ -8,8 +8,12 @@
           :key="message.id_message"
           :class="['message', message.id_utilisateur1 === userId ? 'sent' : 'received']"
         >
+          <div class="message-header">
+            <span v-if="message.id_utilisateur1 === userId">Vous</span>
+            <span v-else>{{ friendName }}</span>
+            <small>{{ formatDate(message.date_envoi) }}</small>
+          </div>
           <p>{{ message.contenu_message }}</p>
-          <small>{{ formatDate(message.date_envoi) }}</small>
         </div>
       </div>
       <form @submit.prevent="sendMessage" class="message-form">
@@ -36,6 +40,7 @@ export default {
       messages: [],
       newMessage: '',
       userId: null,
+      friendName: ''
     };
   },
   computed: {
@@ -106,11 +111,25 @@ export default {
     formatDate(dateStr) {
       const date = new Date(dateStr);
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    },
+    async fetchFriendName() {
+      if (this.friendId) {
+        try {
+          const response = await axios.get(
+            `http://localhost:3000/api/utilisateurs/${this.friendId}`,
+            this.getAuthHeaders()
+          );
+          this.friendName = response.data.nom;
+        } catch (error) {
+          console.error("Erreur lors de la récupération du nom de l'ami :", error);
+        }
+      }
     }
   },
   mounted() {
     this.userId = this.getUserIdFromToken();
     this.fetchMessages();
+    this.fetchFriendName();
   }
 };
 </script>
@@ -171,6 +190,12 @@ h1 {
   position: relative;
 }
 
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
 .message.sent {
   background-color: #d1fae5;
   align-self: flex-end;
@@ -184,9 +209,6 @@ h1 {
 .message small {
   font-size: 0.75rem;
   color: #777;
-  position: absolute;
-  bottom: 4px;
-  right: 10px;
 }
 
 .message-form {

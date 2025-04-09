@@ -249,7 +249,6 @@ button.delete:hover {
   background-color: #d76c61;
 }
 
-/* Modal */
 .modal {
   position: fixed;
   top: 0;

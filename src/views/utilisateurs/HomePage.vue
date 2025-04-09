@@ -62,4 +62,45 @@ h1 {
   background-color: #dad8d8;
   font-size: 16px;
 }
+
+/* Responsive écrans mobiles */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 24px;
+  }
+  .container-standard {
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    padding: 15px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 390px) {
+  h1 {
+    font-size: 18px;
+  }
+  .container-standard {
+    width: 85%;
+    margin-left: 7.5%;
+    margin-right: 7.5%;
+    padding: 10px;
+    font-size: 12px;
+  }
+}
+
+/* Responsive tablettes */
+@media (min-width: 769px) and (max-width: 1024px) {
+  h1 {
+    font-size: 28px;
+  }
+  .container-standard {
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    padding: 18px;
+    font-size: 15px;
+  }
+}
 </style>

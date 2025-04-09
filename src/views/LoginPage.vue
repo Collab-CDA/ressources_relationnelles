@@ -85,17 +85,6 @@ export default {
 
 
 <style scoped>
-
-.login-page {
-  max-width: 600px;
-  margin: 50px auto;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  background-color: #dad8d8;
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -116,6 +105,16 @@ h1 {
   text-align: center;
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+.login-page {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #dad8d8;
 }
 
 .form-group {
@@ -181,34 +180,65 @@ button.btn:hover {
   margin: 20px auto;
 }
 
-/* Media queries pour les écrans mobiles */
+/* Responsive écrans mobiles */
 @media (max-width: 768px) {
+  h1 {
+    font-size: 24px;
+  }
   .login-page {
     width: 90%;
     margin-left: 5%;
     margin-right: 5%;
+    padding: 15px;
+  }
+  input {
+    font-size: 14px;
+  }
+  button.btn {
+    font-size: 14px;
   }
   .redirect-btn {
-    font-size: 14px;
-    padding: 6px 12px;
+    font-size: 12px;
   }
 }
 
 @media (max-width: 390px) {
-  .login-page {
-    width: 85%;
-    margin-left: 7.5%;
-    margin-right: 7.5%;
-  }
   h1 {
     font-size: 18px;
   }
-  .btn {
-    padding: 8px;
-    font-size: 14px;
+  .login-page {
+    width: 85%;
+ margin:3rem auto;
+    padding: 10px;
   }
-  .form-group input {
-    font-size: 14px;
+  input {
+    font-size: 12px;
+  }
+  button.btn {
+    font-size: 12px;
+  }
+  .redirect-btn {
+    font-size: 10px;
+  }
+}
+
+/* Responsive tablettes */
+@media (min-width: 769px) and (max-width: 1024px) {
+  h1 {
+    font-size: 28px;
+  }
+  .login-page {
+    width: 80%;
+    padding: 18px;
+  }
+  input {
+    font-size: 15px;
+  }
+  button.btn {
+    font-size: 15px;
+  }
+  .redirect-btn {
+    font-size: 12px;
   }
 }
 </style>
