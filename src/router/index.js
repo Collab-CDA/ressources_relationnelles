@@ -33,9 +33,9 @@ const routes = [
   { path: "/tuto", name: "TutoPage", component: TutoPage },
   { path: "/register", name: "RegisterPage", component: RegisterPage },
   { path: "/login", name: "LoginPage", component: LoginPage },
-  { path: '/choix-header', component: ChoixHeader },
+  { path: "/choix-header", component: ChoixHeader },
   { path: "/profile", name: "ProfilePage", component: ProfilePage },
-  { path: "/messagerie/:friendId", name: "MessageriePage", component: MessageriePage, props: true }, // Correction ici
+  { path: "/messagerie/:friendId", name: "MessageriePage", component: MessageriePage, props: true },
   { path: "/resources-public", name: "PublicResources", component: PublicResources },
   { path: "/complete-resources", name: "CompleteResources", component: CompleteResources },
   { path: "/resource-detail/:id", name: "ResourceDetail", component: ResourceDetail },
@@ -49,11 +49,11 @@ const routes = [
   { path: "/admin/resources", name: "AdminResources", component: AdminResources },
   { path: "/admin/category", name: "CategoryManagement", component: CategoryManagement },
   { path: "/admin/user", name: "UserManagement", component: UserManagement },
-  { path: '/admin/resources/edit/:id', name: 'editResource', component: EditResource, props: true },
+  { path: "/admin/resources/edit/:id", name: "editResource", component: EditResource, props: true },
   { path: "/add-resources", name: "AddResources", component: AddResources },
-  { path: '/amis', name: 'FriendsPage', component: FriendsPage },
-  { path: '/my-resources', name: 'MyResources', component: MyResources },
-  { path: '/commentaires', component: CommentManagement },
+  { path: "/amis", name: "FriendsPage", component: FriendsPage },
+  { path: "/my-resources", name: "MyResources", component: MyResources },
+  { path: "/admin/commentaires", name: "CommentManagement", component: CommentManagement },
   { path: "/modo/resources", name: "ModoResources", component: ModoResources },
   { path: "/super-admin/user", name: "SuperAdminUserManagement", component: SuperAdminUserManagement }
 ];

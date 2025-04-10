@@ -1,5 +1,6 @@
 const Comment = require('../models/Comment');
 const User = require('../models/User');
+
 const createComment = async (id_utilisateur, id_ressource_, titre, contenu, id_commentaire_parent = null) => {
     return await Comment.create({ id_utilisateur, id_ressource_, titre, contenu, id_commentaire_parent });
 };
@@ -7,6 +8,16 @@ const createComment = async (id_utilisateur, id_ressource_, titre, contenu, id_c
 const getCommentsByResource = async (id_ressource_) => {
     return await Comment.findAll({
         where: { id_ressource_ },
+        include: [{
+            model: User,
+            as: 'User',
+            attributes: ['prenom', 'nom']
+        }]
+    });
+};
+
+const getAllComments = async () => {
+    return await Comment.findAll({
         include: [{
             model: User,
             as: 'User',
@@ -33,8 +44,22 @@ const deleteComment = async (id_commentaire, id_utilisateur) => {
     const comment = await Comment.findByPk(id_commentaire);
     if (!comment) throw new Error('Commentaire non trouvé');
     if (comment.id_utilisateur !== id_utilisateur) throw new Error('Non autorisé');
-
     await comment.destroy();
 };
 
-module.exports = { createComment, getCommentsByResource, getCommentById, updateComment, deleteComment };
+
+const deleteCommentModerator = async (id_commentaire) => {
+    const comment = await Comment.findByPk(id_commentaire);
+    if (!comment) throw new Error('Commentaire non trouvé');
+    await comment.destroy();
+};
+
+module.exports = {
+  createComment,
+  getCommentsByResource,
+  getAllComments,
+  getCommentById,
+  updateComment,
+  deleteComment,
+  deleteCommentModerator
+};

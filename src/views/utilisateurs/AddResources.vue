@@ -151,8 +151,6 @@ export default {
         }
         return;
       }
-
-      // Sinon, on envoie la ressource au serveur (confidentialité "Publique")
       try {
         const formData = new FormData();
         formData.append("titre", this.resource.titre);
@@ -265,8 +263,6 @@ export default {
     this.fetchTypesResource();
     this.fetchTypesRelation();
     this.fetchCategoriesResource();
-
-    // Vérifier s'il existe un brouillon dans le localStorage
     const draft = localStorage.getItem("draftResource");
     if (draft) {
       this.draftExists = true;
@@ -305,7 +301,6 @@ h1 {
   padding: 20px;
 }
 
-/* Style du conteneur de brouillon */
 .draft-container {
   margin-bottom: 1rem;
 }

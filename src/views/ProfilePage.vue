@@ -21,7 +21,6 @@
       <p>Chargement des informations...</p>
     </div>
 
-    <!-- Formulaire de modification -->
     <div v-if="showEditForm" class="edit-form">
       <h2>Modifier les informations</h2>
       <form @submit.prevent="updateUtilisateur">
@@ -318,7 +317,6 @@ h1 {
   margin-top: 20px;
 }
 
-/* Responsive écrans mobiles */
 @media (max-width: 768px) {
   h1 {
     font-size: 24px;
@@ -359,7 +357,6 @@ h1 {
   }
 }
 
-/* Responsive tablettes */
 @media (min-width: 769px) and (max-width: 1024px) {
   h1 {
     font-size: 28px;
