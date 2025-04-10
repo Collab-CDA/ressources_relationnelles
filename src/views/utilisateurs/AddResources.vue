@@ -1,8 +1,14 @@
 <template>
   <div class="add-resources-page">
+    <div v-if="draftExists" class="draft-container">
+      <button type="button" class="btn load-draft" @click="loadDraft">
+        Reprendre la ressource mise de côté
+      </button>
+    </div>
+
     <div class="card">
       <h1>Ajouter une ressource</h1>
-      <form @submit.prevent="submitResource">
+      <form @submit.prevent="submitResource('Publique')">
         <div class="form-group">
           <label for="titre">Titre :</label>
           <input type="text" id="titre" v-model="resource.titre" required />
@@ -13,11 +19,7 @@
         </div>
         <div class="form-group">
           <label for="typeResource">Type de ressource :</label>
-          <select
-            v-model="resource.id_typeRessource"
-            id="typeResource"
-            required
-          >
+          <select v-model="resource.id_typeRessource" id="typeResource" required>
             <option value="" disabled>Sélectionnez un type</option>
             <option
               v-for="type in typesResource"
@@ -28,7 +30,6 @@
             </option>
           </select>
         </div>
-        <!-- Type de relation -->
         <div class="form-group">
           <label for="typeRelation">Type de relation :</label>
           <select v-model="resource.type_relation" id="typeRelation" required>
@@ -42,14 +43,9 @@
             </option>
           </select>
         </div>
-        <!-- Catégorie de ressource -->
         <div class="form-group">
           <label for="categoryResource">Catégorie de ressource :</label>
-          <select
-            v-model="resource.id_categorie"
-            id="categoryResource"
-            required
-          >
+          <select v-model="resource.id_categorie" id="categoryResource" required>
             <option value="" disabled>Sélectionnez une catégorie</option>
             <option
               v-for="category in categoriesResource"
@@ -60,17 +56,12 @@
             </option>
           </select>
         </div>
-        <!-- Lien vidéo -->
         <div class="form-group">
           <label for="lien_video">Lien :</label>
           <input type="url" id="lien_video" v-model="resource.lien_video" />
         </div>
-
-        <!-- Fichier -->
         <div class="file-upload-container">
-          <label for="file" class="file-upload-label">
-            Ajouter une image
-          </label>
+          <label for="file" class="file-upload-label">Ajouter une image</label>
           <input
             type="file"
             id="file"
@@ -81,11 +72,18 @@
         </div>
         <div class="button-container">
           <button type="submit" class="btn">Ajouter la ressource</button>
+          <button type="button" class="btn" @click="submitResource('Privée')">
+            Mettre de côté
+          </button>
+          <button type="button" class="btn cancel" @click="resetForm">
+            Annuler
+          </button>
         </div>
       </form>
     </div>
   </div>
 </template>
+
 <script>
 import axios from "axios";
 
@@ -107,6 +105,7 @@ export default {
       categoriesResource: [],
       typesRelation: [],
       typesResource: [],
+      draftExists: false,
     };
   },
   methods: {
@@ -140,7 +139,20 @@ export default {
         },
       };
     },
-    async submitResource() {
+    async submitResource(confidentialite) {
+      if (confidentialite === "Privée") {
+        try {
+          localStorage.setItem("draftResource", JSON.stringify(this.resource));
+          this.draftExists = true;
+          alert("Ressource mise de côté.");
+          this.resetForm();
+        } catch (error) {
+          console.error("Erreur lors de la sauvegarde du brouillon :", error);
+        }
+        return;
+      }
+
+      // Sinon, on envoie la ressource au serveur (confidentialité "Publique")
       try {
         const formData = new FormData();
         formData.append("titre", this.resource.titre);
@@ -150,7 +162,7 @@ export default {
         formData.append("id_categorie", this.resource.id_categorie);
         formData.append("lien_video", this.resource.lien_video || null);
         formData.append("nom_image", this.resource.nom_image);
-        formData.append("confidentialite", "Publique");
+        formData.append("confidentialite", confidentialite);
 
         const idUtilisateur = this.getUserIdFromToken();
         formData.append("id_utilisateur", idUtilisateur);
@@ -162,12 +174,16 @@ export default {
         const headers = this.getAuthHeaders();
         headers.headers["Content-Type"] = "multipart/form-data";
 
-        const response = await axios.post(
+        await axios.post(
           "http://localhost:3000/api/resources/create",
           formData,
           headers
         );
+
         alert("Ressource ajoutée avec succès !");
+        localStorage.removeItem("draftResource");
+        this.draftExists = false;
+        this.resetForm();
       } catch (error) {
         console.error(
           "Erreur lors de l'ajout de la ressource :",
@@ -183,7 +199,10 @@ export default {
         );
         this.typesResource = response.data;
       } catch (error) {
-        console.warn("Erreur lors de la récupération des types de ressource :", error.response ? error.response.data : error.message);
+        console.warn(
+          "Erreur récupération des types de ressource :",
+          error.response ? error.response.data : error.message
+        );
       }
     },
     async fetchTypesRelation() {
@@ -194,7 +213,10 @@ export default {
         );
         this.typesRelation = response.data;
       } catch (error) {
-        console.warn("Erreur lors de la récupération des types de relation :", error.response ? error.response.data : error.message);
+        console.warn(
+          "Erreur récupération des types de relation :",
+          error.response ? error.response.data : error.message
+        );
       }
     },
     async fetchCategoriesResource() {
@@ -205,17 +227,50 @@ export default {
         );
         this.categoriesResource = response.data;
       } catch (error) {
-        console.warn("Erreur lors de la récupération des catégories de ressources :", error.response ? error.response.data : error.message);
+        console.warn(
+          "Erreur récupération des catégories de ressources :",
+          error.response ? error.response.data : error.message
+        );
       }
     },
     handleFileUpload(event) {
       this.resource.selectedFile = event.target.files[0];
+    },
+    resetForm() {
+      if (confirm("Voulez-vous vraiment annuler ? Tous les champs seront réinitialisés.")) {
+        this.resource = {
+          titre: "",
+          contenu: "",
+          id_typeRessource: "",
+          id_utilisateur: "",
+          type_relation: "",
+          id_categorie: "",
+          lien_video: "",
+          nom_image: "",
+          selectedFile: null,
+        };
+      }
+    },
+    loadDraft() {
+      const draft = localStorage.getItem("draftResource");
+      if (draft) {
+        this.resource = JSON.parse(draft);
+        alert("Brouillon chargé !");
+      } else {
+        alert("Aucun brouillon n'est disponible.");
+      }
     },
   },
   mounted() {
     this.fetchTypesResource();
     this.fetchTypesRelation();
     this.fetchCategoriesResource();
+
+    // Vérifier s'il existe un brouillon dans le localStorage
+    const draft = localStorage.getItem("draftResource");
+    if (draft) {
+      this.draftExists = true;
+    }
   },
 };
 </script>
@@ -248,6 +303,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   padding: 20px;
+}
+
+/* Style du conteneur de brouillon */
+.draft-container {
+  margin-bottom: 1rem;
 }
 
 .card {
@@ -328,13 +388,32 @@ h1 {
   background-color: #b0a2ba;
   border: none;
   border-radius: 5px;
-  padding: 10px 20px;
+  padding: 10px 15px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  color: white;
+  transition: background-color 0.3s ease;
 }
 
 .btn:hover {
   background-color: #d4c4e0;
+  color: black;
+}
+
+.btn.cancel {
+  background-color: #e74c3c;
+}
+
+.btn.cancel:hover {
+  background-color: #f1948a;
+  color: white;
+}
+
+.btn.load-draft {
+  background-color: #27ae60;
+}
+
+.btn.load-draft:hover {
+  background-color: #2ecc71;
 }
 </style>
