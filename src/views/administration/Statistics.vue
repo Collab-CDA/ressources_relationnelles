@@ -329,4 +329,129 @@ h1 {
   margin-top: 1rem;
   color: #000000;
 }
+
+/* Responsive écrans mobiles */
+@media screen and (max-width: 768px) {
+  h1 {
+    font-size: 24px;
+    margin: 1rem 0;
+  }
+
+  .filters {
+    padding: 1rem 0.5rem;
+  }
+
+  .filters h2 {
+    font-size: 18px;
+  }
+
+  .checkbox-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .checkbox-group label {
+    font-size: 14px;
+  }
+
+  .filter-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 16px;
+    padding: 0.75rem;
+  }
+
+  .cards-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .card h3 {
+    font-size: 1rem;
+  }
+
+  .card-value {
+    font-size: 1.2rem;
+  }
+
+  .chart-container {
+    height: 300px;
+    padding: 0 1rem;
+  }
+
+  .chart-container h2 {
+    font-size: 18px;
+  }
+
+  .dashboard-container {
+    padding: 1rem 0.5rem;
+  }
+}
+
+/* Responsive tablettes */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  h1 {
+    font-size: 28px;
+    margin: 1.5rem 0;
+  }
+
+  .filters {
+    padding: 1rem;
+  }
+
+  .filters h2 {
+    font-size: 19px;
+  }
+
+  .checkbox-group {
+    gap: 0.75rem;
+  }
+
+  .checkbox-group label {
+    font-size: 15px;
+  }
+
+  .filter-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .btn {
+    font-size: 17px;
+    padding: 0.75rem 1rem;
+  }
+
+  .cards-container {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .card h3 {
+    font-size: 1.05rem;
+  }
+
+  .card-value {
+    font-size: 1.4rem;
+  }
+
+  .chart-container {
+    height: 400px;
+    padding: 0 2rem;
+  }
+
+  .chart-container h2 {
+    font-size: 19px;
+  }
+
+  .dashboard-container {
+    padding: 1rem 1.5rem;
+  }
+}
+
 </style>

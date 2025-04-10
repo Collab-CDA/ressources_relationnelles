@@ -2,7 +2,7 @@
   <div>
     <h1 class="title-container">
       Gestion des catégories
-      <button class="add-user-button" @click="openModal">
+      <button class="add-category-button" @click="openModal">
         Ajouter une catégorie
       </button>
     </h1>
@@ -179,7 +179,7 @@ h1 {
   gap: 1rem;
 }
 
-.add-user-button {
+.add-category-button {
   margin-left: 2rem;
   font-size: 1.2rem;
 }
@@ -306,39 +306,113 @@ button.delete:hover {
   margin-top: 20px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Responsive écrans mobiles */
+@media screen and (max-width: 768px) {
+  h1 {
+    font-size: 24px;
+    flex-direction: column;
+    text-align: center;
+    margin: 1.5rem 0;
+  }
+
+  .title-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .add-category-button {
+    margin-left: 0;
+    font-size: 16px;
+    padding: 8px 12px;
+    width: 70%;
+  }
+
+  .main-container {
+    padding: 0 1rem;
+  }
+
+  .resource-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .button-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  button.delete {
+    width: auto;
+  }
+
+  .modal-content {
+    width: 90%;
+    padding: 1rem;
+  }
+
+  .form-group input {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  .btn {
+    font-size: 16px;
+    width: 100%;
+    padding: 10px;
+  }
+
+  .button-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* -------------------- Responsive tablettes (768px à 1024px) -------------------- */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
   h1 {
     font-size: 28px;
   }
 
+  .add-category-button {
+    font-size: 18px;
+    padding: 10px 16px;
+  }
+
   .main-container {
-    margin: 1rem;
+    width: 95%;
+    padding: 0 1rem;
   }
 
   button {
-    width: 100%;
-    padding: 12px 0;
+    font-size: 15px;
+    padding: 10px 12px;
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+  }
+
+  .form-group input {
+    font-size: 15px;
+    padding: 7px;
+  }
+
+  .btn {
+    font-size: 16px;
+    padding: 10px 16px;
+  }
+
+  .button-container {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
   }
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
-  h1 {
-    font-size: 30px;
-  }
-
-  .main-container {
-    margin: 2rem auto;
-  }
-}
-
-@media (min-width: 1024px) {
-  h1 {
-    font-size: 32px;
-  }
-
-  .main-container {
-    max-width: 1200px;
-  }
-}
 </style>

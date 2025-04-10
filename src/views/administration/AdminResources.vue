@@ -2,7 +2,7 @@
   <div>
     <h1 class="title-container">
       Gestion des ressources
-      <button class="add-user-button" @click="openModal">Ajouter une ressource</button>
+      <button class="add-resource-button" @click="openModal">Ajouter une ressource</button>
     </h1>
 
     <div class="filter-bar">
@@ -468,7 +468,7 @@ h1 {
   align-items: center;
 }
 
-.add-user-button {
+.add-resource-button {
   margin-left: 2rem;
   font-size: 1.2rem;
   background-color: #b0a2ba;
@@ -480,7 +480,7 @@ h1 {
   transition: background-color 0.3s;
 }
 
-.add-user-button:hover {
+.add-resource-button:hover {
   background-color: #d4c4e0;
   color: black;
 }
@@ -672,35 +672,153 @@ button.suspended {
   margin-top: 20px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Responsive écrans mobiles */
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 24px;
+    text-align: center;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  h4 {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .title-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+
+  .add-resource-button {
+    font-size: 16px;
+    margin: 0 auto;
+    width: 90%;
+    padding: 10px;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 1rem;
+  }
+
+  .filter-bar label,
+  .filter-bar select {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .file-upload-container {
+    padding: 0.5rem 0;
+  }
+
+  .button-container {
+    text-align: center;
+  }
+
+  .btn {
+    font-size: 16px;
+    width: 100%;
+  }
+
+  .main-container {
+    padding: 0 1rem;
+  }
+
+  .resource-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .button-group {
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 0.5rem;
+  }
+}
+
+/* Responsive tablettes */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  body {
+    font-size: 15px;
+  }
+
   h1 {
     font-size: 28px;
   }
-  .main-container {
-    margin: 1rem;
+
+  h4 {
+    font-size: 20px;
+    font-weight: bold;
   }
-  button {
+
+  .title-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .add-resource-button {
+    font-size: 18px;
+    padding: 10px 20px;
+    margin: 0 auto;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0 2rem;
+  }
+
+  .filter-bar label,
+  .filter-bar select {
     width: 100%;
-    padding: 12px 0;
+    margin-bottom: 15px;
   }
+
+  .modal-content {
+    width: 80%;
+    padding: 2rem;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 16px;
+    width: 100%;
+  }
+
+  .btn {
+    font-size: 18px;
+    width: 100%;
+  }
+
+  .main-container {
+    padding: 0 2rem;
+  }
+
+
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
-  h1 {
-    font-size: 30px;
-  }
-  .main-container {
-    margin: 2rem auto;
-  }
-}
-
-@media (min-width: 1024px) {
-  h1 {
-    font-size: 32px;
-  }
-  .main-container {
-    max-width: 1200px;
-  }
-}
 </style>

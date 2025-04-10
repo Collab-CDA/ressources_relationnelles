@@ -160,23 +160,6 @@ button.suspended {
   font-size: 16px;
 }
 
-.add-user-button {
-  margin-left: 2rem;
-  font-size: 1.2rem;
-  background-color: #b0a2ba;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.add-user-button:hover {
-  background-color: #d4c4e0;
-  color: black;
-}
-
 .modal {
   position: fixed;
   top: 0;
@@ -248,35 +231,106 @@ button.suspended {
   background-color: #d4c4e0;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Responsive écrans mobiles */
+@media screen and (max-width: 768px) {
+  h1 {
+    font-size: 24px;
+    margin: 1.5rem 0;
+  }
+
+  .user-table {
+    overflow-x: auto;
+    margin: 10px 1rem;
+  }
+
+  table {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 8px;
+  }
+
+  button {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+  .delete-btn i {
+    font-size: 14px;
+  }
+
+  .modal-content {
+    padding: 1rem;
+  }
+
+  .form-group input,
+  .form-group select {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  .btn {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .button-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* Responsive tablettes */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
   h1 {
     font-size: 28px;
+    margin: 1.75rem 0;
   }
-  .main-container {
-    margin: 1rem;
+
+  .user-table {
+    margin: 20px 1.5rem;
   }
+
+  table {
+    font-size: 15px;
+  }
+
+  th, td {
+    padding: 10px;
+  }
+
   button {
-    width: 100%;
-    padding: 12px 0;
+    font-size: 15px;
+    padding: 7px 12px;
+  }
+
+  .delete-btn i {
+    font-size: 15px;
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+  }
+
+  .form-group input,
+  .form-group select {
+    font-size: 15px;
+    padding: 7px;
+  }
+
+  .btn {
+    font-size: 17px;
+    padding: 10px 16px;
+  }
+
+  .button-container {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
   }
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
-  h1 {
-    font-size: 30px;
-  }
-  .main-container {
-    margin: 2rem auto;
-  }
-}
-
-@media (min-width: 1024px) {
-  h1 {
-    font-size: 32px;
-  }
-  .main-container {
-    max-width: 1200px;
-  }
-}
 </style>

@@ -337,7 +337,7 @@
     background-color: #d4c4e0;
   }
   
-  /* Responsive */
+  /* Responsive écrans mobiles */
   @media (max-width: 768px) {
     h1 {
       font-size: 28px;
@@ -351,6 +351,7 @@
     }
   }
   
+  /* Responsive tablettes */
   @media (min-width: 768px) and (max-width: 1024px) {
     h1 {
       font-size: 30px;
@@ -360,13 +361,6 @@
     }
   }
   
-  @media (min-width: 1024px) {
-    h1 {
-      font-size: 32px;
-    }
-    .main-container {
-      max-width: 1200px;
-    }
-  }
+
   </style>
   

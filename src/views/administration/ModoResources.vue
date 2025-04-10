@@ -220,23 +220,6 @@
     align-items: center;
   }
   
-  .add-user-button {
-    margin-left: 2rem;
-    font-size: 1.2rem;
-    background-color: #b0a2ba;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .add-user-button:hover {
-    background-color: #d4c4e0;
-    color: black;
-  }
-  
   .filter-bar {
     display: flex;
     justify-content: center;
@@ -424,36 +407,126 @@
     margin-top: 20px;
   }
   
-  /* Responsive */
-  @media (max-width: 768px) {
-    h1 {
-      font-size: 28px;
-    }
-    .main-container {
-      margin: 1rem;
-    }
-    button {
-      width: 100%;
-      padding: 12px 0;
-    }
+/* Responsive écrans mobiles */
+@media screen and (max-width: 768px) {
+  h1 {
+    font-size: 24px;
+    text-align: center;
+    margin: 1.5rem 0;
   }
-  
-  @media (min-width: 768px) and (max-width: 1024px) {
-    h1 {
-      font-size: 30px;
-    }
-    .main-container {
-      margin: 2rem auto;
-    }
+
+  .title-container {
+    flex-direction: column;
+    gap: 1rem;
   }
-  
-  @media (min-width: 1024px) {
-    h1 {
-      font-size: 32px;
-    }
-    .main-container {
-      max-width: 1200px;
-    }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    width: 100%;
   }
+
+  .filter-bar label,
+  .filter-bar select {
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  .main-container {
+    padding: 0 1rem;
+  }
+
+  .resource-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .button-group {
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  .resource-list ul li {
+    margin-bottom: 1rem;
+  }
+
+  .button-container {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .modal-content {
+    padding: 1rem;
+  }
+
+  .form-group input {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  .btn {
+    font-size: 16px;
+    width: 100%;
+    padding: 10px;
+  }
+}
+
+
+/* Responsive tablettes */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  h1 {
+    font-size: 28px;
+  }
+
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap; 
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 10px; 
+  }
+
+  .filter-bar label,
+  .filter-bar select {
+    margin-right: 10px;
+    width: calc(33% - 10px);
+  }
+
+  .main-container {
+    padding: 0 2rem;
+  }
+
+  .resource-item {
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .button-group {
+    gap: 15px;
+  }
+
+  button {
+    font-size: 15px;
+    padding: 10px 12px;
+  }
+
+  .button-container {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+}
+
   </style>
   

@@ -147,8 +147,7 @@ export default {
 
 <style scoped>
 .cgu-container {
-  margin-left: 20px;
-  padding-right: 20px;
+padding: 5rem;
 }
 
 * {
@@ -196,4 +195,59 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+/* Responsive mobiles */
+@media (max-width: 768px) {
+  .cgu-container {
+    margin: 2rem 1rem;
+    width: calc(100% - 2rem);
+    padding: 1rem; 
+    flex-direction: column;
+  }
+
+  h1 {
+    font-size: 24px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: 18px;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  p, ul {
+    font-size: 14px;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Responsive tablettes */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .cgu-container {
+    margin: 2rem 2rem;
+    width: calc(100% - 4rem);
+    padding: 2rem; 
+    flex-direction: column;
+  }
+
+  h1 {
+    font-size: 28px;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    font-size: 20px;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  p, ul {
+    font-size: 16px;
+    margin-bottom: 1rem;
+  }
+}
+
 </style>

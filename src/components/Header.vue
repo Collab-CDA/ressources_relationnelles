@@ -69,7 +69,7 @@ header {
   top: 50%; /* Centré verticalement */
   left: 45px;
   transform: translateY(-50%); /* Ajuste la position verticale */
-  z-index: 1; /* Assure que le texte soit au-dessus du logo */
+  z-index: 1;
   margin: 0;
 }
 
