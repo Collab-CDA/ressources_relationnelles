@@ -69,7 +69,7 @@
                 <router-link to="/profile" class="dropdown-item">Profil</router-link>
               </li>
               <li>
-                <router-link to="/messagerie" class="dropdown-item">Messagerie</router-link>
+                <router-link to="/messages" class="dropdown-item">Messagerie</router-link>
               </li>
               <li>
                 <router-link to="/amis" class="dropdown-item">Amis</router-link>

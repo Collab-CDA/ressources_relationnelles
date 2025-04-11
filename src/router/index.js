@@ -27,15 +27,18 @@ import ChoixHeader from '@/views/administration/ChoixHeader.vue';
 import CommentManagement from "@/views/administration/CommentManagement.vue";
 import ModoResources from "@/views/administration/ModoResources.vue";
 import SuperAdminUserManagement from "@/views/administration/SuperAdminUserManagement.vue";
+import MessagerieAccueil from "@/views/utilisateurs/MessagerieAccueil.vue";
 
 const routes = [
+
   { path: "/", name: "HomePage", component: HomePage },
   { path: "/tuto", name: "TutoPage", component: TutoPage },
   { path: "/register", name: "RegisterPage", component: RegisterPage },
   { path: "/login", name: "LoginPage", component: LoginPage },
   { path: "/choix-header", component: ChoixHeader },
   { path: "/profile", name: "ProfilePage", component: ProfilePage },
-  { path: "/messagerie/:friendId", name: "MessageriePage", component: MessageriePage, props: true },
+  { path: "/messages", name: "MessagerieAccueil", component: MessagerieAccueil },
+  { path: "/messages/:friendId", name: "MessageriePage", component: MessageriePage, props: true },
   { path: "/resources-public", name: "PublicResources", component: PublicResources },
   { path: "/complete-resources", name: "CompleteResources", component: CompleteResources },
   { path: "/resource-detail/:id", name: "ResourceDetail", component: ResourceDetail },
