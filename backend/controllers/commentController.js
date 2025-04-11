@@ -23,10 +23,7 @@ const updateComment = async (req, res) => {
   }
 };
 
-/**
- * Si le paramètre id_ressource_ est fourni, on récupère les commentaires associés à cette ressource.
- * Sinon, on récupère tous les commentaires, afin de permettre aux modérateurs de voir l'ensemble.
- */
+
 const getComments = async (req, res) => {
   try {
     if (req.params.id_ressource_) {
@@ -57,7 +54,7 @@ const removeComment = async (req, res) => {
   try {
     const { id } = req.params;
     
-    if (req.user.role && (req.user.role === 'Admin')) {
+    if (req.user.role && (req.user.role === 'Modérateur')) {
       await commentService.deleteCommentModerator(id);
     } else {
       const id_utilisateur = req.user.id;
