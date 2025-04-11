@@ -25,7 +25,7 @@
               <router-link to="/modo/resources" class="nav-link">Gestion des ressources</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/commentaires" class="nav-link">Gestion des commentaires</router-link>
+              <router-link to="/admin/commentaires" class="nav-link">Gestion des commentaires</router-link>
             </li>
             <li class="nav-item dropdown">
               <a

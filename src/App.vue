@@ -2,7 +2,7 @@
   <div class="app-container">
     <component :is="headerComponent" @logout="handleLogout" />
     <div class="content">
-      <router-view @header-selected="updateHeaderComponent" />
+      <router-view />
     </div>
     <Footer />
   </div>
