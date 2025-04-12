@@ -56,7 +56,7 @@ const routes = [
   { path: "/add-resources", name: "AddResources", component: AddResources },
   { path: "/amis", name: "FriendsPage", component: FriendsPage },
   { path: "/my-resources", name: "MyResources", component: MyResources },
-  { path: "/admin/commentaires", name: "CommentManagement", component: CommentManagement },
+  { path: "/modo/commentaires", name: "CommentManagement", component: CommentManagement },
   { path: "/modo/resources", name: "ModoResources", component: ModoResources },
   { path: "/super-admin/user", name: "SuperAdminUserManagement", component: SuperAdminUserManagement }
 ];
