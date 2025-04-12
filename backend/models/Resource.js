@@ -24,9 +24,9 @@ const Resource = sequelize.define('Resource', {
     field: 'id_typeRessource'
   },
   statut_: {
-    type: DataTypes.ENUM('disponible', 'suspendue'),
+    type: DataTypes.ENUM('en_attente', 'disponible', 'suspendue'),
     allowNull: false,
-    defaultValue: 'disponible',
+    defaultValue: 'en_attente',
     field: 'statut_'
   },
   auteur_id: {

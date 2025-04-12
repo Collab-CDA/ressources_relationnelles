@@ -152,14 +152,23 @@
             <div class="resource-item">
               <p>{{ resource.titre }}</p>
               <div class="button-group">
+                <!-- Bouton d'affichage du statut avec mise en forme -->
                 <button
                   :class="{
                     available: resource.statut_ === 'disponible',
-                    suspended: resource.statut_ === 'suspendue',
+                    suspended: resource.statut_ === 'suspendue'
                   }"
                   @click="toggleStatus(resource)"
                 >
-                  {{ resource.statut_ }}
+                  {{ formatStatus(resource.statut_) }}
+                </button>
+                <!-- Bouton permettant de basculer entre "en_attente" et "disponible" -->
+                <button 
+                  v-if="resource.statut_ === 'en_attente' || resource.statut_ === 'disponible'"
+                  class="toggle-publication-button"
+                  @click="togglePublicationStatus(resource)"
+                >
+                  {{ resource.statut_ === 'en_attente' ? 'Mettre disponible' : 'Mettre en attente' }}
                 </button>
                 <button @click="openEditModal(resource)">Modifier</button>
                 <button @click="deleteResource(resource.id_ressource_)" class="delete">
@@ -177,6 +186,7 @@
 
 <script>
 import axios from "axios";
+
 export default {
   name: "AdminResources",
   data() {
@@ -187,7 +197,7 @@ export default {
       resources: [],
       showModal: false,
       showEditModal: false,
-      // Formulaire d'ajout
+      // Formulaire d'ajout – le statut par défaut est "en_attente"
       resource: {
         titre: "",
         contenu: "",
@@ -197,6 +207,7 @@ export default {
         lien_video: "",
         nom_image: "",
         selectedFile: null,
+        statut_: "en_attente",
       },
       // Formulaire d'édition
       editResource: {
@@ -218,6 +229,11 @@ export default {
   created() {
     this.fetchResources();
   },
+  mounted() {
+    this.fetchTypesResource();
+    this.fetchTypesRelation();
+    this.fetchCategoriesResource();
+  },
   computed: {
     filteredResources() {
       return this.resources.filter((resource) => {
@@ -235,7 +251,11 @@ export default {
     },
   },
   methods: {
-    // Modale d'ajout
+    // Formate le statut pour afficher des espaces à la place des underscores
+    formatStatus(status) {
+      return status.replace(/_/g, " ");
+    },
+    // Gestion des modales
     openModal() {
       this.showModal = true;
     },
@@ -253,11 +273,10 @@ export default {
         lien_video: "",
         nom_image: "",
         selectedFile: null,
+        statut_: "en_attente",
       };
     },
-    // Modale d'édition
     openEditModal(resource) {
-      // Copie des données de la ressource sélectionnée dans l'objet d'édition
       this.editResource = { ...resource, selectedFile: null };
       this.showEditModal = true;
     },
@@ -323,6 +342,20 @@ export default {
         console.error("Erreur lors de la mise à jour du statut :", error.response?.data || error.message);
       }
     },
+    // Méthode pour basculer le statut entre "en_attente" et "disponible"
+    async togglePublicationStatus(resource) {
+      const newStatus = resource.statut_ === "en_attente" ? "disponible" : "en_attente";
+      try {
+        await axios.put(
+          `http://localhost:3000/api/resources/status/${resource.id_ressource_}`,
+          { statut_: newStatus },
+          this.getAuthHeaders()
+        );
+        resource.statut_ = newStatus;
+      } catch (error) {
+        console.error("Erreur lors du changement du statut de publication :", error.response?.data || error.message);
+      }
+    },
     async deleteResource(id) {
       const confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette ressource ?");
       if (confirmation) {
@@ -346,6 +379,7 @@ export default {
       this.editResource.selectedFile = file;
       this.editResource.nom_image = file ? file.name : this.editResource.nom_image;
     },
+    // Extraction et construction des headers d'authentification
     decodeToken(token) {
       try {
         const base64Url = token.split(".")[1];
@@ -393,6 +427,8 @@ export default {
         formData.append("nom_image", this.resource.nom_image);
         formData.append("confidentialite", "Publique");
         formData.append("id_utilisateur", userId);
+        // Le statut est transmis lors de la création (ici "en_attente" par défaut)
+        formData.append("statut_", this.resource.statut_);
         if (this.resource.selectedFile) {
           formData.append("files", this.resource.selectedFile);
         }
@@ -430,11 +466,6 @@ export default {
         console.error("Erreur lors de la modification de la ressource :", error.response ? error.response.data : error.message);
       }
     },
-  },
-  mounted() {
-    this.fetchTypesResource();
-    this.fetchTypesRelation();
-    this.fetchCategoriesResource();
   },
 };
 </script>
@@ -578,6 +609,14 @@ button.available {
 button.suspended {
   background-color: #D0021B;
   color: white;
+}
+
+.toggle-publication-button {
+  background-color: #0055aa;
+}
+
+.toggle-publication-button:hover {
+  background-color: #3377cc;
 }
 
 .modal {
@@ -817,8 +856,5 @@ button.suspended {
   .main-container {
     padding: 0 2rem;
   }
-
-
 }
-
 </style>
