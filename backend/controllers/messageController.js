@@ -21,3 +21,23 @@ exports.sendMessage = async (req, res) => {
     res.status(500).json({ message: 'Erreur lors de l\'envoi du message.' });
   }
 };
+
+exports.getConversations = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const conversations = await messageService.getConversations(userId);
+    res.status(200).json(conversations);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.deleteConversation = async (req, res) => {
+  const { userId, friendId } = req.params;
+  try {
+    await messageService.deleteConversation(userId, friendId);
+    res.status(204).end();
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

@@ -62,7 +62,6 @@ export default {
     try {
       const response = await axios.get(`http://localhost:3000/api/friends/${this.userId}`, this.getAuthHeaders());
       this.friends = response.data;
-      console.log("Friends:", this.friends); // Log des amis récupérés
     } catch (error) {
       console.error("Erreur lors de la récupération des amis :", error);
     }

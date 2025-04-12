@@ -119,7 +119,7 @@ export default {
             `http://localhost:3000/api/utilisateurs/${this.userId}`,
             this.getAuthHeaders()
           );
-          this.userName = response.data.prenom; // Utilisez le prénom ici
+          this.userName = response.data.prenom;
         } catch (error) {
           console.error("Erreur lors de la récupération du nom de l'utilisateur :", error);
         }
@@ -132,7 +132,7 @@ export default {
             `http://localhost:3000/api/utilisateurs/${this.friendId}`,
             this.getAuthHeaders()
           );
-          this.friendName = response.data.prenom; // Utilisez le prénom ici
+          this.friendName = response.data.prenom;
         } catch (error) {
           console.error("Erreur lors de la récupération du nom de l'ami :", error);
         }

@@ -29,7 +29,7 @@ exports.areFriends = async (userId1, userId2) => {
         ]
       }
     });
-    return !!friendship; // Retourne un booléen si la relation est amicale
+    return !!friendship; 
   } catch (error) {
     throw new Error("Erreur lors de la vérification de l'amitié: " + error.message);
   }
@@ -49,7 +49,7 @@ exports.acceptFriendship = async (id) => {
 
 exports.getFriends = async (userId) => {
   try {
-    const numericUserId = Number(userId); // 🛠️ conversion explicite en nombre
+    const numericUserId = Number(userId); // conversion explicite en nombre
 
     const friendships = await Friendship.findAll({
       where: {
