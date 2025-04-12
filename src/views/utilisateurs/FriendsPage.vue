@@ -2,7 +2,7 @@
   <div class="profile-page">
     <h1>Mes amis</h1>
     <ul>
-      <li v-for="friend in filteredFriends" :key="friend.id_utilisateur" class="card">
+      <li v-for="friend in friends" :key="friend.id_utilisateur" class="card">
         <div class="friend-item">
           <div class="avatar-container">
             <img :src="getAvatarUrl(friend.avatar)" alt="Avatar" class="avatar" />
@@ -31,11 +31,6 @@ export default {
       userId: null
     };
   },
-  computed: {
-    filteredFriends() {
-      return this.friends.filter(friend => friend.id_utilisateur !== this.userId);
-    }
-  },
   methods: {
     getUserIdFromToken() {
       const token = localStorage.getItem("token");
@@ -62,16 +57,17 @@ export default {
       return avatar ? `http://localhost:3000/uploads/${avatar}` : '';
     },
     async fetchFriends() {
-      this.userId = this.getUserIdFromToken();
-      if (this.userId) {
-        try {
-          const response = await axios.get(`http://localhost:3000/api/friends/${this.userId}`, this.getAuthHeaders());
-          this.friends = response.data;
-        } catch (error) {
-          console.error("Erreur lors de la récupération des amis :", error);
-        }
-      }
-    },
+  this.userId = this.getUserIdFromToken();
+  if (this.userId) {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/friends/${this.userId}`, this.getAuthHeaders());
+      this.friends = response.data;
+      console.log("Friends:", this.friends); // Log des amis récupérés
+    } catch (error) {
+      console.error("Erreur lors de la récupération des amis :", error);
+    }
+  }
+},
     goToMessagerie(friendId) {
       this.$router.push({ name: 'MessageriePage', params: { friendId: friendId } });
     }

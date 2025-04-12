@@ -1,9 +1,6 @@
-const { createFriendship, areFriends, deleteFriendship } = require('../services/friendshipService');
+const { createFriendship, areFriends, deleteFriendship, getFriends  } = require('../services/friendshipService');
 
-
-
-
-// Exemple de méthode de création d'une demande d'amitié
+// Création d'une demande d'amitié
 exports.createFriendship = async (req, res) => {
   try {
     const { id_utilisateur1, id_utilisateur2 } = req.body;
@@ -33,7 +30,7 @@ exports.checkFriendshipByBody = async (req, res) => {
       return res.status(400).json({ message: "Les deux IDs des utilisateurs sont requis." });
     }
 
-    const isFriend = await areFriends(Math.min(id_utilisateur_1, id_utilisateur_2), Math.max(id_utilisateur_1, id_utilisateur_2));
+    const isFriend = await areFriends(id_utilisateur_1, id_utilisateur_2);
     res.status(200).json({ isFriend });
   } catch (error) {
     res.status(500).json({ message: "Erreur lors de la vérification de l'amitié." });
@@ -49,15 +46,27 @@ exports.deleteFriendship = async (req, res) => {
       return res.status(400).json({ message: "Les deux IDs des utilisateurs sont requis." });
     }
 
-    const isFriend = await areFriends(Math.min(id_utilisateur1, id_utilisateur2), Math.max(id_utilisateur1, id_utilisateur2));
+    const isFriend = await areFriends(id_utilisateur1, id_utilisateur2);
     if (!isFriend) {
       return res.status(404).json({ message: "Les utilisateurs ne sont pas amis." });
     }
 
-    await deleteFriendship(Math.min(id_utilisateur1, id_utilisateur2), Math.max(id_utilisateur1, id_utilisateur2));
+    await deleteFriendship(id_utilisateur1, id_utilisateur2);
     res.status(200).json({ message: "Relation d'amitié supprimée avec succès." });
   } catch (error) {
     console.error("Erreur serveur:", error);
     res.status(500).json({ message: "Erreur lors de la suppression de l'amitié." });
+  }
+};
+
+// Récupération des amis
+exports.getFriends = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const friends = await getFriends(userId);
+    res.status(200).json(friends);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des amis:", error);
+    res.status(500).json({ message: "Erreur lors de la récupération des amis." });
   }
 };

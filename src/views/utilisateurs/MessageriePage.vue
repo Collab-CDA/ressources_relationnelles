@@ -9,8 +9,7 @@
           :class="['message', message.id_utilisateur1 === userId ? 'sent' : 'received']"
         >
           <div class="message-header">
-            <span v-if="message.id_utilisateur1 === userId">Vous</span>
-            <span v-else>{{ friendName }}</span>
+            <span>{{ getSenderName(message) }}</span>
             <small>{{ formatDate(message.date_envoi) }}</small>
           </div>
           <p>{{ message.contenu_message }}</p>
@@ -40,7 +39,8 @@ export default {
       messages: [],
       newMessage: '',
       userId: null,
-      friendName: ''
+      userName: '', // Prénom de l'utilisateur connecté
+      friendName: '' // Prénom de l'ami
     };
   },
   computed: {
@@ -112,6 +112,19 @@ export default {
       const date = new Date(dateStr);
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     },
+    async fetchUserName() {
+      if (this.userId) {
+        try {
+          const response = await axios.get(
+            `http://localhost:3000/api/utilisateurs/${this.userId}`,
+            this.getAuthHeaders()
+          );
+          this.userName = response.data.prenom; // Utilisez le prénom ici
+        } catch (error) {
+          console.error("Erreur lors de la récupération du nom de l'utilisateur :", error);
+        }
+      }
+    },
     async fetchFriendName() {
       if (this.friendId) {
         try {
@@ -119,16 +132,22 @@ export default {
             `http://localhost:3000/api/utilisateurs/${this.friendId}`,
             this.getAuthHeaders()
           );
-          this.friendName = response.data.nom;
+          this.friendName = response.data.prenom; // Utilisez le prénom ici
         } catch (error) {
           console.error("Erreur lors de la récupération du nom de l'ami :", error);
         }
       }
+    },
+    getSenderName(message) {
+      // Si l'utilisateur connecté est l'expéditeur, retournez le prénom de l'utilisateur connecté
+      // Sinon, retournez le prénom de l'ami
+      return message.id_utilisateur1 === this.userId ? this.userName : this.friendName;
     }
   },
   mounted() {
     this.userId = this.getUserIdFromToken();
     this.fetchMessages();
+    this.fetchUserName();
     this.fetchFriendName();
   }
 };
