@@ -24,6 +24,7 @@ describe('User Controller', () => {
         res = httpMocks.createResponse();
     });
 
+
     describe('creerUtilisateur', () => {
         // Test pour vérifier que la création d’un utilisateur fonctionne correctement
         it('devrait créer un utilisateur avec succès', async () => {
@@ -60,6 +61,7 @@ describe('User Controller', () => {
         });
     });
 
+
     describe('obtenirTousUtilisateurs', () => {
         // Test pour vérifier la récupération de tous les utilisateurs
         it('devrait obtenir tous les utilisateurs avec succès', async () => {
@@ -83,6 +85,8 @@ describe('User Controller', () => {
             expect(res._getJSONData()).toEqual({ message: error.message });
         });
     });
+
+
 
     describe('authentifierUtilisateur', () => {
         // Test pour vérifier l’authentification avec succès
@@ -111,6 +115,8 @@ describe('User Controller', () => {
             expect(res._getJSONData()).toEqual({ message: error.message });
         });
     });
+
+
 
     describe('obtenirUtilisateurParId', () => {
         // Test pour vérifier la récupération d’un utilisateur existant par ID
@@ -149,6 +155,8 @@ describe('User Controller', () => {
             expect(res._getJSONData()).toEqual({ message: error.message });
         });
     });
+
+
 
     describe('getUserByFullName', () => {
         // Test pour vérifier la récupération d’un utilisateur par nom et prénom
@@ -197,6 +205,8 @@ describe('User Controller', () => {
         });
     });
 
+
+
     describe('mettreAJourUtilisateur', () => {
          // Test pour vérifier que la mise à jour d’un utilisateur fonctionne
         it('devrait mettre à jour un utilisateur avec succès', async () => {
@@ -238,6 +248,8 @@ describe('User Controller', () => {
         });
     });
 
+
+
     describe('supprimerUtilisateur', () => {
         // Test pour vérifier que la suppression d’un utilisateur fonctionne
         it('devrait supprimer un utilisateur avec succès', async () => {
@@ -276,6 +288,8 @@ describe('User Controller', () => {
         });
     });
 
+
+    
     describe('telechargerAvatar', () => {
         // Test pour vérifier que le téléchargement d’un avatar fonctionne
         it('devrait télécharger un avatar avec succès', async () => {
