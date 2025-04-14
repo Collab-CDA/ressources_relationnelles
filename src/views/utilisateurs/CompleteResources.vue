@@ -50,14 +50,13 @@
           <li
             v-for="resource in filteredResources"
             :key="resource.id_ressource_"
-            @click="
-              resource.statut_ !== 'suspendue' && selectResource(resource)
-            "
+            @click="resource.statut_ !== 'suspendue' && selectResource(resource)"
           >
             <a
               href="#"
               @click.prevent
               :class="{ suspended: resource.statut_ === 'suspendue' }"
+              :title="resource.statut_ === 'suspendue' ? 'La ressource a été suspendue' : ''"
             >
               {{ resource.titre }}
             </a>
@@ -236,6 +235,8 @@ export default {
   computed: {
     filteredResources() {
       return this.resources.filter((resource) => {
+        if (resource.statut_ === "en_attente") return false;
+
         const typeRelationMatch = this.selectedTypeRelation
           ? resource.type_relation === parseInt(this.selectedTypeRelation)
           : true;
@@ -418,37 +419,36 @@ export default {
       };
     },
     async toggleFavorite(resource) {
-    const userId = this.getUserIdFromToken();
-    if (!userId) {
-      alert("Vous devez être connecté pour ajouter une ressource aux favoris.");
-      return;
-    }
+      const userId = this.getUserIdFromToken();
+      if (!userId) {
+        alert("Vous devez être connecté pour ajouter une ressource aux favoris.");
+        return;
+      }
 
-    // Vérifiez si la ressource est déjà dans les favoris
-    const isFavorite = this.isResourceInFavorites(resource.id_ressource_);
-    if (isFavorite) {
-      alert("Ressource déjà ajoutée aux favoris !");
-      return;
-    }
+      const isFavorite = this.isResourceInFavorites(resource.id_ressource_);
+      if (isFavorite) {
+        alert("Ressource déjà ajoutée aux favoris !");
+        return;
+      }
 
-    try {
-      await axios.post(
-        "http://localhost:3000/api/favoris/create",
-        { id_utilisateur: userId, id_ressource_: resource.id_ressource_ },
-        this.getAuthHeaders()
-      );
-      alert("Ressource ajoutée aux favoris avec succès !");
-    } catch (error) {
-      console.warn(
-        "Erreur lors de l'ajout aux favoris :",
-        error.response ? error.response.data : error.message
-      );
-    }
-  },
+      try {
+        await axios.post(
+          "http://localhost:3000/api/favoris/create",
+          { id_utilisateur: userId, id_ressource_: resource.id_ressource_ },
+          this.getAuthHeaders()
+        );
+        alert("Ressource ajoutée aux favoris avec succès !");
+      } catch (error) {
+        console.warn(
+          "Erreur lors de l'ajout aux favoris :",
+          error.response ? error.response.data : error.message
+        );
+      }
+    },
 
-  isResourceInFavorites(resourceId) {
-    return this.favorites.some(fav => fav.id_ressource_ === resourceId);
-  },
+    isResourceInFavorites(resourceId) {
+      return this.favorites.some(fav => fav.id_ressource_ === resourceId);
+    },
 
     selectResource(resource) {
       this.selectedResource = resource;
@@ -497,11 +497,8 @@ export default {
         return;
       }
 
-      console.log("ID utilisateur actuel :", currentUserId);
-      console.log("ID utilisateur invité :", selectedUserId);
-
       try {
-        const response = await axios.post(
+        await axios.post(
           "http://localhost:3000/api/friendships/create",
           {
             id_utilisateur1: currentUserId,
@@ -525,22 +522,22 @@ export default {
       this.selectedUser = null;
     },
     async fetchFavorites() {
-    const userId = this.getUserIdFromToken();
-    if (!userId) return;
+      const userId = this.getUserIdFromToken();
+      if (!userId) return;
 
-    try {
-      const response = await axios.get(
-        `http://localhost:3000/api/favoris/${userId}`,
-        this.getAuthHeaders()
-      );
-      this.favorites = response.data;
-    } catch (error) {
-      console.warn(
-        "Erreur lors de la récupération des favoris :",
-        error.response ? error.response.data : error.message
-      );
-    }
-  },
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/favoris/${userId}`,
+          this.getAuthHeaders()
+        );
+        this.favorites = response.data;
+      } catch (error) {
+        console.warn(
+          "Erreur lors de la récupération des favoris :",
+          error.response ? error.response.data : error.message
+        );
+      }
+    },
   },
   mounted() {
     this.fetchResources();
@@ -619,10 +616,9 @@ h2 {
   background-color: #d4c4e0;
 }
 
-/* Style pour les ressources suspenduees */
 .suspended {
-  color: red; /* ou utilisez 'gray' pour une apparence grisée */
-  pointer-events: none; /* Empêche le clic */
+  color: red;
+  pointer-events: none;
 }
 
 .upload-modal {
@@ -829,7 +825,7 @@ form button:hover {
 .share-button:hover {
   color: darkblue;
 }
-/* Responsive mobiles */
+
 @media (max-width: 768px) {
   .main-container {
     margin: 2rem 1rem;
@@ -860,7 +856,6 @@ form button:hover {
   }
 }
 
-/* Responsive tablettes */
 @media (min-width: 769px) and (max-width: 1024px) {
   .main-container {
     margin: 2rem 2rem;

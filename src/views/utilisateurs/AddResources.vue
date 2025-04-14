@@ -161,7 +161,8 @@ export default {
         formData.append("lien_video", this.resource.lien_video || null);
         formData.append("nom_image", this.resource.nom_image);
         formData.append("confidentialite", confidentialite);
-
+        formData.append("statut_", "en_attente");
+        
         const idUtilisateur = this.getUserIdFromToken();
         formData.append("id_utilisateur", idUtilisateur);
 
@@ -181,7 +182,7 @@ export default {
         alert("Ressource ajoutée avec succès !");
         localStorage.removeItem("draftResource");
         this.draftExists = false;
-        this.resetForm();
+        this.clearForm();
       } catch (error) {
         console.error(
           "Erreur lors de l'ajout de la ressource :",
@@ -249,6 +250,19 @@ export default {
         };
       }
     },
+    clearForm() {
+      this.resource = {
+        titre: "",
+        contenu: "",
+        id_typeRessource: "",
+        id_utilisateur: "",
+        type_relation: "",
+        id_categorie: "",
+        lien_video: "",
+        nom_image: "",
+        selectedFile: null,
+      };
+    },
     loadDraft() {
       const draft = localStorage.getItem("draftResource");
       if (draft) {
@@ -270,6 +284,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 * {
