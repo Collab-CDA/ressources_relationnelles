@@ -68,6 +68,19 @@ npm install jest node-mocks-http --save-dev
 # Lancer les Tests
 npm test
 
+## Tests Fonctionnels avec Cypress
+# Prérequis : 
+Assurez-vous que Cypress est installé à la racine du projet:
+npm install --save-dev cypress
+# Exécution dans l'interface Cypress :
+npx cypress open
+# Procédure dans l'interface:
+Une fois l'interface Cypress ouverte, cliquez sur "E2E testing" choisissez le navigateur Chrome puis cliquez sur "Start E2E Testing in Electron". Dans le menu, accédez à "Specs" vous trouverez alors les différents tests mis en place. Double cliquez sur le test à lancer.
+Attention: Pour l'inscription, il faut changer l'email dans le fichier "register.cy.js" car la bdd n'accepte pas les doublons.
+# Exécution dans le terminal:
+npx cypress run --record --key 01b611df-9fa4-451c-a884-31bab129d7f8
+# Description :
+Flux d'Inscription d'un Utilisateur : Vérifie que le processus d'inscription fonctionne correctement, y compris la validation des champs et la redirection après une inscription réussie. On procède pareil pour la connexion.
 
 
 ## GITHUB
