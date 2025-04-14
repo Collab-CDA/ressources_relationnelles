@@ -41,33 +41,45 @@ exports.getConversations = async (userId) => {
           { id_utilisateur2: userId }
         ]
       },
-      attributes: ['id_utilisateur1', 'id_utilisateur2', [sequelize.fn('MAX', sequelize.col('date_envoi')), 'last_message_date']],
+      attributes: [
+        'id_utilisateur1',
+        'id_utilisateur2',
+        [sequelize.fn('MAX', sequelize.col('date_envoi')), 'last_message_date']
+      ],
       group: ['id_utilisateur1', 'id_utilisateur2'],
       order: [[sequelize.fn('MAX', sequelize.col('date_envoi')), 'DESC']]
     });
-
-    console.log("Conversations récupérées:", conversations); // Log des conversations récupérées
 
     const uniqueFriendIds = new Set();
     const result = [];
 
     conversations.forEach(conversation => {
-      const friendId = conversation.id_utilisateur1 === userId ? conversation.id_utilisateur2 : conversation.id_utilisateur1;
+      const utilisateur1 = parseInt(conversation.id_utilisateur1);
+      const utilisateur2 = parseInt(conversation.id_utilisateur2);
+      const userIdInt = parseInt(userId);
+
+      // Empêche les conversations avec soi-même
+      if (utilisateur1 === utilisateur2 && utilisateur1 === userIdInt) {
+        return;
+      }
+
+      const friendId = utilisateur1 === userIdInt ? utilisateur2 : utilisateur1;
+
       if (!uniqueFriendIds.has(friendId)) {
         uniqueFriendIds.add(friendId);
         result.push({
           friendId,
-          lastMessageDate: conversation.last_message_date
+          lastMessageDate: conversation.get('last_message_date')
         });
       }
     });
 
     return result;
   } catch (error) {
-    console.error("Erreur lors de la récupération des conversations:", error); // Log de l'erreur
     throw new Error('Erreur lors de la récupération des conversations.');
   }
 };
+
 
 exports.deleteConversation = async (userId, friendId) => {
   try {

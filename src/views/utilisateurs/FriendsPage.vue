@@ -5,14 +5,26 @@
       <li v-for="friend in friends" :key="friend.id_utilisateur" class="card">
         <div class="friend-item">
           <div class="avatar-container">
-            <img :src="getAvatarUrl(friend.avatar)" alt="Avatar" class="avatar" />
+            <img
+              :src="getAvatarUrl(friend.avatar)"
+              alt="Avatar"
+              class="avatar"
+            />
           </div>
           <div class="friend-info">
             <div class="text-info">
               <p><strong>Nom:</strong> {{ friend.nom }}</p>
               <p><strong>Prénom:</strong> {{ friend.prenom }}</p>
             </div>
-            <button @click="goToMessagerie(friend.id_utilisateur)" class="btn">Contacter</button>
+            <button @click="goToMessagerie(friend.id_utilisateur)" class="btn">
+              Contacter
+            </button>
+            <button
+              @click="removeFriend(friend.id_utilisateur)"
+              class="btn btn-danger"
+            >
+              Supprimer
+            </button>
           </div>
         </div>
       </li>
@@ -28,7 +40,7 @@ export default {
   data() {
     return {
       friends: [],
-      userId: null
+      userId: null,
     };
   },
   methods: {
@@ -54,26 +66,55 @@ export default {
       };
     },
     getAvatarUrl(avatar) {
-      return avatar ? `http://localhost:3000/uploads/${avatar}` : '';
+      return avatar ? `http://localhost:3000/uploads/${avatar}` : "";
     },
     async fetchFriends() {
-  this.userId = this.getUserIdFromToken();
-  if (this.userId) {
-    try {
-      const response = await axios.get(`http://localhost:3000/api/friends/${this.userId}`, this.getAuthHeaders());
-      this.friends = response.data;
-    } catch (error) {
-      console.error("Erreur lors de la récupération des amis :", error);
-    }
-  }
-},
+      this.userId = this.getUserIdFromToken();
+      if (this.userId) {
+        try {
+          const response = await axios.get(
+            `http://localhost:3000/api/friends/${this.userId}`,
+            this.getAuthHeaders()
+          );
+          this.friends = response.data;
+        } catch (error) {
+          console.error("Erreur lors de la récupération des amis :", error);
+        }
+      }
+    },
+    async removeFriend(friendId) {
+      const confirmation = window.confirm(
+        "Êtes-vous sûr de vouloir supprimer cet ami ?"
+      );
+      if (!confirmation) return;
+
+      try {
+        const response = await axios.post(
+          "http://localhost:3000/api/friendships/delete",
+          {
+            id_utilisateur1: this.userId,
+            id_utilisateur2: friendId,
+          },
+          this.getAuthHeaders()
+        );
+        // Mise à jour de la liste des amis
+        this.friends = this.friends.filter(
+          (friend) => friend.id_utilisateur !== friendId
+        );
+      } catch (error) {
+        console.error("Erreur lors de la suppression de l'ami :", error);
+      }
+    },
     goToMessagerie(friendId) {
-      this.$router.push({ name: 'MessageriePage', params: { friendId: friendId } });
-    }
+      this.$router.push({
+        name: "MessageriePage",
+        params: { friendId: friendId },
+      });
+    },
   },
   mounted() {
     this.fetchFriends();
-  }
+  },
 };
 </script>
 
@@ -85,13 +126,13 @@ export default {
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   background-color: #ffffff;
   color: #000000;
 }
 
 h1 {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 32px;
   font-weight: bold;
   color: #0258bd;
@@ -115,7 +156,7 @@ ul {
 }
 
 .card {
-  background-color: #DAD8D8;
+  background-color: #dad8d8;
   padding: 10px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 10px;
@@ -135,7 +176,7 @@ ul {
 .avatar {
   width: 4rem;
   height: 4rem;
-  border: solid 5px #80ADA0;
+  border: solid 5px #80ada0;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -162,7 +203,7 @@ ul {
 }
 
 .btn {
-  background-color: #B0A2BA;
+  background-color: #b0a2ba;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
@@ -174,6 +215,19 @@ ul {
 }
 
 .btn:hover {
-  background-color: #D4C4E0;
+  background-color: #d4c4e0;
+}
+
+.btn-danger {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  margin-left: 1em;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.btn-danger:hover {
+  background-color: #c0392b;
 }
 </style>

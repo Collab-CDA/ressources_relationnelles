@@ -180,7 +180,7 @@ h1 {
 }
 
 .delete-btn:hover i {
-  color: #FF4500;  
+  color: #D0021B;  
 }
 
 </style>
