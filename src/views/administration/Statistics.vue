@@ -19,6 +19,7 @@
       </div>
     </div>
     
+     <!-- Cards des indicateurs sélectionnés avec les valeurs récupérées -->
     <div class="cards-container">
       <div class="card" v-for="metric in displayedMetrics" :key="metric.name">
         <h3>{{ metric.name }}</h3>
@@ -38,6 +39,7 @@
 <script>
 import axios from 'axios'
 import { ref, computed, onMounted } from 'vue'
+// Bibliothèque javascript pour créer des graphiques interactifs
 import Chart from 'chart.js/auto'
 
 export default {
@@ -61,8 +63,10 @@ export default {
       { name: 'Commentaires', key: 'countCommentaires' },
       { name: 'Catégories de ressources', key: 'countCategoriesRessources' }
     ]
+    // Indicateurs sélectionnés, récupérés depuis le localStorage ou tous sélectionnés par défaut
     const saved = localStorage.getItem('selectedMetrics')
     const selectedMetrics = ref(saved ? JSON.parse(saved) : availableMetrics.map(m => m.name))
+    // Indicateurs affichés, filtrés en fonction de la sélection
     const displayedMetrics = computed(() => {
       return availableMetrics
         .filter(m => selectedMetrics.value.includes(m.name))
@@ -71,6 +75,8 @@ export default {
           value: dashboardData.value[m.key]
         }))
     })
+  
+    // Méthode pour récupérer les données
     const fetchDashboard = async () => {
       try {
         loading.value = true
@@ -86,6 +92,8 @@ export default {
         loading.value = false
       }
     }
+
+    // Méthode pour exporter les indicateurs filtrés en CSV
     const exportFiltered = () => {
       let csv = 'Statistique,Valeur\n'
       displayedMetrics.value.forEach(metric => {
@@ -99,6 +107,8 @@ export default {
       document.body.appendChild(link)
       link.click()
     }
+
+    // Méthode pour exporter tous les indicateurs en CSV
     const exportAll = async () => {
       try {
         const token = localStorage.getItem('token')
@@ -116,14 +126,20 @@ export default {
         console.error('Erreur lors de l’export des statistiques:', error)
       }
     }
+
+    // Méthode pour sauvegarder la sélection des indicateurs dans le localStorage
     const saveSelection = () => {
       localStorage.setItem('selectedMetrics', JSON.stringify(selectedMetrics.value))
       renderChart()
     }
+
+    // Méthode pour sélectionner tous les indicateurs
     const selectAll = () => {
       selectedMetrics.value = availableMetrics.map(m => m.name)
       saveSelection()
     }
+
+    // Méthode pour rendre le graphique des indicateurs sélectionnés
     const renderChart = () => {
       const labels = displayedMetrics.value.map(item => item.name)
       const data = displayedMetrics.value.map(item => item.value)
@@ -149,6 +165,7 @@ export default {
         }
       })
     }
+    // Appel de la méthode pour récupérer les données au montage du composant
     onMounted(() => {
       fetchDashboard()
     })

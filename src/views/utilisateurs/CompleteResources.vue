@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>Ressources complètes</h1>
+    <!-- Filtre des ressources -->
     <div class="filter-bar">
       <label for="typeRelation">Type de relation :</label>
       <select v-model="selectedTypeRelation" id="typeRelation">
@@ -65,6 +66,7 @@
         <p v-if="filteredResources.length === 0">Aucun résultat</p>
       </div>
 
+       <!-- Contenu de la ressource sélectionnée -->
       <div class="content-container">
         <div v-if="selectedResource">
           <h2>{{ selectedResource.titre }}</h2>
@@ -126,6 +128,7 @@
           />
         </div>
 
+        <!-- Section des commentaires -->
         <div class="comments-section">
           <h2>Commentaires</h2>
           <div class="comments-box">
@@ -148,7 +151,7 @@
                 <span v-else>Utilisateur inconnu</span>
               </p>
 
-              <!-- MODAL ajout ami -->
+              <!-- MODAL ajout d'un ami -->
               <div v-if="isModalOpen" class="modal-overlay">
                 <div class="modal">
                   <span class="close-modal" @click="closeModal">&times;</span>
@@ -233,6 +236,7 @@ export default {
     };
   },
   computed: {
+    // Filtre les ressources en fonction des sélections
     filteredResources() {
       return this.resources.filter((resource) => {
         if (resource.statut_ === "en_attente") return false;
@@ -254,11 +258,13 @@ export default {
     shareResource() {
       alert("Publication partagée");
     },
+    // Formate la date pour un affichage lisible
     formatDate(dateStr) {
       if (!dateStr || dateStr === "CURRENT_TIMESTAMP") return "";
       const dateObj = new Date(dateStr);
       return isNaN(dateObj) ? "" : dateObj.toLocaleString();
     },
+    // Récupératin de toutes les ressources, publiques et privées
     async fetchResources() {
       try {
         const response = await axios.get(
@@ -315,6 +321,7 @@ export default {
         );
       }
     },
+    // Récupèration des commentaires pour la ressource sélectionnée
     async fetchComments() {
       if (this.selectedResource) {
         try {
@@ -364,6 +371,7 @@ export default {
         }
       }
     },
+    // Réponse commentaire
     replyToComment(comment) {
       const prenom =
         (comment.User && comment.User.prenom) || "Utilisateur inconnu";
@@ -377,20 +385,25 @@ export default {
     contactParticipant() {
       this.$router.push("/messagerie");
     },
+    // Retourne le code HTML pour intégrer une vidéo YouTube
     getEmbedVideo(url) {
       return `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
     },
+    // Vérifie si l'URL est un lien YouTube intégrable
     isEmbedYouTubeLink(url) {
       return /youtube\.com|youtu\.be/.test(url);
     },
+    // Vérifie si le fichier est une image
     isImage(file) {
       if (file.startsWith("data:")) return true;
       return /\.(jpg|jpeg|png|gif)$/i.test(file);
     },
+    // Vérifie si le fichier est un PDF
     isPDF(file) {
       if (file.startsWith("data:")) return false;
       return /\.pdf$/i.test(file);
     },
+    // Retourne l'URL complète du fichier
     getFileUrl(file) {
       if (file.startsWith("data:")) {
         return file;
@@ -418,6 +431,7 @@ export default {
         },
       };
     },
+     // Ajoute une ressource des favoris
     async toggleFavorite(resource) {
       const userId = this.getUserIdFromToken();
       if (!userId) {
@@ -484,6 +498,7 @@ export default {
         console.error("Nom ou prénom de l'utilisateur invalide :", user);
       }
     },
+    // Envoie une demande d'ami
     async sendFriendRequest() {
       const currentUserId = this.getUserIdFromToken();
       const selectedUserId =
@@ -521,6 +536,7 @@ export default {
       this.isModalOpen = false;
       this.selectedUser = null;
     },
+    // Récupère les favoris de l'utilisateur
     async fetchFavorites() {
       const userId = this.getUserIdFromToken();
       if (!userId) return;
@@ -540,6 +556,7 @@ export default {
     },
   },
   mounted() {
+    // Appelle les méthodes pour récupérer les données lors du montage du composant
     this.fetchResources();
     this.fetchTypesRelation();
     this.fetchCategoriesResource();

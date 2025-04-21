@@ -255,7 +255,6 @@ export default {
     formatStatus(status) {
       return status.replace(/_/g, " ");
     },
-    // Gestion des modales
     openModal() {
       this.showModal = true;
     },
@@ -342,7 +341,7 @@ export default {
         console.error("Erreur lors de la mise à jour du statut :", error.response?.data || error.message);
       }
     },
-    // Méthode pour basculer le statut entre "en_attente" et "disponible"
+    // Bascule le statut entre "en_attente" et "disponible"
     async togglePublicationStatus(resource) {
       const newStatus = resource.statut_ === "en_attente" ? "disponible" : "en_attente";
       try {

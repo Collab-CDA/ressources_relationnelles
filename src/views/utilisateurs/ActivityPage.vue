@@ -1,52 +1,131 @@
 <template>
   <div class="main-container">
     <h1>Démarrer une activité</h1>
+
     <ul>
       <li v-for="activity in activities" :key="activity.id_ressource_">
         {{ activity.titre }}
+
+        <!-- Si l'activité est en cours -->
         <div v-if="activity.id_ressource_ === currentActivityId">
-          <span v-if="completionPercentage < 100">{{ completionPercentage }}%</span>
+          <!-- Affiche le pourcentage de complétion si inférieur à 100 -->
+          <span v-if="completionPercentage < 100"
+            >{{ completionPercentage }}%</span
+          >
+          <!-- Affiche "Exploitée" si le pourcentage de complétion est 100 -->
           <span v-else>Exploitée</span>
-          <button @click="stopActivity">Stop</button>
         </div>
+
+        <!-- Si l'activité n'est pas en cours -->
         <div v-else>
+          <!-- Bouton pour démarrer l'activité -->
           <button
             @click="startActivity(activity.id_ressource_)"
             :disabled="isActivityCompleted(activity.id_ressource_)"
           >
             Démarrer
           </button>
-          <span v-if="isActivityCompleted(activity.id_ressource_)" style="color: green; margin-left: 10px;">Exploitée</span>
+          <!-- Affiche "Exploitée" si l'activité est complétée -->
+          <span
+            v-if="isActivityCompleted(activity.id_ressource_)"
+            style="color: green; margin-left: 10px"
+            >Exploitée</span
+          >
         </div>
       </li>
     </ul>
+
+    <!-- Affichage des détails de la ressource démarrée -->
+    <div ref="activitySimulation" class="resource-details">
+      <div v-if="selectedResource">
+        <h2>{{ selectedResource.titre }}</h2>
+        <p>{{ selectedResource.contenu }}</p>
+
+        <div
+          v-if="isEmbedYouTubeLink(selectedResource.lien_video)"
+          v-html="getEmbedVideo(selectedResource.lien_video)"
+        ></div>
+        <div v-else-if="selectedResource.nom_image">
+          <div
+            v-for="file in selectedResource.nom_image"
+            :key="file"
+            style="margin-bottom: 10px"
+          >
+            <div v-if="isImage(file)">
+              <img
+                :src="getFileUrl(file)"
+                alt="Image de la ressource"
+                style="max-width: 300px"
+              />
+            </div>
+            <div v-else-if="isPDF(file)">
+              <a :href="getFileUrl(file)" target="_blank" download
+                >Télécharger PDF : {{ file }}</a
+              >
+            </div>
+            <div v-else>
+              <a :href="getFileUrl(file)" target="_blank" download
+                >Télécharger le fichier : {{ file }}</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Si la ressource contient un lien vidéo non intégrable on redirige -->
+        <a
+          v-if="
+            selectedResource.lien_video &&
+            !isEmbedYouTubeLink(selectedResource.lien_video)
+          "
+          :href="selectedResource.lien_video"
+          target="_blank"
+          >Lien vers la ressource</a
+        >
+
+        <!-- Contrôle de progression -->
+        <div class="progress-controls">
+          <span v-if="completionPercentage < 100"
+            >{{ completionPercentage }}%</span
+          >
+          <span v-else>Exploitée</span>
+          <!-- Arrêt de l'activité -->
+          <button @click="stopActivity">Stop</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
-  name: 'ActivityPage',
+  name: "ActivityPage",
   data() {
     return {
       activities: [],
       currentActivityId: null,
       completionPercentage: 0,
       timer: null,
-      progressions: []
+      progressions: [],
+      selectedResource: null,
     };
   },
   methods: {
     async fetchActivities() {
-  try {
-    const response = await axios.get('http://localhost:3000/api/resources', this.getAuthHeaders());
-    this.activities = response.data;
-  } catch (error) {
-    console.warn("Erreur lors de la récupération des activités :", error.response ? error.response.data : error.message);
-  }
-}
-,
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/resources",
+          this.getAuthHeaders()
+        );
+        this.activities = response.data;
+      } catch (error) {
+        console.warn(
+          "Erreur lors de la récupération des activités :",
+          error.response ? error.response.data : error.message
+        );
+      }
+    },
     async fetchProgressions() {
       const userId = this.getUserIdFromToken();
       if (!userId) {
@@ -55,12 +134,19 @@ export default {
       }
 
       try {
-        const response = await axios.get(`http://localhost:3000/api/progression/${userId}`, this.getAuthHeaders());
+        const response = await axios.get(
+          `http://localhost:3000/api/progression/${userId}`,
+          this.getAuthHeaders()
+        );
         this.progressions = response.data;
       } catch (error) {
-        console.warn("Erreur lors de la récupération des progressions :", error.response ? error.response.data : error.message);
+        console.warn(
+          "Erreur lors de la récupération des progressions :",
+          error.response ? error.response.data : error.message
+        );
       }
     },
+    // Démarre une activité
     async startActivity(resourceId) {
       const userId = this.getUserIdFromToken();
       if (!userId) {
@@ -70,49 +156,82 @@ export default {
 
       try {
         // Vérifie si une progression existe déjà
-        const existingProgress = this.progressions.find(p => p.id_ressource_ === resourceId && p.statut === 'en cours');
+        const existingProgress = this.progressions.find(
+          (p) => p.id_ressource_ === resourceId && p.statut === "en cours"
+        );
 
         if (existingProgress) {
-          // Si une progression existe, mettez à jour le pourcentage
+          // Si une progression existe, met à jour le pourcentage
           this.completionPercentage = existingProgress.pourcentage_completion;
         } else {
           // Sinon, crée une nouvelle progression
-          await axios.post('http://localhost:3000/api/progression', {
-            id_ressource_: resourceId,
-            statut: 'en cours',
-            pourcentage_completion: 0
-          }, this.getAuthHeaders());
+          await axios.post(
+            "http://localhost:3000/api/progression",
+            {
+              id_ressource_: resourceId,
+              statut: "en cours",
+              pourcentage_completion: 0,
+            },
+            this.getAuthHeaders()
+          );
 
           this.completionPercentage = 0;
         }
 
         this.currentActivityId = resourceId;
+        this.selectedResource = this.activities.find(
+          (activity) => activity.id_ressource_ === resourceId
+        ); 
+        // Démarre la progression
         this.timer = setInterval(() => {
+          // Vérifie si le pourcentage de complétion est inférieur à 100
           if (this.completionPercentage < 100) {
+            // Si oui, incrémente le pourcentage de complétion de 1
             this.completionPercentage += 1;
           } else {
+            // Si le pourcentage de complétion est égal à 100, arrête la progression
             clearInterval(this.timer);
           }
-        }, 2000);
+        }, 2000); // L'intervalle est défini à 2000 millisecondes (2 secondes)
+
+        // Défile jusqu'à l'activité démarrée
+        this.$nextTick(() => {
+          this.$refs.activitySimulation.scrollIntoView({ behavior: "smooth" });
+        });
       } catch (error) {
-        console.warn("Erreur lors du démarrage de l'activité :", error.response ? error.response.data : error.message);
+        console.warn(
+          "Erreur lors du démarrage de l'activité :",
+          error.response ? error.response.data : error.message
+        );
       }
     },
+    // Arrête une activité
     async stopActivity() {
       clearInterval(this.timer);
       try {
-        await axios.put(`http://localhost:3000/api/progression/${this.currentActivityId}`, {
-          pourcentage_completion: this.completionPercentage
-        }, this.getAuthHeaders());
+        await axios.put(
+          `http://localhost:3000/api/progression/${this.currentActivityId}`,
+          {
+            pourcentage_completion: this.completionPercentage,
+          },
+          this.getAuthHeaders()
+        );
 
         alert("Activité arrêtée avec succès !");
         this.currentActivityId = null;
+        this.selectedResource = null; 
       } catch (error) {
-        console.warn("Erreur lors de l'arrêt de l'activité :", error.response ? error.response.data : error.message);
+        console.warn(
+          "Erreur lors de l'arrêt de l'activité :",
+          error.response ? error.response.data : error.message
+        );
       }
     },
+    // Vérifie si une activité est complétée
     isActivityCompleted(resourceId) {
-      const progress = this.progressions.find(p => p.id_ressource_ === resourceId);
+      const progress = this.progressions.find(
+        (p) => p.id_ressource_ === resourceId
+      );
       return progress ? progress.pourcentage_completion === 100 : false;
     },
     getAuthHeaders() {
@@ -136,7 +255,27 @@ export default {
       }
       console.warn("Token non trouvé dans le localStorage.");
       return null;
-    }
+    },
+    getEmbedVideo(url) {
+      return `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+    },
+    isEmbedYouTubeLink(url) {
+      return /youtube\.com|youtu\.be/.test(url);
+    },
+    isImage(file) {
+      if (file.startsWith("data:")) return true;
+      return /\.(jpg|jpeg|png|gif)$/i.test(file);
+    },
+    isPDF(file) {
+      if (file.startsWith("data:")) return false;
+      return /\.pdf$/i.test(file);
+    },
+    getFileUrl(file) {
+      if (file.startsWith("data:")) {
+        return file;
+      }
+      return `${window.location.origin}/uploads/${file}`;
+    },
   },
   mounted() {
     this.fetchActivities();
@@ -146,8 +285,7 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 
 .main-container {
   width: 80%;
@@ -163,13 +301,13 @@ export default {
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   background-color: #ffffff;
   color: #000000;
 }
 
 h1 {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 32px;
   font-weight: bold;
   color: #0258bd;
@@ -206,7 +344,7 @@ li h2 {
 }
 
 button {
-  background-color: #B0A2BA;
+  background-color: #b0a2ba;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -219,7 +357,7 @@ button {
 }
 
 button:hover {
-  background-color: #D4C4E0;
+  background-color: #d4c4e0;
 }
 
 button:disabled {
@@ -238,5 +376,49 @@ button:disabled {
   li {
     width: 100%;
   }
+}
+
+.resource-details {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.resource-details h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.resource-details p {
+  margin-bottom: 20px;
+}
+
+.resource-details img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.resource-details a {
+  color: #0258bd;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.resource-details a:hover {
+  text-decoration: underline;
+}
+
+.progress-controls {
+  margin-top: 2rem;
+}
+
+.progress-controls span {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 </style>

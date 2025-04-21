@@ -60,12 +60,17 @@ export default {
           "http://localhost:3000/api/utilisateurs/login",
           this.form
         );
+        // Destructuration de la réponse pour obtenir les informations de l'utilisateur et le token
         const { utilisateur, token } = response.data;
         alert(`Bienvenue ${utilisateur.prenom}!`);
+         // Stockage du token dans le localStorage pour les requêtes futures
+        // Il permet de vérifier que l'utilisateur est bien authentifié sans avoir à se reconnecter à chaque fois
         localStorage.setItem('token', token);
+         // Stockage du rôle de l'utilisateur dans le localStorage
+        // afin de personnaliser l'interface et les fonctionnalités selon les attributions à chaque rôle
         localStorage.setItem('role', utilisateur.role_);
 
-        // Rediriger vers la page de choix si l'utilisateur est un administrateur
+        // On redirige vers la page de choix d'interface si l'utilisateur est un administrateur
         if (utilisateur.role_ === 'Admin') {
           this.$router.push("/choix-header");
         } else {

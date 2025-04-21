@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Ressources complètes</h1>
+    <h1>Ressources publiques</h1>
 
     <div class="filter-bar">
       <label for="typeRelation">Type de relation :</label>
@@ -34,7 +34,7 @@
           {{ type }}
         </option>
       </select>
-
+      <!-- possible que si utilisateur enregistré -->
       <button class="add-resource-button" @click="redirectToAddResource">
         Ajouter une ressource
       </button>
@@ -208,6 +208,7 @@ export default {
           "http://localhost:3000/api/resources",
           this.getAuthHeaders()
         );
+        // Récupération des ressources publiques uniquement
         this.resources = response.data.filter(
           (resource) => resource.confidentialite === "Publique"
         );

@@ -12,6 +12,7 @@
 <script>
 export default {
   name: "ChoixHeader",
+  // Propriété calculée pour vérifier si l'utilisateur est un admin, modérateur ou super-admin
   computed: {
     isAdmin() {
       return localStorage.getItem('role') === 'Admin';
@@ -24,6 +25,7 @@ export default {
     }
   },
   methods: {
+    // choix des interfaces selon le rôle
     choisirHeader(header) {
       localStorage.setItem('headerChoisi', header);
       this.$router.push("/");

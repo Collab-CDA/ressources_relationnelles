@@ -107,7 +107,14 @@ export default {
     };
   },
   methods: {
-    validatePassword() {
+// Validation du mot de passe avec une regex
+     validatePassword() {
+      // La regex utilisée vérifie que le mot de passe contient :
+      // - Au moins une lettre minuscule (?=.*[a-z])
+      // - Au moins une lettre majuscule (?=.*[A-Z])
+      // - Au moins un chiffre (?=.*\d)
+      // - Au moins 8 caractères au total ([A-Za-z\d@$!%*?&]{8,})
+      // - Il peut inclure des caractères spéciaux (@$!%*?&)
       const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
       if (!this.form.mot_de_passe) {
         this.passwordError = "Le mot de passe est requis.";
@@ -118,6 +125,7 @@ export default {
         this.passwordError = "";
       }
     },
+// Validation de la confirmation du mot de passe
     validateConfirmPassword() {
       if (this.form.mot_de_passe !== this.confirmPassword) {
         this.errors.confirmPassword = "Les mots de passe ne correspondent pas.";
@@ -125,6 +133,7 @@ export default {
         this.errors.confirmPassword = "";
       }
     },
+// Validation globale des champs du formulaire
     validateFields() {
       let isValid = true;
       this.errors = {};
@@ -139,6 +148,10 @@ export default {
         isValid = false;
       }
 
+  // Vérification de l'email avec une regex
+      // La regex utilisée  vérifie que l'email contient :
+      // - Au moins un caractère hors espace avant et après le '@' (\S+@\S+)
+      // - Au moins un point après le '@' (\.\S+)
       if (!this.form.email) {
         this.errors.email = "L'email est requis.";
         isValid = false;
@@ -162,26 +175,31 @@ export default {
 
       return isValid;
     },
+// Méthode d'inscription
     async register() {
+        // Appel de la méthode pour vérifier si tous les champs du formulaire sont valides
       const isValid = this.validateFields();
-
+      // Si les champs ne sont pas valides, on arrête l'exécution de la fonction
       if (!isValid) {
         return;
       }
-
       try {
+        // Préparation des données à envoyer au serveur
         const dataToSend = {
+          // Utilisaton de l'opérateur de décomposition (spread operator) pour copier les données du formulaire
           ...this.form,
           statut: "actif",
         };
-
+        // Envoi des données au serveur via la requête à l'URL spécifiée
         const response = await axios.post(
           "http://localhost:3000/api/utilisateurs/register",
           dataToSend
         );
+        // Si la requête réussit, on affiche une alerte pour informer l'utilisateur et on redirige vers la connexion
         alert("Inscription réussie !");
         this.$router.push("/login");
       } catch (error) {
+        // Si une erreur se produit lors de la requête, on entre dans le catch pour obtenir l'erreur et l'afficher
         if (
           error.response &&
           error.response.data &&
@@ -194,6 +212,7 @@ export default {
         }
       }
     },
+    // Redirection vers la page de connexion
     goToLogin() {
       this.$router.push("/login");
     },

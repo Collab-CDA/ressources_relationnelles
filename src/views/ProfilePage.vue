@@ -64,10 +64,12 @@ export default {
       selectedFile: null,
     };
   },
+  // Appel de la méthode pour récupérer les informations de l'utilisateur
   created() {
     this.fetchUtilisateur();
   },
   computed: {
+    // Propriété calculée pour obtenir l'URL de l'avatar
     avatarUrl() {
       return this.utilisateur.avatar
         ? `http://localhost:3000/uploads/${this.utilisateur.avatar}`
@@ -81,6 +83,7 @@ export default {
         if (!token) {
           throw new Error('Token manquant dans le localStorage.');
         }
+        // Décodage du token pour obtenir l'ID de l'utilisateur
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.id; 
 
@@ -95,6 +98,7 @@ export default {
       }
     },
     openEditForm() {
+      // Copie des informations de l'utilisateur dans l'objet "editedUtilisateur" et affichage du formulaire de modif avec tout dedans
       this.editedUtilisateur = { ...this.utilisateur };
       this.showEditForm = true;
     },
@@ -102,10 +106,11 @@ export default {
       this.showEditForm = false;
     },
     handleFileChange(event) {
+      // Gestion du changement de fichier pour l'avatar
       const file = event.target.files[0];
       if (file) {
         this.selectedFile = file;
-        this.uploadAvatar();
+        this.uploadAvatar(); // Appel la méthode de téléchargemet ci-dessous
       }
     },
     async uploadAvatar() {
@@ -116,7 +121,7 @@ export default {
         }
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.id; 
-
+        // Création d'un objet FormData pour envoyer le fichier
         const formData = new FormData();
         formData.append('avatar', this.selectedFile);
 
@@ -126,6 +131,7 @@ export default {
             'Content-Type': 'multipart/form-data',
           },
         });
+        // Mise à jour de l'URL de l'avatar
         this.utilisateur.avatar = response.data.avatar;
       } catch (error) {
         console.error('Erreur lors du téléchargement de l\'avatar:', error);
@@ -145,6 +151,7 @@ export default {
             Authorization: token,
           },
         });
+         // Mise à jour des informations de l'utilisateur
         this.utilisateur = response.data;
         this.closeEditForm();
       } catch (error) {
@@ -170,6 +177,7 @@ export default {
             Authorization: token,
           },
         });
+        // Supprime le token du localStorage et redirige
         localStorage.removeItem('token'); 
         this.$router.push('/login'); 
       } catch (error) {
