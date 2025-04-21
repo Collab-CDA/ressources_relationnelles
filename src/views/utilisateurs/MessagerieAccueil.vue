@@ -1,14 +1,29 @@
 <template>
   <div class="messagerie-page">
-    <h1>Accueil messagerie</h1>
+    <h1>Vos conversations</h1>
     <div class="conversations-list">
-      <div v-for="conversation in conversations" :key="conversation.friendId" class="conversation-item">
+      <div
+        v-for="conversation in conversations"
+        :key="conversation.friendId"
+        class="conversation-item"
+      >
         <div class="conversation-info">
-          <span>{{ conversation.friendName }}</span>
+          <img
+            :src="getAvatarUrl(conversation.friendAvatar)"
+            alt="Avatar"
+            class="avatar"
+          />
+          <span class="friend-name">{{ conversation.friendName }}</span>
         </div>
+
         <div class="conversation-actions">
-          <button @click="goToMessagerie(conversation.friendId)" class="btn">Reprendre</button>
-          <button @click="deleteConversation(conversation.friendId)" class="btn delete-btn">
+          <button @click="goToMessagerie(conversation.friendId)" class="btn">
+            Reprendre
+          </button>
+          <button
+            @click="deleteConversation(conversation.friendId)"
+            class="btn delete-btn"
+          >
             <i class="fas fa-trash"></i>
           </button>
         </div>
@@ -17,16 +32,15 @@
   </div>
 </template>
 
-
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
-  name: 'MessagerieAccueil',
+  name: "MessagerieAccueil",
   data() {
     return {
       conversations: [],
-      userId: null
+      userId: null,
     };
   },
   methods: {
@@ -58,6 +72,7 @@ export default {
             `http://localhost:3000/api/conversations/${this.userId}`,
             this.getAuthHeaders()
           );
+          // Pour chaque conversation, on récupère le nom de l'ami correspondant
           this.conversations = await Promise.all(
             response.data.map(async (conversation) => {
               const friendResponse = await axios.get(
@@ -66,17 +81,28 @@ export default {
               );
               return {
                 ...conversation,
-                friendName: friendResponse.data.prenom
+                friendName: friendResponse.data.prenom,
+                friendAvatar: friendResponse.data.avatar,
               };
             })
           );
         } catch (error) {
-          console.error("Erreur lors de la récupération des conversations :", error);
+          console.error(
+            "Erreur lors de la récupération des conversations :",
+            error
+          );
         }
       }
     },
+    getAvatarUrl(avatar) {
+      return avatar ? `http://localhost:3000/uploads/${avatar}` : "";
+    },
+    // Redirige vers la page de messagerie avec un ami spécifique
     goToMessagerie(friendId) {
-      this.$router.push({ name: 'MessageriePage', params: { friendId: friendId } });
+      this.$router.push({
+        name: "MessageriePage",
+        params: { friendId: friendId },
+      });
     },
     async deleteConversation(friendId) {
       if (this.userId && friendId) {
@@ -85,17 +111,22 @@ export default {
             `http://localhost:3000/api/conversations/${this.userId}/${friendId}`,
             this.getAuthHeaders()
           );
-          this.conversations = this.conversations.filter(conversation => conversation.friendId !== friendId);
+          this.conversations = this.conversations.filter(
+            (conversation) => conversation.friendId !== friendId
+          );
         } catch (error) {
-          console.error("Erreur lors de la suppression de la conversation :", error);
+          console.error(
+            "Erreur lors de la suppression de la conversation :",
+            error
+          );
         }
       }
-    }
+    },
   },
   mounted() {
     this.userId = this.getUserIdFromToken();
     this.fetchConversations();
-  }
+  },
 };
 </script>
 
@@ -107,13 +138,13 @@ export default {
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   background-color: #ffffff;
   color: #000000;
 }
 
 h1 {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 32px;
   font-weight: bold;
   color: #0258bd;
@@ -135,7 +166,7 @@ h1 {
 }
 
 .conversation-item {
-  background-color: #DAD8D8;
+  background-color: #dad8d8;
   padding: 10px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 10px;
@@ -146,22 +177,13 @@ h1 {
   align-items: center;
 }
 
-.conversation-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.conversation-info span {
-  margin: 5px 0;
-}
-
 .conversation-actions {
   display: flex;
   gap: 10px;
 }
 
 .btn {
-  background-color: #B0A2BA;
+  background-color: #b0a2ba;
   border: none;
   border-radius: 5px;
   padding: 10px 20px;
@@ -171,16 +193,35 @@ h1 {
 }
 
 .btn:hover {
-  background-color: #D4C4E0;
+  background-color: #d4c4e0;
 }
 
 .delete-btn i {
-  font-size: 20px; 
-  color: white;    
+  font-size: 20px;
+  color: white;
 }
 
 .delete-btn:hover i {
-  color: #D0021B;  
+  color: #d0021b;
+}
+
+.conversation-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  width: 4rem;
+  height: 4rem;
+  border: solid 5px #80ada0;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.friend-name {
+  font-size: 1.2rem;
+  font-weight: 500;
 }
 
 </style>

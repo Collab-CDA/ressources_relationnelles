@@ -16,16 +16,20 @@
               <p><strong>Nom:</strong> {{ friend.nom }}</p>
               <p><strong>Prénom:</strong> {{ friend.prenom }}</p>
             </div>
+            <div class="friends-actions">
+
             <button @click="goToMessagerie(friend.id_utilisateur)" class="btn">
               Contacter
             </button>
             <button
               @click="removeFriend(friend.id_utilisateur)"
-              class="btn btn-danger"
+              class="btn delete-btn"
             >
-              Supprimer
-            </button>
+            <i class="fas fa-trash"></i>
+                      </button>
           </div>
+        </div>
+
         </div>
       </li>
     </ul>
@@ -202,6 +206,11 @@ ul {
   color: #000000;
 }
 
+.friends-actions {
+  display: flex;
+  gap: 10px;
+}
+
 .btn {
   background-color: #b0a2ba;
   border: none;
@@ -210,7 +219,6 @@ ul {
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-left: 1rem;
   margin-top: 0;
 }
 
@@ -218,16 +226,12 @@ ul {
   background-color: #d4c4e0;
 }
 
-.btn-danger {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 0.5em 1em;
-  margin-left: 1em;
-  cursor: pointer;
-  border-radius: 4px;
+.delete-btn i {
+  font-size: 20px; 
+  color: white;    
 }
-.btn-danger:hover {
-  background-color: #c0392b;
+
+.delete-btn:hover i {
+  color: #D0021B;  
 }
 </style>

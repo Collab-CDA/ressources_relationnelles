@@ -1,6 +1,6 @@
 <template>
   <div class="messagerie-page">
-    <h1>Votre messagerie</h1>
+    <h1>Conversation avec {{ friendName }}</h1>
     <div v-if="friendId" class="messagerie-container">
       <div class="messages">
         <div
