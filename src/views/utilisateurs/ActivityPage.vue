@@ -257,7 +257,7 @@ export default {
       return null;
     },
     getEmbedVideo(url) {
-      return `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+      return `<iframe src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-wr src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
     },
     isEmbedYouTubeLink(url) {
       return /youtube\.com|youtu\.be/.test(url);

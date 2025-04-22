@@ -97,16 +97,7 @@
                   style="max-width: 300px"
                 />
               </div>
-              <div v-else-if="isPDF(file)">
-                <a :href="getFileUrl(file)" target="_blank" download>
-                  Télécharger PDF : {{ file }}
-                </a>
-              </div>
-              <div v-else>
-                <a :href="getFileUrl(file)" target="_blank" download>
-                  Télécharger le fichier : {{ file }}
-                </a>
-              </div>
+             
             </div>
           </div>
           <a
