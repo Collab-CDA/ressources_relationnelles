@@ -82,8 +82,8 @@ sequelize.authenticate()
   .then(() => {
     console.log('Connexion à la base de données réussi !');
     app.listen(PORT, () => {
-      console.log(`✅ Serveur sur http://localhost:${PORT}`);
-      console.log(`📘 Docs Swagger : http://localhost:${PORT}/api-docs`);
+      console.log(`✅ Serveur sur http://10.176.131.156:${PORT}`);
+      console.log(`📘 Docs Swagger : http://10.176.131.156:${PORT}/api-docs`);
     });
   })
   .catch(err => {

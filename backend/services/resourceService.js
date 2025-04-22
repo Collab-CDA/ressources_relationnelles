@@ -72,12 +72,12 @@ exports.getAllResources = async () => {
               return `data:${mimeType};base64,${fileContent.toString('base64')}`;
             } catch (error) {
               console.error("Erreur lors de la lecture du fichier image :", error.message);
-              return `${process.env.BASE_URL || 'http://localhost:3000'}/uploads/${file}`;
+              return `${process.env.BASE_URL || 'http://10.176.131.156:3000'}/uploads/${file}`;
             }
           } else if (/\.(pdf)$/i.test(file)) {
-            return `${process.env.BASE_URL || 'http://localhost:3000'}/uploads/${file}`;
+            return `${process.env.BASE_URL || 'http://10.176.131.156:3000'}/uploads/${file}`;
           } else {
-            return `${process.env.BASE_URL || 'http://localhost:3000'}/uploads/${file}`;
+            return `${process.env.BASE_URL || 'http://10.176.131.156:3000'}/uploads/${file}`;
           }
         }));
         resource.nom_image = processedFiles;
