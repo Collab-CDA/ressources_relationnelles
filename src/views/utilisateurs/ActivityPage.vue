@@ -115,7 +115,7 @@ export default {
     async fetchActivities() {
       try {
         const response = await axios.get(
-          "http://192.168.243.106:3000/api/resources",
+          "http://localhost:3000/api/resources",
           this.getAuthHeaders()
         );
         this.activities = response.data;
@@ -135,7 +135,7 @@ export default {
 
       try {
         const response = await axios.get(
-          `http://192.168.243.106:3000/api/progression/${userId}`,
+          `http://localhost:3000/api/progression/${userId}`,
           this.getAuthHeaders()
         );
         this.progressions = response.data;
@@ -166,7 +166,7 @@ export default {
         } else {
           // Sinon, crée une nouvelle progression
           await axios.post(
-            "http://192.168.243.106:3000/api/progression",
+            "http://localhost:3000/api/progression",
             {
               id_ressource_: resourceId,
               statut: "en cours",
@@ -210,7 +210,7 @@ export default {
       clearInterval(this.timer);
       try {
         await axios.put(
-          `http://192.168.243.106:3000/api/progression/${this.currentActivityId}`,
+          `http://localhost:3000/api/progression/${this.currentActivityId}`,
           {
             pourcentage_completion: this.completionPercentage,
           },

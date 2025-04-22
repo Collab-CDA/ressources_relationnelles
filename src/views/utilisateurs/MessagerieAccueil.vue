@@ -69,14 +69,14 @@ export default {
       if (this.userId) {
         try {
           const response = await axios.get(
-            `http://192.168.243.106:3000/api/conversations/${this.userId}`,
+            `http://localhost:3000/api/conversations/${this.userId}`,
             this.getAuthHeaders()
           );
           // Pour chaque conversation, on récupère le nom de l'ami correspondant
           this.conversations = await Promise.all(
             response.data.map(async (conversation) => {
               const friendResponse = await axios.get(
-                `http://192.168.243.106:3000/api/utilisateurs/${conversation.friendId}`,
+                `http://localhost:3000/api/utilisateurs/${conversation.friendId}`,
                 this.getAuthHeaders()
               );
               return {
@@ -95,7 +95,7 @@ export default {
       }
     },
     getAvatarUrl(avatar) {
-      return avatar ? `http://192.168.243.106:3000/uploads/${avatar}` : "";
+      return avatar ? `http://localhost:3000/uploads/${avatar}` : "";
     },
     // Redirige vers la page de messagerie avec un ami spécifique
     goToMessagerie(friendId) {
@@ -108,7 +108,7 @@ export default {
       if (this.userId && friendId) {
         try {
           await axios.delete(
-            `http://192.168.243.106:3000/api/conversations/${this.userId}/${friendId}`,
+            `http://localhost:3000/api/conversations/${this.userId}/${friendId}`,
             this.getAuthHeaders()
           );
           this.conversations = this.conversations.filter(

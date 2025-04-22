@@ -11,7 +11,6 @@ const swaggerUi   = require('swagger-ui-express');
 const swaggerDoc  = require('./documentation/swagger.json');
 
 const sequelize        = require('./db/sequelize');
-const startScheduler   = require('./scheduler/statisticsScheduler');
 const utilisateurRoutes         = require('./routes/userRoutes');
 const resourceRoutes            = require('./routes/resourceRoutes');
 const relationRoutes            = require('./routes/relationRoutes');
@@ -81,8 +80,7 @@ app.use((err, req, res, next) => {
 
 sequelize.authenticate()
   .then(() => {
-    console.log('Connexion DB OK !');
-    startScheduler();
+    console.log('Connexion à la base de données réussi !');
     app.listen(PORT, () => {
       console.log(`✅ Serveur sur http://localhost:${PORT}`);
       console.log(`📘 Docs Swagger : http://localhost:${PORT}/api-docs`);

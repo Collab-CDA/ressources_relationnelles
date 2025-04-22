@@ -11,7 +11,7 @@ const createCategoryResource = async (data) => {
 const updateCategoryResource = async (id, data) => {
   const category = await CategoryResource.findByPk(id);
   if (!category) {
-    throw new Error('Categoria non trovata');
+    throw new Error('Catégorie non trouvée');
   }
   return await category.update(data);
 };
@@ -19,7 +19,7 @@ const updateCategoryResource = async (id, data) => {
 const deleteCategoryResource = async (id) => {
   const category = await CategoryResource.findByPk(id);
   if (!category) {
-    throw new Error('Categoria non trovata');
+    throw new Error('Catégorie non trouvée');
   }
   return await category.destroy();
 };

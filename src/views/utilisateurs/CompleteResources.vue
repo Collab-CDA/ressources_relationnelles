@@ -268,7 +268,7 @@ export default {
     async fetchResources() {
       try {
         const response = await axios.get(
-          "http://192.168.243.106:3000/api/resources",
+          "http://localhost:3000/api/resources",
           this.getAuthHeaders()
         );
         this.resources = response.data;
@@ -282,7 +282,7 @@ export default {
     async fetchTypesRelation() {
       try {
         const response = await axios.get(
-          "http://192.168.243.106:3000/api/relations",
+          "http://localhost:3000/api/relations",
           this.getAuthHeaders()
         );
         this.typesRelation = response.data;
@@ -296,7 +296,7 @@ export default {
     async fetchCategoriesResource() {
       try {
         const response = await axios.get(
-          "http://192.168.243.106:3000/api/categories",
+          "http://localhost:3000/api/categories",
           this.getAuthHeaders()
         );
         this.categoriesResource = response.data;
@@ -310,7 +310,7 @@ export default {
     async fetchTypesResource() {
       try {
         const response = await axios.get(
-          "http://192.168.243.106:3000/api/types_ressource",
+          "http://localhost:3000/api/types_ressource",
           this.getAuthHeaders()
         );
         this.typesResource = response.data;
@@ -326,7 +326,7 @@ export default {
       if (this.selectedResource) {
         try {
           const response = await axios.get(
-            `http://192.168.243.106:3000/api/comments/resource/${this.selectedResource.id_ressource_}`,
+            `http://localhost:3000/api/comments/resource/${this.selectedResource.id_ressource_}`,
             this.getAuthHeaders()
           );
           if (response.data && Array.isArray(response.data)) {
@@ -351,7 +351,7 @@ export default {
         this.newComment.id_utilisateur = this.getUserIdFromToken();
         try {
           await axios.post(
-            "http://192.168.243.106:3000/api/comments",
+            "http://localhost:3000/api/comments",
             this.newComment,
             this.getAuthHeaders()
           );
@@ -447,7 +447,7 @@ export default {
 
       try {
         await axios.post(
-          "http://192.168.243.106:3000/api/favoris/create",
+          "http://localhost:3000/api/favoris/create",
           { id_utilisateur: userId, id_ressource_: resource.id_ressource_ },
           this.getAuthHeaders()
         );
@@ -472,7 +472,7 @@ export default {
       if (user && user.prenom && user.nom) {
         try {
           const response = await axios.get(
-            "http://192.168.243.106:3000/api/users/search",
+            "http://localhost:3000/api/users/search",
             {
               params: { prenom: user.prenom, nom: user.nom },
               headers: this.getAuthHeaders().headers,
@@ -514,7 +514,7 @@ export default {
 
       try {
         await axios.post(
-          "http://192.168.243.106:3000/api/friendships/create",
+          "http://localhost:3000/api/friendships/create",
           {
             id_utilisateur1: currentUserId,
             id_utilisateur2: selectedUserId,
@@ -543,7 +543,7 @@ export default {
 
       try {
         const response = await axios.get(
-          `http://192.168.243.106:3000/api/favoris/${userId}`,
+          `http://localhost:3000/api/favoris/${userId}`,
           this.getAuthHeaders()
         );
         this.favorites = response.data;

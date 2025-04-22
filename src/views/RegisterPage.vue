@@ -192,7 +192,7 @@ export default {
         };
         // Envoi des données au serveur via la requête à l'URL spécifiée
         const response = await axios.post(
-          "http://192.168.243.106:3000/api/utilisateurs/register",
+          "http://localhost:3000/api/utilisateurs/register",
           dataToSend
         );
         // Si la requête réussit, on affiche une alerte pour informer l'utilisateur et on redirige vers la connexion
