@@ -600,12 +600,7 @@ ALTER TABLE `utilisateur`
 -- Contraintes pour les tables déchargées
 --
 
---
--- Contraintes pour la table `appartient`
---
-ALTER TABLE `appartient`
-  ADD CONSTRAINT `appartient_ibfk_1` FOREIGN KEY (`id_ressource_`) REFERENCES `ressources` (`id_ressource_`),
-  ADD CONSTRAINT `appartient_ibfk_2` FOREIGN KEY (`id_statistique`) REFERENCES `statistiques` (`id_statistique`);
+
 
 --
 -- Contraintes pour la table `commentaires`
@@ -615,12 +610,7 @@ ALTER TABLE `commentaires`
   ADD CONSTRAINT `commentaires_ibfk_2` FOREIGN KEY (`id_ressource_`) REFERENCES `ressources` (`id_ressource_`) ON DELETE CASCADE,
   ADD CONSTRAINT `commentaires_ibfk_3` FOREIGN KEY (`id_commentaire_parent`) REFERENCES `commentaires` (`id_commentaire`) ON DELETE CASCADE;
 
---
--- Contraintes pour la table `consulte`
---
-ALTER TABLE `consulte`
-  ADD CONSTRAINT `consulte_ibfk_1` FOREIGN KEY (`id_utilisateur`) REFERENCES `utilisateur` (`id_utilisateur`),
-  ADD CONSTRAINT `consulte_ibfk_2` FOREIGN KEY (`id_statistique`) REFERENCES `statistiques` (`id_statistique`);
+
 
 --
 -- Contraintes pour la table `favoris`

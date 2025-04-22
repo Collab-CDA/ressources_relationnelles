@@ -298,7 +298,7 @@ export default {
     },
     async fetchTypesResource() {
       try {
-        const response = await axios.get("http://10.176.131.156:3000/api/types_ressource", this.getAuthHeaders());
+        const response = await axios.get("http://192.168.243.106:3000/api/types_ressource", this.getAuthHeaders());
         this.typesResource = response.data;
       } catch (error) {
         console.error("Erreur lors de la récupération des types de ressource :", error.response?.data || error.message);
@@ -306,7 +306,7 @@ export default {
     },
     async fetchTypesRelation() {
       try {
-        const response = await axios.get("http://10.176.131.156:3000/api/relations", this.getAuthHeaders());
+        const response = await axios.get("http://192.168.243.106:3000/api/relations", this.getAuthHeaders());
         this.typesRelation = response.data;
       } catch (error) {
         console.error("Erreur lors de la récupération des types de relation :", error.response?.data || error.message);
@@ -314,7 +314,7 @@ export default {
     },
     async fetchCategoriesResource() {
       try {
-        const response = await axios.get("http://10.176.131.156:3000/api/categories", this.getAuthHeaders());
+        const response = await axios.get("http://192.168.243.106:3000/api/categories", this.getAuthHeaders());
         this.categoriesResource = response.data;
       } catch (error) {
         console.error("Erreur lors de la récupération des catégories de ressources :", error.response?.data || error.message);
@@ -322,7 +322,7 @@ export default {
     },
     async fetchResources() {
       try {
-        const response = await axios.get("http://10.176.131.156:3000/api/resources");
+        const response = await axios.get("http://192.168.243.106:3000/api/resources");
         this.resources = response.data;
       } catch (error) {
         console.error("Erreur lors de la récupération des ressources :", error.response?.data || error.message);
@@ -332,7 +332,7 @@ export default {
       const newStatus = resource.statut_ === "disponible" ? "suspendue" : "disponible";
       try {
         await axios.put(
-          `http://10.176.131.156:3000/api/resources/status/${resource.id_ressource_}`,
+          `http://192.168.243.106:3000/api/resources/status/${resource.id_ressource_}`,
           { statut_: newStatus },
           this.getAuthHeaders()
         );
@@ -346,7 +346,7 @@ export default {
       const newStatus = resource.statut_ === "en_attente" ? "disponible" : "en_attente";
       try {
         await axios.put(
-          `http://10.176.131.156:3000/api/resources/status/${resource.id_ressource_}`,
+          `http://192.168.243.106:3000/api/resources/status/${resource.id_ressource_}`,
           { statut_: newStatus },
           this.getAuthHeaders()
         );
@@ -359,7 +359,7 @@ export default {
       const confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette ressource ?");
       if (confirmation) {
         try {
-          await axios.delete(`http://10.176.131.156:3000/api/resources/delete/${id}`, this.getAuthHeaders());
+          await axios.delete(`http://192.168.243.106:3000/api/resources/delete/${id}`, this.getAuthHeaders());
           this.fetchResources();
         } catch (error) {
           console.error("Erreur lors de la suppression de la ressource :", error.response?.data || error.message);
@@ -433,7 +433,7 @@ export default {
         }
         const headers = this.getAuthHeaders();
         headers.headers["Content-Type"] = "multipart/form-data";
-        const response = await axios.post("http://10.176.131.156:3000/api/resources/create", formData, headers);
+        const response = await axios.post("http://192.168.243.106:3000/api/resources/create", formData, headers);
         alert("Ressource ajoutée avec succès !");
         this.closeModal();
         this.fetchResources();
@@ -457,7 +457,7 @@ export default {
         }
         const headers = this.getAuthHeaders();
         headers.headers["Content-Type"] = "multipart/form-data";
-        await axios.put(`http://10.176.131.156:3000/api/resources/update/${this.editResource.id_ressource_}`, formData, headers);
+        await axios.put(`http://192.168.243.106:3000/api/resources/update/${this.editResource.id_ressource_}`, formData, headers);
         alert("Ressource modifiée avec succès !");
         this.closeEditModal();
         this.fetchResources();
