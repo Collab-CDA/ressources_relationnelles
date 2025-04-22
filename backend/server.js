@@ -1,16 +1,17 @@
-
 require('dotenv').config();
 
-const express       = require('express');
-const cors          = require('cors');
-const bodyParser    = require('body-parser');
-const path          = require('path');
-const multer        = require('multer');
-const jwt           = require('jsonwebtoken');
+const express     = require('express');
+const app        = express();
+const cors        = require('cors');
+const bodyParser  = require('body-parser');
+const path        = require('path');
+const multer      = require('multer');
+const jwt         = require('jsonwebtoken');
+const swaggerUi   = require('swagger-ui-express');
+const swaggerDoc  = require('./documentation/swagger.json');
 
-const sequelize     = require('./db/sequelize');
-const startScheduler = require('./scheduler/statisticsScheduler');
-
+const sequelize        = require('./db/sequelize');
+const startScheduler   = require('./scheduler/statisticsScheduler');
 const utilisateurRoutes         = require('./routes/userRoutes');
 const resourceRoutes            = require('./routes/resourceRoutes');
 const relationRoutes            = require('./routes/relationRoutes');
@@ -23,8 +24,8 @@ const friendshipRoutes          = require('./routes/friendshipRoutes');
 const commentRoutes             = require('./routes/commentRoutes');
 const dashboardRoutes           = require('./routes/dashboardRoutes');
 const messageRoutes             = require('./routes/messageRoutes');
-
-const app = express();
+const expressOasGenerator = require('express-oas-generator');
+expressOasGenerator.init(app, {});
 const PORT = process.env.PORT || 3000;
 
 const storage = multer.diskStorage({
@@ -40,24 +41,19 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const verifyToken = (req, res, next) => {
   let token = req.headers['authorization'];
-  if (!token) {
-    console.warn('⚠️ Token manquant.');
-    return res.status(403).json({ message: 'Un token est requis.' });
-  }
+  if (!token) return res.status(403).json({ message: 'Un token est requis.' });
   if (token.startsWith('Bearer ')) token = token.slice(7).trim();
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
     next();
-  } catch (err) {
-    console.error('Token invalide :', err.message);
+  } catch {
     return res.status(401).json({ message: 'Token invalide.' });
   }
 };
 
 app.get('/api', (req, res) => {
-  res.json({ message: 'Bienvenue sur l\'API backend 🚀' });
+  res.json({ message: 'Bienvenue sur l’API backend 🚀' });
 });
-
 app.use('/api/utilisateurs', utilisateurRoutes);
 app.use('/api/users',        utilisateurRoutes);
 app.use('/api/resources',     resourceRoutes);
@@ -72,6 +68,12 @@ app.use('/api/comments',      commentRoutes);
 app.use('/api/dashboard',     dashboardRoutes);
 app.use('/api',               messageRoutes);
 
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDoc)
+);
+
 app.use((err, req, res, next) => {
   console.error('Erreur interne :', err.message);
   res.status(500).json({ message: 'Une erreur interne est survenue.' });
@@ -79,12 +81,13 @@ app.use((err, req, res, next) => {
 
 sequelize.authenticate()
   .then(() => {
-    console.log('Connexion à la base de données réussie !');
+    console.log('Connexion DB OK !');
     startScheduler();
     app.listen(PORT, () => {
-      console.log(`✅ Serveur démarré sur http://localhost:${PORT}`);
+      console.log(`✅ Serveur sur http://localhost:${PORT}`);
+      console.log(`📘 Docs Swagger : http://localhost:${PORT}/api-docs`);
     });
   })
   .catch(err => {
-    console.error('Erreur de connexion à la base de données :', err.message);
+    console.error('Erreur connexion DB :', err.message);
   });

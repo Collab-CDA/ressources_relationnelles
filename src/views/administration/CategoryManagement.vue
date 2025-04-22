@@ -76,7 +76,7 @@ export default {
   methods: {
     async fetchCategories() {
       try {
-        const response = await axios.get("http://10.176.131.156:3000/api/categories", this.getAuthHeaders());
+        const response = await axios.get("http://192.168.243.106:3000/api/categories", this.getAuthHeaders());
         this.categories = response.data;
       } catch (error) {
         console.error("Erreur lors de la récupération des catégories :", error.response?.data || error.message);
@@ -102,12 +102,12 @@ export default {
       try {
         if (this.isEditing && this.editingCategoryId) {
           await axios.put(
-            `http://10.176.131.156:3000/api/categories/${this.editingCategoryId}`,
+            `http://192.168.243.106:3000/api/categories/${this.editingCategoryId}`,
             this.categoryForm,
             headers
           );
         } else {
-          await axios.post("http://10.176.131.156:3000/api/categories", this.categoryForm, headers);
+          await axios.post("http://192.168.243.106:3000/api/categories", this.categoryForm, headers);
         }
         this.closeModal();
         this.fetchCategories();
@@ -127,7 +127,7 @@ export default {
       const confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette catégorie ?");
       if (!confirmation) return;
       try {
-        await axios.delete(`http://10.176.131.156:3000/api/categories/${categoryId}`, this.getAuthHeaders());
+        await axios.delete(`http://192.168.243.106:3000/api/categories/${categoryId}`, this.getAuthHeaders());
         this.fetchCategories();
       } catch (error) {
         console.error("Erreur lors de la suppression de la catégorie :", error.response?.data || error.message);
