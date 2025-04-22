@@ -70,14 +70,14 @@ export default {
       };
     },
     getAvatarUrl(avatar) {
-      return avatar ? `http://localhost:3000/uploads/${avatar}` : "";
+      return avatar ? `http://10.176.131.156:3000/uploads/${avatar}` : "";
     },
     async fetchFriends() {
       this.userId = this.getUserIdFromToken();
       if (this.userId) {
         try {
           const response = await axios.get(
-            `http://localhost:3000/api/friendships/friends/${this.userId}`,
+            `http://10.176.131.156:3000/api/friendships/friends/${this.userId}`,
             this.getAuthHeaders()
           );
           this.friends = response.data;
@@ -94,7 +94,7 @@ export default {
 
       try {
         const response = await axios.post(
-          "http://localhost:3000/api/friendships/delete",
+          "http://10.176.131.156:3000/api/friendships/delete",
           {
             id_utilisateur1: this.userId,
             id_utilisateur2: friendId,

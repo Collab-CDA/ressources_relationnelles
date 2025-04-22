@@ -81,7 +81,7 @@ export default {
       try {
         loading.value = true
         const token = localStorage.getItem('token')
-        const response = await axios.get('http://localhost:3000/api/dashboard', {
+        const response = await axios.get('http://10.176.131.156:3000/api/dashboard', {
           headers: { Authorization: `Bearer ${token}` }
         })
         dashboardData.value = response.data
@@ -112,7 +112,7 @@ export default {
     const exportAll = async () => {
       try {
         const token = localStorage.getItem('token')
-        const response = await axios.get('http://localhost:3000/api/dashboard/export', {
+        const response = await axios.get('http://10.176.131.156:3000/api/dashboard/export', {
           headers: { Authorization: `Bearer ${token}` },
           responseType: 'blob'
         })
