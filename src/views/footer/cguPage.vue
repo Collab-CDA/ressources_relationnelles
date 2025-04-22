@@ -17,19 +17,19 @@
     <p>En cas de non-acceptation des CGU stipulées dans le présent contrat, l'Utilisateur se doit de
     renoncer à l'accès des services proposés par le site.</p>
 
-    <p><a href="http://localhost:8080/">http://localhost:8080/</a> se réserve le droit de modifier unilatéralement et à tout moment le contenu des
+    <p><a href="http://10.176.131.156:8080/">http://10.176.131.156:8080/</a> se réserve le droit de modifier unilatéralement et à tout moment le contenu des
     présentes CGU.</p>
 
     <h2>Article 1 : Les mentions légales</h2>
-    <p>L’édition et la direction de la publication du site <a href="http://localhost:8080/">http://localhost:8080/</a> est assurée par Poirier-Halley
+    <p>L’édition et la direction de la publication du site <a href="http://10.176.131.156:8080/">http://10.176.131.156:8080/</a> est assurée par Poirier-Halley
     Hélène / Radici Enzo, domicilié Saint-Etienne-du-Rouvray.</p>
     <p>Numéro de téléphone : 00 00 00 00 00</p>
     <p>Adresse e-mail : ressources_relationnelles@gmail.com.</p>
-    <p>L'hébergeur du site <a href="http://localhost:8080/">http://localhost:8080/</a> est la société Hostinger, dont le siège social est situé au
+    <p>L'hébergeur du site <a href="http://10.176.131.156:8080/">http://10.176.131.156:8080/</a> est la société Hostinger, dont le siège social est situé au
     Hostinger, UAB Jonavos g. 60C, 44192.</p>
 
     <h2>Article 2 : Accès au site</h2>
-    <p>Le site <a href="http://localhost:8080/">http://localhost:8080/</a> permet à l'Utilisateur un accès gratuit aux services suivants :</p>
+    <p>Le site <a href="http://10.176.131.156:8080/">http://10.176.131.156:8080/</a> permet à l'Utilisateur un accès gratuit aux services suivants :</p>
     <ul>
       <li>Le site internet propose les services suivants : ressources relationnelles</li>
     </ul>
@@ -46,7 +46,7 @@
     rendant à la page dédiée sur son espace personnel. Celle-ci sera effective dans un délai raisonnable.</p>
     <p>Tout événement dû à un cas de force majeure ayant pour conséquence un dysfonctionnement du site
     ou serveur et sous réserve de toute interruption ou modification en cas de maintenance, n'engage
-    pas la responsabilité de <a href="http://localhost:8080/">http://localhost:8080/</a>. Dans ces cas, l’Utilisateur accepte ainsi ne pas tenir
+    pas la responsabilité de <a href="http://10.176.131.156:8080/">http://10.176.131.156:8080/</a>. Dans ces cas, l’Utilisateur accepte ainsi ne pas tenir
     rigueur à l’éditeur de toute interruption ou suspension de service, même sans préavis.</p>
     <p>L'Utilisateur a la possibilité de contacter le site par messagerie électronique à l’adresse email de
     l’éditeur communiqué à l’ARTICLE 1.</p>
@@ -75,17 +75,17 @@
     reproduit, copie ou publie le contenu protégé doit citer l’auteur et sa source.</p>
 
     <h2>Article 5 : Responsabilité</h2>
-    <p>Les sources des informations diffusées sur le site <a href="http://localhost:8080/">http://localhost:8080/</a> sont réputées fiables mais le
+    <p>Les sources des informations diffusées sur le site <a href="http://10.176.131.156:8080/">http://10.176.131.156:8080/</a> sont réputées fiables mais le
     site ne garantit pas qu’il soit exempt de défauts, d’erreurs ou d’omissions.</p>
     <p>Les informations communiquées sont présentées à titre indicatif et général sans valeur contractuelle.</p>
-    <p>Malgré des mises à jour régulières, le site <a href="http://localhost:8080/">http://localhost:8080/</a> ne peut être tenu responsable de la
+    <p>Malgré des mises à jour régulières, le site <a href="http://10.176.131.156:8080/">http://10.176.131.156:8080/</a> ne peut être tenu responsable de la
     modification des dispositions administratives et juridiques survenant après la publication. De même, le
     site ne peut être tenue responsable de l’utilisation et de l’interprétation de l’information contenue dans
     ce site.</p>
     <p>L'Utilisateur s'assure de garder son mot de passe secret. Toute divulgation du mot de passe, quelle
     que soit sa forme, est interdite. Il assume les risques liés à l'utilisation de son identifiant et mot de
     passe. Le site décline toute responsabilité.</p>
-    <p>Le site <a href="http://localhost:8080/">http://localhost:8080/</a> ne peut être tenu pour responsable d’éventuels virus qui pourraient
+    <p>Le site <a href="http://10.176.131.156:8080/">http://10.176.131.156:8080/</a> ne peut être tenu pour responsable d’éventuels virus qui pourraient
     infecter l’ordinateur ou tout matériel informatique de l’Internaute, suite à une utilisation, à l’accès, ou
     au téléchargement provenant de ce site.</p>
     <p>La responsabilité du site ne peut être engagée en cas de force majeure ou du fait imprévisible et
@@ -93,18 +93,18 @@
 
     <h2>Article 6 : Liens hypertextes</h2>
     <p>Des liens hypertextes peuvent être présents sur le site. L’Utilisateur est informé qu’en cliquant sur ces
-    liens, il sortira du site <a href="http://localhost:8080/">http://localhost:8080/</a>. Ce dernier n’a pas de contrôle sur les pages web sur
+    liens, il sortira du site <a href="http://10.176.131.156:8080/">http://10.176.131.156:8080/</a>. Ce dernier n’a pas de contrôle sur les pages web sur
     lesquelles aboutissent ces liens et ne saurait, en aucun cas, être responsable de leur contenu.</p>
 
     <h2>Article 7 : Cookies</h2>
     <p>L’Utilisateur est informé que lors de ses visites sur le site, un cookie peut s’installer automatiquement
     sur son logiciel de navigation.</p>
     <p>Les cookies sont de petits fichiers stockés temporairement sur le disque dur de l’ordinateur de
-    l’Utilisateur par votre navigateur et qui sont nécessaires à l’utilisation du site <a href="http://localhost:8080/">http://localhost:8080/</a>.</p>
+    l’Utilisateur par votre navigateur et qui sont nécessaires à l’utilisation du site <a href="http://10.176.131.156:8080/">http://10.176.131.156:8080/</a>.</p>
     <p>Les cookies ne contiennent pas d’information personnelle et ne peuvent pas être utilisés pour
     identifier quelqu’un. Un cookie contient un identifiant unique, généré aléatoirement et donc anonyme.</p>
     <p>Certains cookies expirent à la fin de la visite de l’Utilisateur, d’autres restent.</p>
-    <p>L’information contenue dans les cookies est utilisée pour améliorer le site <a href="http://localhost:8080/">http://localhost:8080/</a>.</p>
+    <p>L’information contenue dans les cookies est utilisée pour améliorer le site <a href="http://10.176.131.156:8080/">http://10.176.131.156:8080/</a>.</p>
     <p>En naviguant sur le site, L’Utilisateur les accepte.</p>
     <p>L’Utilisateur pourra désactiver ces cookies par l’intermédiaire des paramètres figurant au sein de son
     logiciel de navigation.</p>

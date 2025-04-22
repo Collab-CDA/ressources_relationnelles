@@ -125,3 +125,7 @@ npx cypress run --record --key 01b611df-9fa4-451c-a884-31bab129d7f8
 # Description :
 Flux d'Inscription d'un Utilisateur : Vérifie que le processus d'inscription fonctionne correctement, y compris la validation des champs et la redirection après une inscription réussie. On procède pareil pour la connexion.
 
+
+### Web View Expo go (my-app):
+Pour lancer la vue mobile:
+npm run start

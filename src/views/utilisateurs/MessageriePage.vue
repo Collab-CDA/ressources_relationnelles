@@ -74,7 +74,7 @@ export default {
       if (this.friendId && this.userId) {
         try {
           const response = await axios.get(
-            `http://localhost:3000/api/messages/${this.userId}/${this.friendId}`,
+            `http://10.176.131.156:3000/api/messages/${this.userId}/${this.friendId}`,
             this.getAuthHeaders()
           );
 
@@ -92,7 +92,7 @@ export default {
       if (this.newMessage.trim() && this.friendId && this.userId) {
         try {
           const response = await axios.post(
-            `http://localhost:3000/api/messages`,
+            `http://10.176.131.156:3000/api/messages`,
             {
               id_utilisateur1: this.userId,
               id_utilisateur2: this.friendId,
@@ -116,7 +116,7 @@ export default {
       if (this.userId) {
         try {
           const response = await axios.get(
-            `http://localhost:3000/api/utilisateurs/${this.userId}`,
+            `http://10.176.131.156:3000/api/utilisateurs/${this.userId}`,
             this.getAuthHeaders()
           );
           this.userName = response.data.prenom;
@@ -129,7 +129,7 @@ export default {
       if (this.friendId) {
         try {
           const response = await axios.get(
-            `http://localhost:3000/api/utilisateurs/${this.friendId}`,
+            `http://10.176.131.156:3000/api/utilisateurs/${this.friendId}`,
             this.getAuthHeaders()
           );
           this.friendName = response.data.prenom;
