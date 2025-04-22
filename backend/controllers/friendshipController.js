@@ -1,6 +1,5 @@
 const { createFriendship, areFriends, deleteFriendship, getFriends  } = require('../services/friendshipService');
 
-// Création d'une demande d'amitié
 exports.createFriendship = async (req, res) => {
   try {
     const { id_utilisateur1, id_utilisateur2 } = req.body;
@@ -21,7 +20,6 @@ exports.createFriendship = async (req, res) => {
   }
 };
 
-// Fonction de vérification d'amitié
 exports.checkFriendshipByBody = async (req, res) => {
   try {
     const { id_utilisateur_1, id_utilisateur_2 } = req.body;
@@ -37,7 +35,6 @@ exports.checkFriendshipByBody = async (req, res) => {
   }
 };
 
-// Suppression de l'amitié
 exports.deleteFriendship = async (req, res) => {
   try {
     const { id_utilisateur1, id_utilisateur2 } = req.body;
@@ -59,7 +56,6 @@ exports.deleteFriendship = async (req, res) => {
   }
 };
 
-// Récupération des amis
 exports.getFriends = async (req, res) => {
   try {
     const userId = req.params.userId;
