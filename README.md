@@ -1,9 +1,38 @@
 # ressources_relationnelles
 
-## BACKEND
-mkdir backend
+### Prérequis
+Node.js (version 14.x ou supérieure)
+npm (version 6.x ou supérieure)
+MySQL (version 8.x ou supérieure)
+
+
+### GITHUB
+git init
+git remote add origin https://github.com/Collab-CDA/ressources_relationnelles.git
+git add .
+git commit -m "premier commit"
+git push origin master
+
+### Cloner le projet
+git clone https://github.com/Collab-CDA/ressources_relationnelles.git
+
+# Récupérer changement (avant de commencer à travailler chaque jour)
+git pull origin master
+
+# Faire des commits régulier en fin de journée
+git add .
+git add .
+git commit -m "commentaire"
+git push origin master
+
+
+### BASE DE DONNEES
+# Importer le Dump SQL :
+Créez la base de données à l'aide du fichier cesi_zen.sql situé dans le dossier backend/BDD.
+Utilisez un outil comme MySQL Workbench ou phpMyAdmin pour importer le fichier SQL.
+
+### BACKEND
 cd backend
-npm init -y
 
 ## Dépendances Backend
 # express : Pour créer un serveur.
@@ -19,11 +48,7 @@ npm install express mysql2 body-parser cors dotenv jest node-mocks-http
 dotenv est utilisé pour charger les variables d'environnement à partir d'un fichier .env
 Cela permet de gérer les configurations sensibles (comme les clés API, les informations de base de données, etc.) de manière sécurisée.
 
-# Créer un fichier .env :
-Créez un fichier .env à la racine de votre projet avec les variables d'environnement nécessaires. 
-Par exemple :
-
-# .env pour backend
+## Créer un fichier .env (variables d'environnement) dans le backend:
 
 # Port du serveur
 PORT=3000
@@ -38,6 +63,7 @@ DB_DIALECT=mysql
 # Clé secrète pour JWT
 JWT_SECRET=ma_clé_secrète_pour_jwt
 
+
 ## Charger les variables d'environnement :
 Dans le fichier principal (ici db/sequelize.js), on a ajouté cette ligne suivante pour charger les variables d'environnement :
 
@@ -47,8 +73,6 @@ require('dotenv').config();
 ## Lancer le serveur Express
 npm start
 
-## Configurer Axios dans Vue.js
-npm install axios
 
 ## ORM Sequelize dans le serveur Express pour interagir avec la base de données.
 npm install sequelize mysql2 (dans le dossier backend)
@@ -61,14 +85,33 @@ Configure Sequelize et exporte la connexion.
 Gère la configuration du serveur (Express).
 Importe db.js, synchronise les modèles, et crée les routes API.
 
-## Configuration de Jest pour les Tests Unitaires
+
+### FRONTEND
+
+## Installer les dépendances nécessaires 
+# Axios : Pour effectuer des appels API au backend.
+npm install axios
+
+# Vue Router :
+npm install vue-router
+
+# Vuex :
+npm install vuex
+
+## DEMARRER le serveur de développement Vue.js :
+npm run serve
+
+
+
+### Configuration de Jest pour les Tests Unitaires
 # Installer Jest :
 npm install jest node-mocks-http --save-dev
 
 # Lancer les Tests
 npm test
 
-## Tests Fonctionnels avec Cypress
+
+### Tests Fonctionnels avec Cypress
 # Prérequis : 
 Assurez-vous que Cypress est installé à la racine du projet:
 npm install --save-dev cypress
@@ -82,22 +125,3 @@ npx cypress run --record --key 01b611df-9fa4-451c-a884-31bab129d7f8
 # Description :
 Flux d'Inscription d'un Utilisateur : Vérifie que le processus d'inscription fonctionne correctement, y compris la validation des champs et la redirection après une inscription réussie. On procède pareil pour la connexion.
 
-
-## GITHUB
-git init
-git remote add origin https://github.com/Collab-CDA/ressources_relationnelles.git
-git add .
-git commit -m "premier commit"
-git push origin master
-
-## Cloner le projet
-git clone https://github.com/Collab-CDA/ressources_relationnelles.git
-
-# Récupérer changement (avant de commencer à travailler chaque jour)
-git pull origin master
-
-# Faire des commits régulier en fin de journée
-git add .
-git add .
-git commit -m "commentaire"
-git push origin master
