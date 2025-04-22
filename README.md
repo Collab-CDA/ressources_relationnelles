@@ -128,4 +128,5 @@ Flux d'Inscription d'un Utilisateur : Vérifie que le processus d'inscription fo
 
 ### Web View Expo go (my-app):
 Pour lancer la vue mobile:
+cd my-app/
 npm run start

@@ -55,8 +55,8 @@
               <img
                 :src="getFileUrl(file)"
                 alt="Image de la ressource"
-                style="max-width: 300px"
-              />
+                style="width: 100%; height: auto"
+                />
             </div>
             <div v-else-if="isPDF(file)">
               <a :href="getFileUrl(file)" target="_blank" download

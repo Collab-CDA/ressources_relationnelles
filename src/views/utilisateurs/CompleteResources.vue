@@ -387,7 +387,7 @@ export default {
     },
     // Retourne le code HTML pour intégrer une vidéo YouTube
     getEmbedVideo(url) {
-      return `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+      return `<iframe src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-wr src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
     },
     // Vérifie si l'URL est un lien YouTube intégrable
     isEmbedYouTubeLink(url) {
@@ -843,6 +843,7 @@ form button:hover {
   color: darkblue;
 }
 
+/* RESPONSIVE  */
 @media (max-width: 768px) {
   .main-container {
     margin: 2rem 1rem;
@@ -904,5 +905,7 @@ form button:hover {
   .content-container {
     padding: 1.5rem;
   }
+
+  
 }
 </style>
