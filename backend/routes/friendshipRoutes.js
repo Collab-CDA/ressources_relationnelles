@@ -16,7 +16,7 @@ router.get('/friends/:userId', async (req, res) => {
       res.status(500).json({ message: "Erreur lors de la récupération des amis." });
     }
   });
-  
+
 
 
 module.exports = router;

@@ -7,56 +7,6 @@
   },
   "host": "localhost:3000",
   "basePath": "/",
-  "tags": [
-    {
-      "name": "Users",
-      "description": "Opérations liées aux utilisateurs"
-    },
-    {
-      "name": "Resources",
-      "description": "Gestion des ressources"
-    },
-    {
-      "name": "Comments",
-      "description": "Commentaires sur les ressources"
-    },
-    {
-      "name": "Friendships",
-      "description": "Gestion des relations d’amitié"
-    },
-    {
-      "name": "Invitations",
-      "description": "Gestion des invitations"
-    },
-    {
-      "name": "Messages",
-      "description": "Messagerie entre utilisateurs"
-    },
-    {
-      "name": "Favoris",
-      "description": "Gestion des favoris"
-    },
-    {
-      "name": "Categories",
-      "description": "Catégories de ressources"
-    },
-    {
-      "name": "Progressions",
-      "description": "Progression des activités"
-    },
-    {
-      "name": "Dashboard",
-      "description": "Statistiques et dashboard"
-    },
-    {
-      "name": "Relations",
-      "description": "Relations diverses"
-    },
-    {
-      "name": "TypesResource",
-      "description": "Types de ressources"
-    }
-  ],
   "schemes": [
     "http"
   ],
