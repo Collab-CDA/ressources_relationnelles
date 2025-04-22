@@ -1,9 +1,6 @@
 <template>
-  <div>
-    <h1 class="title-container">Gestion des utilisateurs
-    </h1>
-
-
+  <div class="container">
+    <h1 class="title-container">Gestion des utilisateurs</h1>
     <div class="user-table">
       <table>
         <thead>
@@ -98,6 +95,10 @@ body {
   color: #000000;
 }
 
+.container {
+    margin-bottom: 2rem;
+  }
+  
 .title-container {
   display: flex;
   justify-content: center;
@@ -121,6 +122,7 @@ h1 {
 
 table {
   width: 100%;
+  background-color: #f4f4f4;
   border-collapse: collapse;
 }
 
@@ -131,7 +133,12 @@ th, td {
 }
 
 th {
-  background-color: #f4f4f4;
+  border: 1px solid #ffffff;
+
+}
+
+th {
+  background-color: #dad8d8;
 }
 
 button {
@@ -160,29 +167,6 @@ button.suspended {
   font-size: 16px;
 }
 
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: #dad8d8;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  border-radius: 5px;
-  width: 100%;
-  max-width: 500px;
-  position: relative;
-}
-
 .close-button {
   position: absolute;
   top: 10px;
@@ -191,24 +175,6 @@ button.suspended {
   cursor: pointer;
 }
 
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
 
 .button-container {
   display: flex;
@@ -233,53 +199,48 @@ button.suspended {
 
 /* Responsive écrans mobiles */
 @media screen and (max-width: 768px) {
+
   h1 {
-    font-size: 24px;
-    margin: 1.5rem 0;
+    font-size: 20px; /* Réduit la taille de la police */
+    margin: 1rem 0;
   }
 
   .user-table {
+    width: 100%;
     overflow-x: auto;
-    margin: 10px 1rem;
+    margin: 5px 0.5rem; 
   }
 
   table {
     width: 100%;
-    font-size: 14px;
+    font-size: 12px; 
   }
 
   th, td {
-    padding: 8px;
+    padding: 4px; 
+    width: 18%; 
   }
 
   button {
-    padding: 6px 10px;
-    font-size: 14px;
+    padding: 2px 6px; 
+    font-size: 10px; 
   }
 
   .delete-btn i {
-    font-size: 14px;
+    font-size: 10px; 
   }
 
-  .modal-content {
-    padding: 1rem;
-  }
-
-  .form-group input,
-  .form-group select {
-    font-size: 14px;
-    padding: 6px;
-  }
+  
 
   .btn {
     width: 100%;
-    font-size: 16px;
-    padding: 10px;
+    font-size: 14px; 
+    padding: 8px; 
   }
 
   .button-container {
     flex-direction: column;
-    gap: 10px;
+    gap: 5px; 
   }
 }
 
@@ -311,16 +272,6 @@ button.suspended {
     font-size: 15px;
   }
 
-  .modal-content {
-    padding: 1.5rem;
-  }
-
-  .form-group input,
-  .form-group select {
-    font-size: 15px;
-    padding: 7px;
-  }
-
   .btn {
     font-size: 17px;
     padding: 10px 16px;
@@ -332,5 +283,4 @@ button.suspended {
     gap: 15px;
   }
 }
-
 </style>
