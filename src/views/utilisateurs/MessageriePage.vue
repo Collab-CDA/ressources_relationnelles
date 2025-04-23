@@ -12,7 +12,7 @@
             <span>{{ getSenderName(message) }}</span>
             <small>{{ formatDate(message.date_envoi) }}</small>
           </div>
-          <p>{{ message.contenu_message }}</p>
+          <div v-html="makeLinksClickable(message.contenu_message)"></div>
         </div>
       </div>
       <form @submit.prevent="sendMessage" class="message-form">
@@ -31,6 +31,7 @@
 
 <script>
 import axios from 'axios';
+import DOMPurify from 'dompurify';
 
 export default {
   name: 'MessageriePage',
@@ -40,7 +41,8 @@ export default {
       newMessage: '',
       userId: null,
       userName: '', // Prénom de l'utilisateur connecté
-      friendName: '' // Prénom de l'ami
+      friendName: '', // Prénom de l'ami
+      socket: null,
     };
   },
   computed: {
@@ -102,6 +104,9 @@ export default {
           );
           this.messages.push(response.data);
           this.newMessage = '';
+          if (this.socket) {
+            this.socket.send(JSON.stringify(response.data));
+          }
         } catch (error) {
           console.error("Erreur lors de l'envoi du message :", error);
           alert("Erreur lors de l'envoi du message: " + (error.response?.data?.message || error.message));
@@ -142,6 +147,30 @@ export default {
       // Si l'utilisateur connecté est l'expéditeur, retournez le prénom de l'utilisateur connecté
       // Sinon, retournez le prénom de l'ami
       return message.id_utilisateur1 === this.userId ? this.userName : this.friendName;
+    },
+    makeLinksClickable(message) {
+      // Utilisez une expression régulière pour détecter les URL et les transformer en liens cliquables
+      const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+      const sanitizedMessage = DOMPurify.sanitize(message);
+      return sanitizedMessage.replace(urlPattern, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+    },
+    setupWebSocket() {
+      if (this.friendId && this.userId) {
+        this.socket = new WebSocket(`ws://localhost:3000/messages/${this.userId}/${this.friendId}`);
+
+        this.socket.onmessage = (event) => {
+          const message = JSON.parse(event.data);
+          this.messages.push(message);
+        };
+
+        this.socket.onerror = (error) => {
+          console.error("Erreur WebSocket :", error);
+        };
+
+        this.socket.onclose = () => {
+          console.log("Connexion WebSocket fermée.");
+        };
+      }
     }
   },
   mounted() {
@@ -149,6 +178,12 @@ export default {
     this.fetchMessages();
     this.fetchUserName();
     this.fetchFriendName();
+    this.setupWebSocket();
+  },
+  beforeUnmount() {
+    if (this.socket) {
+      this.socket.close();
+    }
   }
 };
 </script>

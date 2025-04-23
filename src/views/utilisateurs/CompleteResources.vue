@@ -66,11 +66,11 @@
         <p v-if="filteredResources.length === 0">Aucun résultat</p>
       </div>
 
-       <!-- Contenu de la ressource sélectionnée -->
+      <!-- Contenu de la ressource sélectionnée -->
       <div class="content-container">
         <div v-if="selectedResource">
           <h2>{{ selectedResource.titre }}</h2>
-          <button class="share-button" @click="shareResource">
+          <button class="share-button" @click="openShareModal">
             <i class="fas fa-share-alt"></i> Partager
           </button>
           <button
@@ -97,7 +97,6 @@
                   style="max-width: 300px"
                 />
               </div>
-             
             </div>
           </div>
           <a
@@ -186,11 +185,22 @@
               Ajouter un commentaire
             </button>
           </form>
-
-          <button class="contact-button" @click="contactParticipant">
-            Contacter un participant
-          </button>
         </div>
+      </div>
+    </div>
+
+    <!-- Modal de partage -->
+    <div v-if="isShareModalOpen" class="modal-overlay">
+      <div class="modal">
+        <span class="close-modal" @click="closeShareModal">&times;</span>
+        <h2>Partager avec...</h2>
+        <ul class="friends-list">
+          <li v-for="friend in friends" :key="friend.id_utilisateur">
+            <button class="friend-btn" @click="shareToFriend(friend)">
+              {{ friend.prenom }} {{ friend.nom }}
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -224,6 +234,9 @@ export default {
         id_commentaire_parent: null,
         id_utilisateur: null,
       },
+      // Partage
+      isShareModalOpen: false,
+      friends: [],
     };
   },
   computed: {
@@ -246,9 +259,6 @@ export default {
     },
   },
   methods: {
-    shareResource() {
-      alert("Publication partagée");
-    },
     // Formate la date pour un affichage lisible
     formatDate(dateStr) {
       if (!dateStr || dateStr === "CURRENT_TIMESTAMP") return "";
@@ -373,12 +383,9 @@ export default {
     redirectToAddResource() {
       this.$router.push("/add-resources");
     },
-    contactParticipant() {
-      this.$router.push("/messagerie");
-    },
     // Retourne le code HTML pour intégrer une vidéo YouTube
     getEmbedVideo(url) {
-      return `<iframe src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-wr src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+      return `<iframe src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
     },
     // Vérifie si l'URL est un lien YouTube intégrable
     isEmbedYouTubeLink(url) {
@@ -422,7 +429,7 @@ export default {
         },
       };
     },
-     // Ajoute une ressource des favoris
+    // Ajoute une ressource des favoris
     async toggleFavorite(resource) {
       const userId = this.getUserIdFromToken();
       if (!userId) {
@@ -545,10 +552,48 @@ export default {
         );
       }
     },
+
+    // Partage
+    openShareModal() {
+      this.isShareModalOpen = true;
+      const userId = this.getUserIdFromToken();
+      if (!userId) return;
+      axios.get(`http://localhost:3000/api/friendships/friends/${userId}`, this.getAuthHeaders())
+           .then(response => this.friends = response.data);
+    },
+    closeShareModal() {
+      this.isShareModalOpen = false;
+    },
+    async shareToFriend(friend) {
+      if (!this.selectedResource) return;
+      const senderId = this.getUserIdFromToken();
+      const link = `http://localhost:8080/complete-resources?title=${encodeURIComponent(this.selectedResource.titre)}`;
+      const message = `Salut ${friend.prenom}, regarde cette ressource : ${this.selectedResource.titre}\n\n${link}`;
+      try {
+        await axios.post("http://localhost:3000/api/messages", {
+          id_utilisateur1: senderId,
+          id_utilisateur2: friend.id_utilisateur,
+          contenu_message: message
+        }, this.getAuthHeaders());
+        alert(`Lien envoyé à ${friend.prenom} !`);
+        this.closeShareModal();
+      } catch (error) {
+        console.warn(
+          "Erreur lors du partage de la ressource :",
+          error.response ? error.response.data : error.message
+        );
+      }
+    },
   },
   mounted() {
     // Appelle les méthodes pour récupérer les données lors du montage du composant
-    this.fetchResources();
+    this.fetchResources().then(() => {
+      const title = this.$route.query.title;
+      if (title) {
+        const found = this.resources.find(r => r.titre === decodeURIComponent(title));
+        if (found) this.selectResource(found);
+      }
+    });
     this.fetchTypesRelation();
     this.fetchCategoriesResource();
     this.fetchTypesResource();
@@ -556,6 +601,8 @@ export default {
   },
 };
 </script>
+
+
 
 <style scoped>
 * {
