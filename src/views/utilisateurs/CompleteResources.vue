@@ -57,7 +57,7 @@
               href="#"
               @click.prevent
               :class="{ suspended: resource.statut_ === 'suspendue' }"
-              :title="resource.statut_ === 'suspendue' ? 'La ressource a été suspendue' : ''"
+              :title="resource.statut_ === 'suspendue' ? 'Ressource suspendue' : ''"
             >
               {{ resource.titre }}
             </a>
@@ -626,7 +626,7 @@ h2 {
 
 .suspended {
   color: red;
-  pointer-events: none;
+  text-decoration: none;
 }
 
 .upload-modal {
