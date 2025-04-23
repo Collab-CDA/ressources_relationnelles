@@ -224,4 +224,81 @@ h1 {
   font-weight: 500;
 }
 
+@media (max-width: 768px) {
+  .messagerie-page {
+    padding: 10px;
+  }
+
+  .conversations-list {
+    width: 100%;
+  }
+
+  .conversation-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .conversation-info {
+    width: 100%;
+    gap: 0.5rem;
+    }
+
+  .conversation-actions {
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .btn {
+    width: 48%;
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+
+  .avatar {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .friend-name {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .messagerie-page {
+    padding: 15px;
+  }
+
+  .conversations-list {
+    width: 100%;
+  }
+
+  .conversation-item {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .conversation-info {
+    gap: 1.5rem;
+  }
+
+  .conversation-actions {
+    gap: 15px;
+  }
+
+  .btn {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+
+  .avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .friend-name {
+    font-size: 1.1rem;
+  }
+}
 </style>

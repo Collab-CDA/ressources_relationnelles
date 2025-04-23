@@ -22,12 +22,16 @@
           placeholder="Tapez votre message ici..."
           required
         />
-        <button type="submit" class="send-btn">Envoyer</button>
+        <button type="submit" class="send-btn">
+          <i class="fas fa-paper-plane"></i>
+          <span class="send-text">Envoyer</span>
+        </button>
       </form>
     </div>
     <p v-else>Aucun utilisateur sélectionné.</p>
   </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -290,5 +294,19 @@ h1 {
 
 .send-btn:hover {
   background-color: #014c8c;
+}
+
+.send-btn i {
+  margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+  .send-text {
+    display: none;
+  }
+
+  .send-btn {
+    padding: 10px;
+  }
 }
 </style>

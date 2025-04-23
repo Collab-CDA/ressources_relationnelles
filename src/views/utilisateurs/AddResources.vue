@@ -426,4 +426,71 @@ h1 {
 .btn.load-draft:hover {
   background-color: #2ecc71;
 }
+
+
+@media (max-width: 768px) {
+  .add-resources-page {
+    padding: 10px;
+  }
+
+  .card {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 14px;
+  }
+
+  .file-upload-label {
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+
+  .button-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .add-resources-page {
+    padding: 15px;
+  }
+
+  .card {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 16px;
+  }
+
+  .file-upload-label {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+
+  .button-container {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .btn {
+    padding: 10px 15px;
+    font-size: 16px;
+  }
+}
+
 </style>

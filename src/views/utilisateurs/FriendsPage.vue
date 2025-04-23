@@ -234,4 +234,113 @@ ul {
 .delete-btn:hover i {
   color: #D0021B;  
 }
+
+
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 10px;
+  }
+
+  ul {
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .friend-item {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .avatar-container {
+    margin-right: 1rem;
+  }
+
+  .avatar {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .friend-info {
+    flex-direction: column;
+    align-items: flex-start;
+    width: calc(100% - 4rem); 
+  }
+
+  .text-info {
+    width: 100%;
+  }
+
+  .friends-actions {
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+
+  .btn {
+    width: 48%;
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+
+  .delete-btn i {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .profile-page {
+    padding: 15px;
+  }
+
+  ul {
+    width: 100%;
+    padding: 0 15px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .friend-item {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .avatar-container {
+    margin-right: 1.5rem;
+  }
+
+  .avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .friend-info {
+    flex-direction: column;
+    align-items: flex-start;
+    width: calc(100% - 5rem); 
+  }
+
+  .text-info {
+    width: 100%;
+  }
+
+  .friends-actions {
+    gap: 15px;
+  }
+
+  .btn {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+
+  .delete-btn i {
+    font-size: 20px;
+  }
+}
+
 </style>

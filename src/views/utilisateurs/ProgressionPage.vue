@@ -235,6 +235,7 @@ h1 {
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   width: 48%;
+  margin-bottom:2rem;
 }
 
 .favorites-list ul {
@@ -253,6 +254,10 @@ h1 {
   text-decoration: none;
   color: #333;
   font-size: 18px;
+}
+
+.progress-dashboard ul {
+padding: 1rem;
 }
 
 .delete-button {

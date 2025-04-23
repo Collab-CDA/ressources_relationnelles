@@ -1,7 +1,6 @@
 <template>
   <div>
     <h1>Mes Ressources ajoutées</h1>
-    <div class="main-container">
       <div class="resource-list">
         <ul>
           <li v-for="resource in resources" :key="resource.id_ressource_" class="resource-item">
@@ -68,7 +67,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 
@@ -236,13 +234,14 @@ body {
   color: #000000;
 }
 
+
 h1 {
   font-family: 'Roboto', sans-serif;
   font-size: 32px;
   font-weight: bold;
   color: #0258bd;
   text-align: center;
-  margin-top: 1rem;
+  margin-top: 3rem;
   margin-bottom: 1rem;
 }
 
@@ -251,7 +250,7 @@ h1 {
   color: black;
   padding: 20px;
   border-radius: 5px;
-  width: 50%;
+  width: 30rem;
   margin: 0 auto;
 }
 
@@ -383,6 +382,95 @@ h1 {
 .button-container:hover {
   background-color: #d4c4e0;
   color: black;
+}
+
+@media (max-width: 768px) {
+  .resource-list {
+    width: 90%;
+    padding: 15px;
+    margin-bottom: 2rem;
+  }
+
+  .resource-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .resource-item p {
+    margin-bottom: 10px;
+  }
+
+  .edit-button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+    width: 80%;
+    height: 90%; 
+    overflow-y: auto;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 14px;
+  }
+
+  .file-upload-label {
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+
+  .button-container {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .resource-list {
+    width: 70%;
+    padding: 18px;
+  }
+
+  .resource-item {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .resource-item p {
+    margin-bottom: 0;
+  }
+
+  .edit-button {
+    width: auto;
+    text-align: center;
+  }
+
+  .modal-content {
+    padding: 2rem;
+    width: 80%;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 16px;
+  }
+
+  .file-upload-label {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+
+  .button-container {
+    width: 62%;
+    padding: 10px;
+    font-size: 16px;
+  }
 }
 </style>
 
