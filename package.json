@@ -13,6 +13,7 @@
     "chart.js": "^4.4.8",
     "chartjs": "^0.3.24",
     "core-js": "^3.8.3",
+    "dompurify": "^3.2.5",
     "dotenv": "^16.4.7",
     "font-awesome": "^4.7.0",
     "jwt-decode": "^4.0.0",
