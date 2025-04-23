@@ -197,7 +197,7 @@
         <h2>Partager avec...</h2>
         <ul class="friends-list">
           <li v-for="friend in friends" :key="friend.id_utilisateur">
-            <button class="friend-btn" @click="shareToFriend(friend)">
+            <button class="button-modal" @click="shareToFriend(friend)">
               {{ friend.prenom }} {{ friend.nom }}
             </button>
           </li>
@@ -654,6 +654,7 @@ h2 {
   background-color: #b0a2ba;
   border: none;
   border-radius: 5px;
+  margin-top:0.5rem;
 }
 
 .add-resource-button:hover {
@@ -848,6 +849,10 @@ form button:hover {
   text-align: center;
 }
 
+ul {
+  list-style-type:none;
+}
+
 .button-modal {
   background-color: #b0a2ba;
   color: white;
@@ -856,6 +861,7 @@ form button:hover {
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
+  margin-bottom: 0.5rem;
 }
 
 .button-modal:hover {
