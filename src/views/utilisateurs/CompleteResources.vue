@@ -80,7 +80,7 @@
             <i class="fas fa-heart"></i>
           </button>
           <p>{{ selectedResource.contenu }}</p>
-          <div
+          <div class="image-container"
             v-if="isEmbedYouTubeLink(selectedResource.lien_video)"
             v-html="getEmbedVideo(selectedResource.lien_video)"
           ></div>
@@ -91,11 +91,12 @@
               style="margin-bottom: 10px"
             >
               <div v-if="isImage(file)">
-                <img
+                <div class="image-container">
+                <img 
                   :src="getFileUrl(file)"
                   alt="Image de la ressource"
-                  style="max-width: 300px"
                 />
+              </div>
               </div>
             </div>
           </div>
@@ -385,7 +386,7 @@ export default {
     },
     // Retourne le code HTML pour intégrer une vidéo YouTube
     getEmbedVideo(url) {
-      return `<iframe src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+      return `<iframe width="600px" height="400px" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-wr src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
     },
     // Vérifie si l'URL est un lien YouTube intégrable
     isEmbedYouTubeLink(url) {
@@ -693,7 +694,8 @@ h2 {
   display: flex;
   gap: 2rem;
   margin: 2rem auto;
-  max-width: 1200px;
+  padding: 2rem;
+  width: 100%;
 }
 
 .resource-list {
@@ -701,7 +703,7 @@ h2 {
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  width: 400px; 
 }
 
 .resource-list ul {
@@ -721,12 +723,20 @@ h2 {
   margin-top: 2rem;
   flex-grow: 1;
   position: relative;
+  width: 600px; 
 }
 
-.content-container img {
-  max-width: 100%;
-  height: auto;
-  width: 100%;
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; 
+  margin-top: 5rem;
+}
+
+.image-container img {
+  max-width: 70%;
+  max-height: 70%;
 }
 
 .favorite-button {
@@ -909,7 +919,14 @@ form button:hover {
   .resource-list,
   .content-container {
     padding: 1rem;
+    width: 100%;
   }
+
+  .image-container img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
@@ -942,6 +959,7 @@ form button:hover {
   .resource-list,
   .content-container {
     padding: 1.5rem;
+    width: 100%;
   }
 
   
