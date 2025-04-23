@@ -559,7 +559,7 @@ export default {
       this.isShareModalOpen = true;
       const userId = this.getUserIdFromToken();
       if (!userId) return;
-      axios.get(`http://localhost:3000/api/friendships/friends/${userId}`, this.getAuthHeaders())
+      axios.get(`http://10.176.131.156:3000/api/friendships/friends/${userId}`, this.getAuthHeaders())
            .then(response => this.friends = response.data);
     },
     closeShareModal() {
@@ -568,10 +568,10 @@ export default {
     async shareToFriend(friend) {
       if (!this.selectedResource) return;
       const senderId = this.getUserIdFromToken();
-      const link = `http://localhost:8080/complete-resources?title=${encodeURIComponent(this.selectedResource.titre)}`;
+      const link = `http://10.176.131.156:8080/complete-resources?title=${encodeURIComponent(this.selectedResource.titre)}`;
       const message = `Salut ${friend.prenom}, regarde cette ressource : ${this.selectedResource.titre}\n\n${link}`;
       try {
-        await axios.post("http://localhost:3000/api/messages", {
+        await axios.post("http://10.176.131.156:3000/api/messages", {
           id_utilisateur1: senderId,
           id_utilisateur2: friend.id_utilisateur,
           contenu_message: message

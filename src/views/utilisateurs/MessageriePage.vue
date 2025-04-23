@@ -156,7 +156,7 @@ export default {
     },
     setupWebSocket() {
       if (this.friendId && this.userId) {
-        this.socket = new WebSocket(`ws://localhost:3000/messages/${this.userId}/${this.friendId}`);
+        this.socket = new WebSocket(`ws://10.176.131.156:3000/messages/${this.userId}/${this.friendId}`);
 
         this.socket.onmessage = (event) => {
           const message = JSON.parse(event.data);
