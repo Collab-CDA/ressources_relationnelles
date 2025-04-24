@@ -72,8 +72,8 @@ export default {
     // Propriété calculée pour obtenir l'URL de l'avatar
     avatarUrl() {
       return this.utilisateur.avatar
-        ? `${process.env.VUE_APP_API_URL}/uploads/${this.utilisateur.avatar}`
-        : this.defaultAvatar;
+      ? `${process.env.VUE_APP_API_URL?.replace('/api', '') }/uploads/${this.utilisateur.avatar}`
+      : this.defaultAvatar;
     },
   },
   methods: {
