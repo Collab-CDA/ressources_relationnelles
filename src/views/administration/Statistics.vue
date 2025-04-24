@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import apiClient, { getAuthHeaders } from '@/services/api'
 import { ref, computed, onMounted } from 'vue'
 // Bibliothèque javascript pour créer des graphiques interactifs
 import Chart from 'chart.js/auto'
@@ -80,10 +80,7 @@ export default {
     const fetchDashboard = async () => {
       try {
         loading.value = true
-        const token = localStorage.getItem('token')
-        const response = await axios.get('http://10.176.131.156:3000/api/dashboard', {
-          headers: { Authorization: `Bearer ${token}` }
-        })
+        const response = await apiClient.get('/dashboard', getAuthHeaders())
         dashboardData.value = response.data
         renderChart()
       } catch (error) {
@@ -111,11 +108,9 @@ export default {
     // Méthode pour exporter tous les indicateurs en CSV
     const exportAll = async () => {
       try {
-        const token = localStorage.getItem('token')
-        const response = await axios.get('http://10.176.131.156:3000/api/dashboard/export', {
-          headers: { Authorization: `Bearer ${token}` },
-          responseType: 'blob'
-        })
+        const headers = getAuthHeaders()
+        headers.responseType = 'blob'
+        const response = await apiClient.get('/dashboard/export', headers)
         const url = window.URL.createObjectURL(new Blob([response.data]))
         const link = document.createElement('a')
         link.href = url
@@ -123,7 +118,7 @@ export default {
         document.body.appendChild(link)
         link.click()
       } catch (error) {
-        console.error('Erreur lors de l’export des statistiques:', error)
+        console.error('Erreur lors de l\'export des statistiques:', error)
       }
     }
 

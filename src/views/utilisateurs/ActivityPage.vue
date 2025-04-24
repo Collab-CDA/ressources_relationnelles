@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import apiClient, { getAuthHeaders } from "@/services/api";
 
 export default {
   name: "ActivityPage",
@@ -114,9 +114,9 @@ export default {
   methods: {
     async fetchActivities() {
       try {
-        const response = await axios.get(
-          "http://10.176.131.156:3000/api/resources",
-          this.getAuthHeaders()
+        const response = await apiClient.get(
+          "/resources",
+          getAuthHeaders()
         );
         this.activities = response.data;
       } catch (error) {
@@ -134,9 +134,9 @@ export default {
       }
 
       try {
-        const response = await axios.get(
-          `http://10.176.131.156:3000/api/progression/${userId}`,
-          this.getAuthHeaders()
+        const response = await apiClient.get(
+          `/progression/${userId}`,
+          getAuthHeaders()
         );
         this.progressions = response.data;
       } catch (error) {
@@ -165,14 +165,14 @@ export default {
           this.completionPercentage = existingProgress.pourcentage_completion;
         } else {
           // Sinon, crée une nouvelle progression
-          await axios.post(
-            "http://10.176.131.156:3000/api/progression",
+          await apiClient.post(
+            "/progression",
             {
               id_ressource_: resourceId,
               statut: "en cours",
               pourcentage_completion: 0,
             },
-            this.getAuthHeaders()
+            getAuthHeaders()
           );
 
           this.completionPercentage = 0;
@@ -209,12 +209,12 @@ export default {
     async stopActivity() {
       clearInterval(this.timer);
       try {
-        await axios.put(
-          `http://10.176.131.156:3000/api/progression/${this.currentActivityId}`,
+        await apiClient.put(
+          `/progression/${this.currentActivityId}`,
           {
             pourcentage_completion: this.completionPercentage,
           },
-          this.getAuthHeaders()
+          getAuthHeaders()
         );
 
         alert("Activité arrêtée avec succès !");
@@ -234,14 +234,7 @@ export default {
       );
       return progress ? progress.pourcentage_completion === 100 : false;
     },
-    getAuthHeaders() {
-      const token = localStorage.getItem("token");
-      return {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-    },
+    // Using imported getAuthHeaders from api.js instead
     getUserIdFromToken() {
       const token = localStorage.getItem("token");
       if (token) {
@@ -271,10 +264,10 @@ export default {
       return /\.pdf$/i.test(file);
     },
     getFileUrl(file) {
-      if (file.startsWith("data:")) {
-        return file;
+      if (file) {
+        return `${process.env.VUE_APP_API_URL}/uploads/${file}`;
       }
-      return `${window.location.origin}/uploads/${file}`;
+      return "";
     },
   },
   mounted() {

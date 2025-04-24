@@ -34,7 +34,7 @@
 
 
 <script>
-import axios from 'axios';
+import apiClient, { getAuthHeaders } from '../../services/api.js';
 import DOMPurify from 'dompurify';
 
 export default {
@@ -69,18 +69,13 @@ export default {
       return null;
     },
     getAuthHeaders() {
-      const token = localStorage.getItem("token");
-      return {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+      return getAuthHeaders();
     },
     async fetchMessages() {
       if (this.friendId && this.userId) {
         try {
-          const response = await axios.get(
-            `http://10.176.131.156:3000/api/messages/${this.userId}/${this.friendId}`,
+          const response = await apiClient.get(
+            `/messages/${this.userId}/${this.friendId}`,
             this.getAuthHeaders()
           );
 
@@ -97,8 +92,8 @@ export default {
     async sendMessage() {
       if (this.newMessage.trim() && this.friendId && this.userId) {
         try {
-          const response = await axios.post(
-            `http://10.176.131.156:3000/api/messages`,
+          const response = await apiClient.post(
+            `/messages`,
             {
               id_utilisateur1: this.userId,
               id_utilisateur2: this.friendId,
@@ -124,8 +119,8 @@ export default {
     async fetchUserName() {
       if (this.userId) {
         try {
-          const response = await axios.get(
-            `http://10.176.131.156:3000/api/utilisateurs/${this.userId}`,
+          const response = await apiClient.get(
+            `/utilisateurs/${this.userId}`,
             this.getAuthHeaders()
           );
           this.userName = response.data.prenom;
@@ -137,8 +132,8 @@ export default {
     async fetchFriendName() {
       if (this.friendId) {
         try {
-          const response = await axios.get(
-            `http://10.176.131.156:3000/api/utilisateurs/${this.friendId}`,
+          const response = await apiClient.get(
+            `/utilisateurs/${this.friendId}`,
             this.getAuthHeaders()
           );
           this.friendName = response.data.prenom;

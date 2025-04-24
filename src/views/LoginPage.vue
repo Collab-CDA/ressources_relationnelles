@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import apiClient from "@/services/api";
 
 export default {
   name: "LoginPage",
@@ -56,8 +56,8 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post(
-          "http://10.176.131.156:3000/api/utilisateurs/login",
+        const response = await apiClient.post(
+          "/utilisateurs/login",
           this.form
         );
         // Destructuration de la réponse pour obtenir les informations de l'utilisateur et le token

@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import apiClient, { getAuthHeaders } from '../../services/api.js';
 
 export default {
   name: "ProgressionPage",
@@ -86,8 +86,8 @@ export default {
       }
 
       try {
-        const response = await axios.get(
-          `http://10.176.131.156:3000/api/favoris/${userId}`,
+        const response = await apiClient.get(
+          `/favoris/${userId}`,
           this.getAuthHeaders()
         );
         this.favoris = response.data;
@@ -100,8 +100,8 @@ export default {
     },
     async fetchResources() {
       try {
-        const response = await axios.get(
-          "http://10.176.131.156:3000/api/resources",
+        const response = await apiClient.get(
+          "/resources",
           this.getAuthHeaders()
         );
         this.resources = response.data;
@@ -120,8 +120,8 @@ export default {
       }
 
       try {
-        const response = await axios.get(
-          `http://10.176.131.156:3000/api/progression/${userId}`,
+        const response = await apiClient.get(
+          `/progression/${userId}`,
           this.getAuthHeaders()
         );
         this.progressions = response.data;
@@ -145,8 +145,8 @@ export default {
     },
     async deleteFavori(favoriId) {
       try {
-        await axios.delete(
-          `http://10.176.131.156:3000/api/favoris/delete/${favoriId}`,
+        await apiClient.delete(
+          `/favoris/delete/${favoriId}`,
           this.getAuthHeaders()
         );
         this.favoris = this.favoris.filter((f) => f.id_favori !== favoriId);
@@ -173,12 +173,7 @@ export default {
       return null;
     },
     getAuthHeaders() {
-      const token = localStorage.getItem("token");
-      return {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+      return getAuthHeaders();
     },
     isEmbedYouTubeLink(url) {
       return /youtube\.com|youtu\.be/.test(url);
@@ -187,7 +182,12 @@ export default {
       return `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
     },
     getImageUrl(imageName) {
-      return require(`@/assets/images/${imageName}`);
+      if (imageName && imageName.startsWith('http')) {
+        return imageName;
+      }
+      const baseUrl = process.env.VUE_APP_API_URL;
+      const apiBaseUrl = baseUrl.replace('/api', '');
+      return imageName ? `${apiBaseUrl}/uploads/${imageName}` : require('@/assets/images/ressource_par_defaut.jpg');
     },
   },
   mounted() {

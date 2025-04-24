@@ -1,10 +1,20 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    baseURL: 'http://10.176.131.156:3000/api',
+    baseURL: process.env.VUE_APP_API_URL,
     headers: {
         'Content-Type': 'application/json',
     },
 });
+
+// Helper function to get auth headers
+export const getAuthHeaders = () => {
+    const token = localStorage.getItem('token');
+    return {
+        headers: {
+            Authorization: token ? `Bearer ${token}` : '',
+        }
+    };
+};
 
 export default apiClient;

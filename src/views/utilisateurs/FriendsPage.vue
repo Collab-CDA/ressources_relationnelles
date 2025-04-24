@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import apiClient, { getAuthHeaders } from "../../services/api.js";
 
 export default {
   name: "FriendsPage",
@@ -62,22 +62,19 @@ export default {
       return null;
     },
     getAuthHeaders() {
-      const token = localStorage.getItem("token");
-      return {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+      return getAuthHeaders();
     },
     getAvatarUrl(avatar) {
-      return avatar ? `http://10.176.131.156:3000/uploads/${avatar}` : "";
+      const baseUrl = process.env.VUE_APP_API_URL;
+      const apiBaseUrl = baseUrl.replace('/api', '');
+      return avatar ? `${apiBaseUrl}/uploads/${avatar}` : "";
     },
     async fetchFriends() {
       this.userId = this.getUserIdFromToken();
       if (this.userId) {
         try {
-          const response = await axios.get(
-            `http://10.176.131.156:3000/api/friendships/friends/${this.userId}`,
+          const response = await apiClient.get(
+            `/friendships/friends/${this.userId}`,
             this.getAuthHeaders()
           );
           this.friends = response.data;
@@ -93,8 +90,8 @@ export default {
       if (!confirmation) return;
 
       try {
-        const response = await axios.post(
-          "http://10.176.131.156:3000/api/friendships/delete",
+        const response = await apiClient.post(
+          "/friendships/delete",
           {
             id_utilisateur1: this.userId,
             id_utilisateur2: friendId,
