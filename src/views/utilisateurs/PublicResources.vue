@@ -146,7 +146,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import apiClient, { getAuthHeaders } from '../../services/api.js';
 
 export default {
   name: "CompleteResources",
@@ -196,8 +196,8 @@ export default {
   methods: {
     async fetchResources() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/resources",
+        const response = await apiClient.get(
+          "/resources",
           this.getAuthHeaders()
         );
         // Récupération des ressources publiques uniquement
@@ -213,8 +213,8 @@ export default {
     },
     async fetchTypesRelation() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/relations",
+        const response = await apiClient.get(
+          "/relations",
           this.getAuthHeaders()
         );
         this.typesRelation = response.data;
@@ -227,8 +227,8 @@ export default {
     },
     async fetchCategoriesResource() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/categories",
+        const response = await apiClient.get(
+          "/categories",
           this.getAuthHeaders()
         );
         this.categoriesResource = response.data;
@@ -249,8 +249,8 @@ export default {
           return;
         }
         try {
-          const response = await axios.get(
-            `http://localhost:3000/api/comments/${this.selectedResource.id_ressource_}`,
+          const response = await apiClient.get(
+            `/comments/${this.selectedResource.id_ressource_}`,
             this.getAuthHeaders()
           );
           if (response.data && Array.isArray(response.data)) {
@@ -293,8 +293,8 @@ export default {
         this.newComment.prenom_utilisateur = userFirstName;
 
         try {
-          const response = await axios.post(
-            "http://localhost:3000/api/comments",
+          const response = await apiClient.post(
+            "/comments",
             this.newComment,
             this.getAuthHeaders()
           );
@@ -360,19 +360,12 @@ export default {
       if (file.startsWith("data:")) {
         return file;
       }
-      return `${window.location.origin}/uploads/${file}`;
+      const baseUrl = process.env.VUE_APP_API_URL;
+      const apiBaseUrl = baseUrl.replace('/api', '');
+      return `${apiBaseUrl}/uploads/${file}`;
     },
     getAuthHeaders() {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("Token non trouvé dans le localStorage.");
-        return {};
-      }
-      return {
-        headers: {
-          Authorization: `${token}`,
-        },
-      };
+      return getAuthHeaders();
     },
     getUserIdFromToken() {
       const token = localStorage.getItem("token");

@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import apiClient from "@/services/api";
 
 export default {
   name: "RegisterPage",
@@ -191,8 +191,8 @@ export default {
           statut: "actif",
         };
         // Envoi des données au serveur via la requête à l'URL spécifiée
-        const response = await axios.post(
-          "http://localhost:3000/api/utilisateurs/register",
+        const response = await apiClient.post(
+          "/utilisateurs/register",
           dataToSend
         );
         // Si la requête réussit, on affiche une alerte pour informer l'utilisateur et on redirige vers la connexion

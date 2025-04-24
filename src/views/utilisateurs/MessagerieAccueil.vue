@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import apiClient, { getAuthHeaders } from "../../services/api.js";
 
 export default {
   name: "MessagerieAccueil",
@@ -58,25 +58,20 @@ export default {
       return null;
     },
     getAuthHeaders() {
-      const token = localStorage.getItem("token");
-      return {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+      return getAuthHeaders();
     },
     async fetchConversations() {
       if (this.userId) {
         try {
-          const response = await axios.get(
-            `http://localhost:3000/api/conversations/${this.userId}`,
+          const response = await apiClient.get(
+            `/conversations/${this.userId}`,
             this.getAuthHeaders()
           );
           // Pour chaque conversation, on récupère le nom de l'ami correspondant
           this.conversations = await Promise.all(
             response.data.map(async (conversation) => {
-              const friendResponse = await axios.get(
-                `http://localhost:3000/api/utilisateurs/${conversation.friendId}`,
+              const friendResponse = await apiClient.get(
+                `/utilisateurs/${conversation.friendId}`,
                 this.getAuthHeaders()
               );
               return {
@@ -95,7 +90,10 @@ export default {
       }
     },
     getAvatarUrl(avatar) {
-      return avatar ? `http://localhost:3000/uploads/${avatar}` : "";
+      if (!avatar) return "";
+      const baseUrl = process.env.VUE_APP_API_URL;
+      const apiBaseUrl = baseUrl.replace('/api', '');
+      return `${apiBaseUrl}/uploads/${avatar}`;
     },
     // Redirige vers la page de messagerie avec un ami spécifique
     goToMessagerie(friendId) {
@@ -107,8 +105,8 @@ export default {
     async deleteConversation(friendId) {
       if (this.userId && friendId) {
         try {
-          await axios.delete(
-            `http://localhost:3000/api/conversations/${this.userId}/${friendId}`,
+          await apiClient.delete(
+            `/conversations/${this.userId}/${friendId}`,
             this.getAuthHeaders()
           );
           this.conversations = this.conversations.filter(

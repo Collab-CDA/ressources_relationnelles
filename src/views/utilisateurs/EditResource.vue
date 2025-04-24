@@ -16,7 +16,7 @@
   </template>
   
   <script>
-  import axios from 'axios';
+  import apiClient, { getAuthHeaders } from '../../services/api.js';
   
   export default {
     name: 'EditResource',
@@ -35,7 +35,7 @@
     methods: {
       async fetchResource() {
         try {
-          const response = await axios.get(`/api/resources/${this.id}`);
+          const response = await apiClient.get(`/resources/${this.id}`);
           this.resource = response.data;
         } catch (error) {
           console.error('Erreur lors de la récupération de la ressource:', error);
@@ -44,7 +44,7 @@
   
       async updateResource() {
         try {
-          await axios.put(`/api/resources/update/${this.id}`, this.resource);
+          await apiClient.put(`/resources/update/${this.id}`, this.resource);
           this.$router.push('/admin/resources');
         } catch (error) {
           console.error('Erreur lors de la mise à jour de la ressource:', error);

@@ -49,13 +49,14 @@ dotenv est utilisé pour charger les variables d'environnement à partir d'un fi
 Cela permet de gérer les configurations sensibles (comme les clés API, les informations de base de données, etc.) de manière sécurisée.
 
 ## Créer un fichier .env (variables d'environnement) dans le backend:
+## indiquez vos variables d'environnement et de conf à la bdd
 
 # Port du serveur
 PORT=3000
 
 # Configuration de la base de données
 DB_HOST=localhost
-DB_USER=root
+DB_USER=
 DB_PASSWORD=
 DB_NAME=ressources_relationnelles
 DB_DIALECT=mysql

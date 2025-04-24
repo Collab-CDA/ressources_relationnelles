@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import apiClient, { getAuthHeaders } from '../../services/api.js';
 
 export default {
   name: "AddResources",
@@ -127,17 +127,7 @@ export default {
       return null;
     },
     getAuthHeaders() {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("Token non trouvé.");
-        return {};
-      }
-      return {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      };
+      return getAuthHeaders();
     },
     async submitResource(confidentialite) {
       if (confidentialite === "Privée") {
@@ -173,8 +163,8 @@ export default {
         const headers = this.getAuthHeaders();
         headers.headers["Content-Type"] = "multipart/form-data";
 
-        await axios.post(
-          "http://localhost:3000/api/resources/create",
+        await apiClient.post(
+          "/resources/create",
           formData,
           headers
         );
@@ -192,8 +182,8 @@ export default {
     },
     async fetchTypesResource() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/types_ressource",
+        const response = await apiClient.get(
+          "/types_ressource",
           this.getAuthHeaders()
         );
         this.typesResource = response.data;
@@ -206,8 +196,8 @@ export default {
     },
     async fetchTypesRelation() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/relations",
+        const response = await apiClient.get(
+          "/relations",
           this.getAuthHeaders()
         );
         this.typesRelation = response.data;
@@ -220,8 +210,8 @@ export default {
     },
     async fetchCategoriesResource() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/categories",
+        const response = await apiClient.get(
+          "/categories",
           this.getAuthHeaders()
         );
         this.categoriesResource = response.data;

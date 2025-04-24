@@ -208,7 +208,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import apiClient, { getAuthHeaders } from '../../services/api.js';
 import { toRaw } from "vue";
 
 export default {
@@ -269,10 +269,7 @@ export default {
     // Récupératin de toutes les ressources, publiques et privées
     async fetchResources() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/resources",
-          this.getAuthHeaders()
-        );
+        const response = await apiClient.get("/resources", this.getAuthHeaders());
         this.resources = response.data;
       } catch (error) {
         console.warn(
@@ -283,10 +280,7 @@ export default {
     },
     async fetchTypesRelation() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/relations",
-          this.getAuthHeaders()
-        );
+        const response = await apiClient.get("/relations", this.getAuthHeaders());
         this.typesRelation = response.data;
       } catch (error) {
         console.warn(
@@ -297,10 +291,7 @@ export default {
     },
     async fetchCategoriesResource() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/categories",
-          this.getAuthHeaders()
-        );
+        const response = await apiClient.get("/categories", this.getAuthHeaders());
         this.categoriesResource = response.data;
       } catch (error) {
         console.warn(
@@ -311,10 +302,7 @@ export default {
     },
     async fetchTypesResource() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/types_ressource",
-          this.getAuthHeaders()
-        );
+        const response = await apiClient.get("/types_ressource", this.getAuthHeaders());
         this.typesResource = response.data;
       } catch (error) {
         console.warn(
@@ -327,10 +315,7 @@ export default {
     async fetchComments() {
       if (this.selectedResource) {
         try {
-          const response = await axios.get(
-            `http://localhost:3000/api/comments/resource/${this.selectedResource.id_ressource_}`,
-            this.getAuthHeaders()
-          );
+          const response = await apiClient.get(`/comments/resource/${this.selectedResource.id_ressource_}`, this.getAuthHeaders());
           if (response.data && Array.isArray(response.data)) {
             this.comments = response.data;
           } else {
@@ -352,11 +337,7 @@ export default {
         this.newComment.id_ressource_ = this.selectedResource.id_ressource_;
         this.newComment.id_utilisateur = this.getUserIdFromToken();
         try {
-          await axios.post(
-            "http://localhost:3000/api/comments",
-            this.newComment,
-            this.getAuthHeaders()
-          );
+          await apiClient.post("/comments", this.newComment, this.getAuthHeaders());
           this.fetchComments();
           this.newComment = {
             titre: "",
@@ -386,7 +367,7 @@ export default {
     },
     // Retourne le code HTML pour intégrer une vidéo YouTube
     getEmbedVideo(url) {
-      return `<iframe width="600px" height="400px" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-wr src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+      return `<iframe width="600px" height="400px" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
     },
     // Vérifie si l'URL est un lien YouTube intégrable
     isEmbedYouTubeLink(url) {
@@ -423,12 +404,7 @@ export default {
       return null;
     },
     getAuthHeaders() {
-      const token = localStorage.getItem("token");
-      return {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
+      return getAuthHeaders();
     },
     // Ajoute une ressource des favoris
     async toggleFavorite(resource) {
@@ -445,11 +421,7 @@ export default {
       }
 
       try {
-        await axios.post(
-          "http://localhost:3000/api/favoris/create",
-          { id_utilisateur: userId, id_ressource_: resource.id_ressource_ },
-          this.getAuthHeaders()
-        );
+        await apiClient.post("/favoris/create", { id_utilisateur: userId, id_ressource_: resource.id_ressource_ }, this.getAuthHeaders());
         alert("Ressource ajoutée aux favoris avec succès !");
       } catch (error) {
         console.warn(
@@ -470,13 +442,10 @@ export default {
     async openModal(user) {
       if (user && user.prenom && user.nom) {
         try {
-          const response = await axios.get(
-            "http://localhost:3000/api/users/search",
-            {
-              params: { prenom: user.prenom, nom: user.nom },
-              headers: this.getAuthHeaders().headers,
-            }
-          );
+          const response = await apiClient.get("/users/search", {
+            params: { prenom: user.prenom, nom: user.nom },
+            headers: this.getAuthHeaders().headers,
+          });
 
           if (response.data && response.data.id_utilisateur) {
             this.selectedUser = response.data;
@@ -512,14 +481,10 @@ export default {
       }
 
       try {
-        await axios.post(
-          "http://localhost:3000/api/friendships/create",
-          {
-            id_utilisateur1: currentUserId,
-            id_utilisateur2: selectedUserId,
-          },
-          this.getAuthHeaders()
-        );
+        await apiClient.post("/friendships/create", {
+          id_utilisateur1: currentUserId,
+          id_utilisateur2: selectedUserId,
+        }, this.getAuthHeaders());
 
         alert("Invitation envoyée avec succès !");
         this.closeModal();
@@ -541,10 +506,7 @@ export default {
       if (!userId) return;
 
       try {
-        const response = await axios.get(
-          `http://localhost:3000/api/favoris/${userId}`,
-          this.getAuthHeaders()
-        );
+        const response = await apiClient.get(`/favoris/${userId}`, this.getAuthHeaders());
         this.favorites = response.data;
       } catch (error) {
         console.warn(
@@ -559,7 +521,7 @@ export default {
       this.isShareModalOpen = true;
       const userId = this.getUserIdFromToken();
       if (!userId) return;
-      axios.get(`http://localhost:3000/api/friendships/friends/${userId}`, this.getAuthHeaders())
+      apiClient.get(`/friendships/friends/${userId}`, this.getAuthHeaders())
            .then(response => this.friends = response.data);
     },
     closeShareModal() {
@@ -571,7 +533,7 @@ export default {
       const link = `http://localhost:8080/complete-resources?title=${encodeURIComponent(this.selectedResource.titre)}`;
       const message = `Salut ${friend.prenom}, regarde cette ressource : ${this.selectedResource.titre}\n\n${link}`;
       try {
-        await axios.post("http://localhost:3000/api/messages", {
+        await apiClient.post("/messages", {
           id_utilisateur1: senderId,
           id_utilisateur2: friend.id_utilisateur,
           contenu_message: message

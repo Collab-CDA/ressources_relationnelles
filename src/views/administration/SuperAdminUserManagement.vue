@@ -82,7 +82,7 @@
   </template>
   
   <script>
-  import axios from 'axios';
+  import apiClient, { getAuthHeaders } from '@/services/api';
   
   export default {
     name: 'SuperAdminUserManagement',
@@ -105,7 +105,7 @@
     methods: {
       async fetchUsers() {
         try {
-          const response = await axios.get('http://localhost:3000/api/users');
+          const response = await apiClient.get('/users');
           this.users = response.data;
         } catch (error) {
           console.error("Erreur lors de la récupération des utilisateurs:", error);
@@ -115,7 +115,7 @@
       async toggleStatus(user) {
         const newStatus = user.statut === 'actif' ? 'suspendu' : 'actif';
         try {
-          await axios.put(`http://localhost:3000/api/users/${user.id_utilisateur}`, { statut: newStatus });
+          await apiClient.put(`/users/${user.id_utilisateur}`, { statut: newStatus });
           user.statut = newStatus;
         } catch (error) {
           console.error("Erreur lors de la mise à jour du statut:", error);
@@ -125,7 +125,7 @@
       async deleteUser(userId) {
         if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
           try {
-            await axios.delete(`http://localhost:3000/api/users/${userId}`);
+            await apiClient.delete(`/users/${userId}`);
             this.users = this.users.filter(user => user.id_utilisateur !== userId);
           } catch (error) {
             console.error("Erreur lors de la suppression de l'utilisateur:", error);
@@ -154,7 +154,7 @@
   
       async submitUser() {
         try {
-          const response = await axios.post('http://localhost:3000/api/utilisateurs/register', {
+          const response = await apiClient.post('/utilisateurs/register', {
             ...this.newUser,
             statut: 'actif',
           });
@@ -337,25 +337,64 @@
     background-color: #d4c4e0;
   }
   
-  /* Responsive écrans mobiles */
-  @media (max-width: 768px) {
-    h1 {
-      font-size: 28px;
-    }
-    .main-container {
-      margin: 1rem;
-    }
-    button {
-      width: 100%;
-      padding: 12px 0;
-    }
-    .modal-content {
+ /* Responsive écrans mobiles */
+@media screen and (max-width: 768px) {
+
+h1 {
+  font-size: 20px;
+  margin: 1rem 0;
+}
+
+.add-user-button {
+    font-size: 1rem;
+    padding: 0.3rem 0.5rem;
+    margin-right: 1rem;
+  }
+
+  .modal-content {
     padding: 1.5rem;
     width: 80%;
     height: 90%; 
     overflow-y: auto;
   }
-  }
+
+.user-table {
+  width: 100%;
+  overflow-x: auto;
+  margin: 5px 0.5rem; 
+}
+
+table {
+  width: 100%;
+  font-size: 12px; 
+}
+
+th, td {
+  padding: 4px; 
+  width: 18%; 
+}
+
+button {
+  padding: 2px 6px; 
+  font-size: 10px; 
+}
+
+.delete-btn i {
+  font-size: 10px; 
+}
+
+.btn {
+  width: 100%;
+  font-size: 14px; 
+  padding: 0.5rem; 
+}
+
+.button-container {
+  flex-direction: column;
+  gap: 5px; 
+}
+}
+
   
   /* Responsive tablettes */
   @media (min-width: 768px) and (max-width: 1024px) {

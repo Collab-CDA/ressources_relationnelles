@@ -61,7 +61,7 @@
   </template>
   
   <script>
-  import axios from "axios";
+  import apiClient, { getAuthHeaders } from "@/services/api";
   export default {
     name: "ModoResources",
     data() {
@@ -109,7 +109,7 @@
       },
       async fetchTypesResource() {
         try {
-          const response = await axios.get("http://localhost:3000/api/types_ressource", this.getAuthHeaders());
+          const response = await apiClient.get("/types_ressource", getAuthHeaders());
           this.typesResource = response.data;
         } catch (error) {
           console.error("Erreur lors de la récupération des types de ressource :", error.response?.data || error.message);
@@ -117,7 +117,7 @@
       },
       async fetchTypesRelation() {
         try {
-          const response = await axios.get("http://localhost:3000/api/relations", this.getAuthHeaders());
+          const response = await apiClient.get("/relations", getAuthHeaders());
           this.typesRelation = response.data;
         } catch (error) {
           console.error("Erreur lors de la récupération des types de relation :", error.response?.data || error.message);
@@ -125,7 +125,7 @@
       },
       async fetchCategoriesResource() {
         try {
-          const response = await axios.get("http://localhost:3000/api/categories", this.getAuthHeaders());
+          const response = await apiClient.get("/categories", getAuthHeaders());
           this.categoriesResource = response.data;
         } catch (error) {
           console.error("Erreur lors de la récupération des catégories de ressources :", error.response?.data || error.message);
@@ -133,7 +133,7 @@
       },
       async fetchResources() {
         try {
-          const response = await axios.get("http://localhost:3000/api/resources");
+          const response = await apiClient.get("/resources");
           this.resources = response.data;
         } catch (error) {
           console.error("Erreur lors de la récupération des ressources :", error.response?.data || error.message);
@@ -142,10 +142,10 @@
       async toggleStatus(resource) {
         const newStatus = resource.statut_ === "disponible" ? "suspendue" : "disponible";
         try {
-          await axios.put(
-            `http://localhost:3000/api/resources/status/${resource.id_ressource_}`,
+          await apiClient.put(
+            `/resources/status/${resource.id_ressource_}`,
             { statut_: newStatus },
-            this.getAuthHeaders()
+            getAuthHeaders()
           );
           resource.statut_ = newStatus;
         } catch (error) {
@@ -160,19 +160,6 @@
         } catch (e) {
           return null;
         }
-      },
-      getAuthHeaders() {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.error("Token non trouvé.");
-          return {};
-        }
-        return {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        };
       },
       getUserIdFromToken() {
         const token = localStorage.getItem("token");

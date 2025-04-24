@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import apiClient, { getAuthHeaders } from "@/services/api";
 
 export default {
   name: "CategoryManagement",
@@ -76,7 +76,7 @@ export default {
   methods: {
     async fetchCategories() {
       try {
-        const response = await axios.get("http://localhost:3000/api/categories", this.getAuthHeaders());
+        const response = await apiClient.get("/categories", getAuthHeaders());
         this.categories = response.data;
       } catch (error) {
         console.error("Erreur lors de la récupération des catégories :", error.response?.data || error.message);
@@ -98,16 +98,15 @@ export default {
       this.editingCategoryId = null;
     },
     async submitCategory() {
-      const headers = this.getAuthHeaders();
       try {
         if (this.isEditing && this.editingCategoryId) {
-          await axios.put(
-            `http://localhost:3000/api/categories/${this.editingCategoryId}`,
+          await apiClient.put(
+            `/categories/${this.editingCategoryId}`,
             this.categoryForm,
-            headers
+            getAuthHeaders()
           );
         } else {
-          await axios.post("http://localhost:3000/api/categories", this.categoryForm, headers);
+          await apiClient.post("/categories", this.categoryForm, getAuthHeaders());
         }
         this.closeModal();
         this.fetchCategories();
@@ -127,25 +126,13 @@ export default {
       const confirmation = confirm("Êtes-vous sûr de vouloir supprimer cette catégorie ?");
       if (!confirmation) return;
       try {
-        await axios.delete(`http://localhost:3000/api/categories/${categoryId}`, this.getAuthHeaders());
+        await apiClient.delete(`/categories/${categoryId}`, getAuthHeaders());
         this.fetchCategories();
       } catch (error) {
         console.error("Erreur lors de la suppression de la catégorie :", error.response?.data || error.message);
       }
     },
-    getAuthHeaders() {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("Token non trouvé.");
-        return {};
-      }
-      return {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      };
-    },
+    // Using imported getAuthHeaders from api.js instead
   },
 };
 </script>
