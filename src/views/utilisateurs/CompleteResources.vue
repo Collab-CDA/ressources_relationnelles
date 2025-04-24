@@ -270,7 +270,7 @@ export default {
     async fetchResources() {
       try {
         const response = await axios.get(
-          "http://10.176.131.156:3000/api/resources",
+          "http://localhost:3000/api/resources",
           this.getAuthHeaders()
         );
         this.resources = response.data;
@@ -284,7 +284,7 @@ export default {
     async fetchTypesRelation() {
       try {
         const response = await axios.get(
-          "http://10.176.131.156:3000/api/relations",
+          "http://localhost:3000/api/relations",
           this.getAuthHeaders()
         );
         this.typesRelation = response.data;
@@ -298,7 +298,7 @@ export default {
     async fetchCategoriesResource() {
       try {
         const response = await axios.get(
-          "http://10.176.131.156:3000/api/categories",
+          "http://localhost:3000/api/categories",
           this.getAuthHeaders()
         );
         this.categoriesResource = response.data;
@@ -312,7 +312,7 @@ export default {
     async fetchTypesResource() {
       try {
         const response = await axios.get(
-          "http://10.176.131.156:3000/api/types_ressource",
+          "http://localhost:3000/api/types_ressource",
           this.getAuthHeaders()
         );
         this.typesResource = response.data;
@@ -328,7 +328,7 @@ export default {
       if (this.selectedResource) {
         try {
           const response = await axios.get(
-            `http://10.176.131.156:3000/api/comments/resource/${this.selectedResource.id_ressource_}`,
+            `http://localhost:3000/api/comments/resource/${this.selectedResource.id_ressource_}`,
             this.getAuthHeaders()
           );
           if (response.data && Array.isArray(response.data)) {
@@ -353,7 +353,7 @@ export default {
         this.newComment.id_utilisateur = this.getUserIdFromToken();
         try {
           await axios.post(
-            "http://10.176.131.156:3000/api/comments",
+            "http://localhost:3000/api/comments",
             this.newComment,
             this.getAuthHeaders()
           );
@@ -446,7 +446,7 @@ export default {
 
       try {
         await axios.post(
-          "http://10.176.131.156:3000/api/favoris/create",
+          "http://localhost:3000/api/favoris/create",
           { id_utilisateur: userId, id_ressource_: resource.id_ressource_ },
           this.getAuthHeaders()
         );
@@ -471,7 +471,7 @@ export default {
       if (user && user.prenom && user.nom) {
         try {
           const response = await axios.get(
-            "http://10.176.131.156:3000/api/users/search",
+            "http://localhost:3000/api/users/search",
             {
               params: { prenom: user.prenom, nom: user.nom },
               headers: this.getAuthHeaders().headers,
@@ -513,7 +513,7 @@ export default {
 
       try {
         await axios.post(
-          "http://10.176.131.156:3000/api/friendships/create",
+          "http://localhost:3000/api/friendships/create",
           {
             id_utilisateur1: currentUserId,
             id_utilisateur2: selectedUserId,
@@ -542,7 +542,7 @@ export default {
 
       try {
         const response = await axios.get(
-          `http://10.176.131.156:3000/api/favoris/${userId}`,
+          `http://localhost:3000/api/favoris/${userId}`,
           this.getAuthHeaders()
         );
         this.favorites = response.data;
@@ -559,7 +559,7 @@ export default {
       this.isShareModalOpen = true;
       const userId = this.getUserIdFromToken();
       if (!userId) return;
-      axios.get(`http://10.176.131.156:3000/api/friendships/friends/${userId}`, this.getAuthHeaders())
+      axios.get(`http://localhost:3000/api/friendships/friends/${userId}`, this.getAuthHeaders())
            .then(response => this.friends = response.data);
     },
     closeShareModal() {
@@ -568,10 +568,10 @@ export default {
     async shareToFriend(friend) {
       if (!this.selectedResource) return;
       const senderId = this.getUserIdFromToken();
-      const link = `http://10.176.131.156:8080/complete-resources?title=${encodeURIComponent(this.selectedResource.titre)}`;
+      const link = `http://localhost:8080/complete-resources?title=${encodeURIComponent(this.selectedResource.titre)}`;
       const message = `Salut ${friend.prenom}, regarde cette ressource : ${this.selectedResource.titre}\n\n${link}`;
       try {
-        await axios.post("http://10.176.131.156:3000/api/messages", {
+        await axios.post("http://localhost:3000/api/messages", {
           id_utilisateur1: senderId,
           id_utilisateur2: friend.id_utilisateur,
           contenu_message: message

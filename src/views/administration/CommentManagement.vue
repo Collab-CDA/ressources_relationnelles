@@ -57,7 +57,7 @@ export default {
   methods: {
     async fetchComments() {
       try {
-        const response = await axios.get("http://10.176.131.156:3000/api/comments", this.getAuthHeaders());
+        const response = await axios.get("http://localhost:3000/api/comments", this.getAuthHeaders());
         this.comments = response.data;
       } catch (error) {
         console.error("Erreur lors de la récupération des commentaires :", error.response?.data || error.message);
@@ -67,7 +67,7 @@ export default {
       const confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce commentaire ?");
       if (!confirmation) return;
       try {
-        await axios.delete(`http://10.176.131.156:3000/api/comments/${id}`, this.getAuthHeaders());
+        await axios.delete(`http://localhost:3000/api/comments/${id}`, this.getAuthHeaders());
         this.comments = this.comments.filter(comment => comment.id_commentaire !== id);
       } catch (error) {
         console.error("Erreur lors de la suppression du commentaire :", error.response?.data || error.message);

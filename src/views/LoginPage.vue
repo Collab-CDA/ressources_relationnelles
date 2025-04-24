@@ -57,7 +57,7 @@ export default {
     async login() {
       try {
         const response = await axios.post(
-          "http://10.176.131.156:3000/api/utilisateurs/login",
+          "http://localhost:3000/api/utilisateurs/login",
           this.form
         );
         // Destructuration de la réponse pour obtenir les informations de l'utilisateur et le token

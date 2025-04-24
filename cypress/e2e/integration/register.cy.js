@@ -1,7 +1,7 @@
 describe('Inscription', () => {
   it('devrait permettre à un utilisateur de s\'inscrire', () => {
     // Visiter la page d'inscription
-    cy.visit('http://10.176.131.156:8080/register');
+    cy.visit('http://localhost:8080/register');
 
     // Remplir le formulaire d'inscription
     cy.get('input[id="nom"]').type('Doe');

@@ -105,7 +105,7 @@
     methods: {
       async fetchUsers() {
         try {
-          const response = await axios.get('http://10.176.131.156:3000/api/users');
+          const response = await axios.get('http://localhost:3000/api/users');
           this.users = response.data;
         } catch (error) {
           console.error("Erreur lors de la récupération des utilisateurs:", error);
@@ -115,7 +115,7 @@
       async toggleStatus(user) {
         const newStatus = user.statut === 'actif' ? 'suspendu' : 'actif';
         try {
-          await axios.put(`http://10.176.131.156:3000/api/users/${user.id_utilisateur}`, { statut: newStatus });
+          await axios.put(`http://localhost:3000/api/users/${user.id_utilisateur}`, { statut: newStatus });
           user.statut = newStatus;
         } catch (error) {
           console.error("Erreur lors de la mise à jour du statut:", error);
@@ -125,7 +125,7 @@
       async deleteUser(userId) {
         if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
           try {
-            await axios.delete(`http://10.176.131.156:3000/api/users/${userId}`);
+            await axios.delete(`http://localhost:3000/api/users/${userId}`);
             this.users = this.users.filter(user => user.id_utilisateur !== userId);
           } catch (error) {
             console.error("Erreur lors de la suppression de l'utilisateur:", error);
@@ -154,7 +154,7 @@
   
       async submitUser() {
         try {
-          const response = await axios.post('http://10.176.131.156:3000/api/utilisateurs/register', {
+          const response = await axios.post('http://localhost:3000/api/utilisateurs/register', {
             ...this.newUser,
             statut: 'actif',
           });
@@ -349,6 +349,12 @@
       width: 100%;
       padding: 12px 0;
     }
+    .modal-content {
+    padding: 1.5rem;
+    width: 80%;
+    height: 90%; 
+    overflow-y: auto;
+  }
   }
   
   /* Responsive tablettes */

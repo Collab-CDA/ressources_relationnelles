@@ -197,7 +197,7 @@ export default {
     async fetchResources() {
       try {
         const response = await axios.get(
-          "http://10.176.131.156:3000/api/resources",
+          "http://localhost:3000/api/resources",
           this.getAuthHeaders()
         );
         // Récupération des ressources publiques uniquement
@@ -214,7 +214,7 @@ export default {
     async fetchTypesRelation() {
       try {
         const response = await axios.get(
-          "http://10.176.131.156:3000/api/relations",
+          "http://localhost:3000/api/relations",
           this.getAuthHeaders()
         );
         this.typesRelation = response.data;
@@ -228,7 +228,7 @@ export default {
     async fetchCategoriesResource() {
       try {
         const response = await axios.get(
-          "http://10.176.131.156:3000/api/categories",
+          "http://localhost:3000/api/categories",
           this.getAuthHeaders()
         );
         this.categoriesResource = response.data;
@@ -250,7 +250,7 @@ export default {
         }
         try {
           const response = await axios.get(
-            `http://10.176.131.156:3000/api/comments/${this.selectedResource.id_ressource_}`,
+            `http://localhost:3000/api/comments/${this.selectedResource.id_ressource_}`,
             this.getAuthHeaders()
           );
           if (response.data && Array.isArray(response.data)) {
@@ -294,7 +294,7 @@ export default {
 
         try {
           const response = await axios.post(
-            "http://10.176.131.156:3000/api/comments",
+            "http://localhost:3000/api/comments",
             this.newComment,
             this.getAuthHeaders()
           );

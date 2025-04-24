@@ -27,6 +27,8 @@
       </div>
     </div>
     
+    <hr />
+
     <div class="chart-container" v-if="displayedMetrics.length">
       <h2>Graphique des indicateurs sélectionnés</h2>
       <canvas id="metricsChart"></canvas>
@@ -81,7 +83,7 @@ export default {
       try {
         loading.value = true
         const token = localStorage.getItem('token')
-        const response = await axios.get('http://10.176.131.156:3000/api/dashboard', {
+        const response = await axios.get('http://localhost:3000/api/dashboard', {
           headers: { Authorization: `Bearer ${token}` }
         })
         dashboardData.value = response.data
@@ -112,7 +114,7 @@ export default {
     const exportAll = async () => {
       try {
         const token = localStorage.getItem('token')
-        const response = await axios.get('http://10.176.131.156:3000/api/dashboard/export', {
+        const response = await axios.get('http://localhost:3000/api/dashboard/export', {
           headers: { Authorization: `Bearer ${token}` },
           responseType: 'blob'
         })
@@ -151,7 +153,7 @@ export default {
         data: {
           labels,
           datasets: [{
-            label: 'Valeur',
+            label: 'Valeur en unité',
             data,
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
             borderColor: 'rgba(54, 162, 235, 1)',
@@ -254,7 +256,7 @@ h1 {
 }
 
 .btn {
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 0.5rem;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -321,6 +323,7 @@ h1 {
   font-size: 20px;
   font-weight: 600;
   text-align: center;
+  margin-top: 1rem;
   margin-bottom: 1rem;
   color: #0258BD;
 }

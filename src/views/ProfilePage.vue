@@ -72,7 +72,7 @@ export default {
     // Propriété calculée pour obtenir l'URL de l'avatar
     avatarUrl() {
       return this.utilisateur.avatar
-        ? `http://10.176.131.156:3000/uploads/${this.utilisateur.avatar}`
+        ? `http://localhost:3000/uploads/${this.utilisateur.avatar}`
         : this.defaultAvatar;
     },
   },
@@ -87,7 +87,7 @@ export default {
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.id; 
 
-        const response = await axios.get(`http://10.176.131.156:3000/api/utilisateurs/${userId}`, {
+        const response = await axios.get(`http://localhost:3000/api/utilisateurs/${userId}`, {
           headers: {
             Authorization: token,
           },
@@ -125,7 +125,7 @@ export default {
         const formData = new FormData();
         formData.append('avatar', this.selectedFile);
 
-        const response = await axios.put(`http://10.176.131.156:3000/api/utilisateurs/${userId}/avatar`, formData, {
+        const response = await axios.put(`http://localhost:3000/api/utilisateurs/${userId}/avatar`, formData, {
           headers: {
             Authorization: token,
             'Content-Type': 'multipart/form-data',
@@ -146,7 +146,7 @@ export default {
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.id;
 
-        const response = await axios.put(`http://10.176.131.156:3000/api/utilisateurs/${userId}`, this.editedUtilisateur, {
+        const response = await axios.put(`http://localhost:3000/api/utilisateurs/${userId}`, this.editedUtilisateur, {
           headers: {
             Authorization: token,
           },
@@ -172,7 +172,7 @@ export default {
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.id;
 
-        await axios.delete(`http://10.176.131.156:3000/api/utilisateurs/${userId}`, {
+        await axios.delete(`http://localhost:3000/api/utilisateurs/${userId}`, {
           headers: {
             Authorization: token,
           },

@@ -87,7 +87,7 @@ export default {
 
       try {
         const response = await axios.get(
-          `http://10.176.131.156:3000/api/favoris/${userId}`,
+          `http://localhost:3000/api/favoris/${userId}`,
           this.getAuthHeaders()
         );
         this.favoris = response.data;
@@ -101,7 +101,7 @@ export default {
     async fetchResources() {
       try {
         const response = await axios.get(
-          "http://10.176.131.156:3000/api/resources",
+          "http://localhost:3000/api/resources",
           this.getAuthHeaders()
         );
         this.resources = response.data;
@@ -121,7 +121,7 @@ export default {
 
       try {
         const response = await axios.get(
-          `http://10.176.131.156:3000/api/progression/${userId}`,
+          `http://localhost:3000/api/progression/${userId}`,
           this.getAuthHeaders()
         );
         this.progressions = response.data;
@@ -146,7 +146,7 @@ export default {
     async deleteFavori(favoriId) {
       try {
         await axios.delete(
-          `http://10.176.131.156:3000/api/favoris/delete/${favoriId}`,
+          `http://localhost:3000/api/favoris/delete/${favoriId}`,
           this.getAuthHeaders()
         );
         this.favoris = this.favoris.filter((f) => f.id_favori !== favoriId);

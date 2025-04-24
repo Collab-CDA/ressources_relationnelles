@@ -174,7 +174,7 @@ export default {
         headers.headers["Content-Type"] = "multipart/form-data";
 
         await axios.post(
-          "http://10.176.131.156:3000/api/resources/create",
+          "http://localhost:3000/api/resources/create",
           formData,
           headers
         );
@@ -193,7 +193,7 @@ export default {
     async fetchTypesResource() {
       try {
         const response = await axios.get(
-          "http://10.176.131.156:3000/api/types_ressource",
+          "http://localhost:3000/api/types_ressource",
           this.getAuthHeaders()
         );
         this.typesResource = response.data;
@@ -207,7 +207,7 @@ export default {
     async fetchTypesRelation() {
       try {
         const response = await axios.get(
-          "http://10.176.131.156:3000/api/relations",
+          "http://localhost:3000/api/relations",
           this.getAuthHeaders()
         );
         this.typesRelation = response.data;
@@ -221,7 +221,7 @@ export default {
     async fetchCategoriesResource() {
       try {
         const response = await axios.get(
-          "http://10.176.131.156:3000/api/categories",
+          "http://localhost:3000/api/categories",
           this.getAuthHeaders()
         );
         this.categoriesResource = response.data;
