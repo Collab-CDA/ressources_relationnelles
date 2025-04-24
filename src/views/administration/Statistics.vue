@@ -151,7 +151,7 @@ export default {
         data: {
           labels,
           datasets: [{
-            label: 'Valeur',
+            label: 'Valeur en unité',
             data,
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
             borderColor: 'rgba(54, 162, 235, 1)',
@@ -254,7 +254,7 @@ h1 {
 }
 
 .btn {
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 0.5rem;
   border: none;
   border-radius: 4px;
   cursor: pointer;

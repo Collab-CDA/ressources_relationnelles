@@ -201,7 +201,7 @@ button.suspended {
 @media screen and (max-width: 768px) {
 
   h1 {
-    font-size: 20px; /* Réduit la taille de la police */
+    font-size: 20px;
     margin: 1rem 0;
   }
 

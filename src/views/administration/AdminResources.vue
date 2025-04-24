@@ -755,8 +755,10 @@ button.suspended {
   }
 
   .modal-content {
-    width: 95%;
-    padding: 1rem;
+    padding: 1.5rem;
+    width: 80%;
+    height: 90%; 
+    overflow-y: auto;
   }
 
   .form-group input,

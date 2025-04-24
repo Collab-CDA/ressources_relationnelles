@@ -337,19 +337,64 @@
     background-color: #d4c4e0;
   }
   
-  /* Responsive écrans mobiles */
-  @media (max-width: 768px) {
-    h1 {
-      font-size: 28px;
-    }
-    .main-container {
-      margin: 1rem;
-    }
-    button {
-      width: 100%;
-      padding: 12px 0;
-    }
+ /* Responsive écrans mobiles */
+@media screen and (max-width: 768px) {
+
+h1 {
+  font-size: 20px;
+  margin: 1rem 0;
+}
+
+.add-user-button {
+    font-size: 1rem;
+    padding: 0.3rem 0.5rem;
+    margin-right: 1rem;
   }
+
+  .modal-content {
+    padding: 1.5rem;
+    width: 80%;
+    height: 90%; 
+    overflow-y: auto;
+  }
+
+.user-table {
+  width: 100%;
+  overflow-x: auto;
+  margin: 5px 0.5rem; 
+}
+
+table {
+  width: 100%;
+  font-size: 12px; 
+}
+
+th, td {
+  padding: 4px; 
+  width: 18%; 
+}
+
+button {
+  padding: 2px 6px; 
+  font-size: 10px; 
+}
+
+.delete-btn i {
+  font-size: 10px; 
+}
+
+.btn {
+  width: 100%;
+  font-size: 14px; 
+  padding: 0.5rem; 
+}
+
+.button-container {
+  flex-direction: column;
+  gap: 5px; 
+}
+}
+
   
   /* Responsive tablettes */
   @media (min-width: 768px) and (max-width: 1024px) {
