@@ -1,0 +1,343 @@
+<template>
+  <div class="profile-page">
+    <h1>Mes amis</h1>
+    <ul>
+      <li v-for="friend in friends" :key="friend.id_utilisateur" class="card">
+        <div class="friend-item">
+          <div class="avatar-container">
+            <img
+              :src="getAvatarUrl(friend.avatar)"
+              alt="Avatar"
+              class="avatar"
+            />
+          </div>
+          <div class="friend-info">
+            <div class="text-info">
+              <p><strong>Nom:</strong> {{ friend.nom }}</p>
+              <p><strong>Prénom:</strong> {{ friend.prenom }}</p>
+            </div>
+            <div class="friends-actions">
+
+            <button @click="goToMessagerie(friend.id_utilisateur)" class="btn">
+              Contacter
+            </button>
+            <button
+              @click="removeFriend(friend.id_utilisateur)"
+              class="btn delete-btn"
+            >
+            <i class="fas fa-trash"></i>
+                      </button>
+          </div>
+        </div>
+
+        </div>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+import apiClient, { getAuthHeaders } from "../../services/api.js";
+
+export default {
+  name: "FriendsPage",
+  data() {
+    return {
+      friends: [],
+      userId: null,
+    };
+  },
+  methods: {
+    getUserIdFromToken() {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decodedToken = JSON.parse(atob(token.split(".")[1]));
+          return decodedToken.id;
+        } catch (error) {
+          console.error("Erreur lors du décodage du token :", error);
+          return null;
+        }
+      }
+      return null;
+    },
+    getAuthHeaders() {
+      return getAuthHeaders();
+    },
+    getAvatarUrl(avatar) {
+      const baseUrl = process.env.VUE_APP_API_URL;
+      const apiBaseUrl = baseUrl.replace('/api', '');
+      return avatar ? `${apiBaseUrl}/uploads/${avatar}` : "";
+    },
+    async fetchFriends() {
+      this.userId = this.getUserIdFromToken();
+      if (this.userId) {
+        try {
+          const response = await apiClient.get(
+            `/friendships/friends/${this.userId}`,
+            this.getAuthHeaders()
+          );
+          this.friends = response.data;
+        } catch (error) {
+          console.error("Erreur lors de la récupération des amis :", error);
+        }
+      }
+    },
+    async removeFriend(friendId) {
+      const confirmation = window.confirm(
+        "Êtes-vous sûr de vouloir supprimer cet ami ?"
+      );
+      if (!confirmation) return;
+
+      try {
+        const response = await apiClient.post(
+          "/friendships/delete",
+          {
+            id_utilisateur1: this.userId,
+            id_utilisateur2: friendId,
+          },
+          this.getAuthHeaders()
+        );
+        // Mise à jour de la liste des amis
+        this.friends = this.friends.filter(
+          (friend) => friend.id_utilisateur !== friendId
+        );
+      } catch (error) {
+        console.error("Erreur lors de la suppression de l'ami :", error);
+      }
+    },
+    goToMessagerie(friendId) {
+      this.$router.push({
+        name: "MessageriePage",
+        params: { friendId: friendId },
+      });
+    },
+  },
+  mounted() {
+    this.fetchFriends();
+  },
+};
+</script>
+
+<style scoped>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+h1 {
+  font-family: "Roboto", sans-serif;
+  font-size: 32px;
+  font-weight: bold;
+  color: #0258bd;
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
+  max-width: 600px;
+}
+
+.card {
+  background-color: #dad8d8;
+  padding: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.friend-item {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-container {
+  margin-right: 1rem;
+}
+
+.avatar {
+  width: 4rem;
+  height: 4rem;
+  border: solid 5px #80ada0;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.friend-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+
+.text-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.friend-info p {
+  margin: 5px 0;
+}
+
+.friend-info p,
+.friend-info strong {
+  color: #000000;
+}
+
+.friends-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  background-color: #b0a2ba;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 0;
+}
+
+.btn:hover {
+  background-color: #d4c4e0;
+}
+
+.delete-btn i {
+  font-size: 20px; 
+  color: white;    
+}
+
+.delete-btn:hover i {
+  color: #D0021B;  
+}
+
+
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 10px;
+  }
+
+  ul {
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .friend-item {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .avatar-container {
+    margin-right: 1rem;
+  }
+
+  .avatar {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .friend-info {
+    flex-direction: column;
+    align-items: flex-start;
+    width: calc(100% - 4rem); 
+  }
+
+  .text-info {
+    width: 100%;
+  }
+
+  .friends-actions {
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+
+  .btn {
+    width: 48%;
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+
+  .delete-btn i {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .profile-page {
+    padding: 15px;
+  }
+
+  ul {
+    width: 100%;
+    padding: 0 15px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .friend-item {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .avatar-container {
+    margin-right: 1.5rem;
+  }
+
+  .avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .friend-info {
+    flex-direction: column;
+    align-items: flex-start;
+    width: calc(100% - 5rem); 
+  }
+
+  .text-info {
+    width: 100%;
+  }
+
+  .friends-actions {
+    gap: 15px;
+  }
+
+  .btn {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+
+  .delete-btn i {
+    font-size: 20px;
+  }
+}
+
+</style>

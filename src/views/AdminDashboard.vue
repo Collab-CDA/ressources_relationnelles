@@ -1,1 +1,0 @@
-<!-- Tableau de bord de l'administrateur -->

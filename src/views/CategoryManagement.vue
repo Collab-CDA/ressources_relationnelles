@@ -1,1 +1,0 @@
-<!-- Page de gestion des catégories pour admin -->

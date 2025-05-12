@@ -1,0 +1,99 @@
+const path = require('path');
+const fs = require('fs');
+const Utilisateur = require('../models/User');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
+exports.creerUtilisateur = async (data) => {
+    const { email, mot_de_passe } = data;
+    const utilisateurExistant = await Utilisateur.findOne({ where: { email } });
+
+    if (utilisateurExistant) {
+        throw new Error('Un utilisateur avec cet email existe déjà.');
+    }
+
+    const motDePasseHash = await bcrypt.hash(mot_de_passe, 10);
+    const nouvelUtilisateur = await Utilisateur.create({ ...data, mot_de_passe: motDePasseHash });
+
+    return nouvelUtilisateur;
+};
+
+exports.authentifierUtilisateur = async (email, mot_de_passe) => {
+    const utilisateur = await Utilisateur.findOne({ where: { email } });
+
+    if (!utilisateur) {
+        throw new Error('Utilisateur non trouvé.');
+    }
+
+    const motDePasseValide = await bcrypt.compare(mot_de_passe, utilisateur.mot_de_passe);
+    if (!motDePasseValide) {
+        throw new Error('Mot de passe incorrect.');
+    }
+
+    // Vérification du statut de l'utilisateur
+    if (utilisateur.statut === "suspendu") {
+        throw new Error("Votre compte a été suspendu temporairement");
+    }
+
+    const token = jwt.sign(
+        {
+            id: utilisateur.id_utilisateur,
+            email: utilisateur.email,
+            prenom: utilisateur.prenom,
+            nom: utilisateur.nom, 
+            role: utilisateur.role_
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: '24h',
+        }
+    );
+
+    return { utilisateur, token };
+};
+
+exports.trouverUtilisateurParId = async (id) => {
+    return await Utilisateur.findByPk(id);
+};
+
+exports.trouverTousUtilisateurs = async () => {
+    return await Utilisateur.findAll({
+        attributes: ['id_utilisateur', 'nom', 'prenom', 'role_', 'statut']
+    });
+};
+
+exports.trouverUtilisateurParNomEtPrenom = async (prenom, nom) => {
+    return await Utilisateur.findOne({
+      where: { prenom, nom }
+    });
+};
+
+exports.modifierUtilisateur = async (id, data) => {
+    const utilisateur = await Utilisateur.findByPk(id);
+    if (!utilisateur) {
+        return null;
+    }
+    await utilisateur.update(data);
+    return utilisateur;
+};
+
+exports.effacerUtilisateur = async (id) => {
+    const utilisateur = await Utilisateur.findByPk(id);
+    if (!utilisateur) {
+        return null;
+    }
+    await utilisateur.destroy();
+    return utilisateur;
+};
+
+exports.telechargerAvatar = async (id, file) => {
+    const utilisateur = await Utilisateur.findByPk(id);
+    if (!utilisateur) {
+        return null;
+    }
+    const uploadPath = path.join(__dirname, '../uploads', `${id}_${file.originalname}`);
+    fs.writeFileSync(uploadPath, file.buffer);
+    utilisateur.avatar = `${id}_${file.originalname}`;
+    await utilisateur.save();
+    return utilisateur;
+};
