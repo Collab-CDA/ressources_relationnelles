@@ -1,0 +1,19 @@
+FROM node:22.15.0-bookworm
+
+COPY ./backend /backend
+
+WORKDIR /backend
+
+RUN npm install
+RUN touch ./.env
+RUN echo "PORT=3000" >> ./.env
+RUN echo "DB_HOST=relat-database" >> ./.env
+RUN echo "DB_USER=ressources_relationnelles" >> ./.env
+RUN echo "DB_PASSWORD=Cesi2025!" >> ./.env
+RUN echo "DB_NAME=ressources_relationnelles" >> ./.env
+RUN echo "DB_DIALECT=mysql" >> ./.env
+RUN echo "NODE_ENV=production" >> ./.env
+RUN echo "JWT_SECRET=ma_clé_secrète_pour_jwt" >> ./.env
+
+CMD ["sleep", "10"]
+CMD ["npm", "run", "start"]

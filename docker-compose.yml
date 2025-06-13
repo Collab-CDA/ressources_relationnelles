@@ -1,0 +1,42 @@
+services:
+
+  relat-database:
+    image: mariadb:lts
+    networks:
+      - relat-net
+    environment:
+      MARIADB_ROOT_PASSWORD: "Cesi2025!"
+      MARIADB_DATABASE: "ressources_relationnelles"
+      MARIADB_USER: "ressources_relationnelles"
+      MARIADB_PASSWORD: "Cesi2025!"
+    volumes:
+      - relat-db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "netstat -an | grep -q 3306"]
+
+  relat-frontend:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.frontend
+    networks:
+      - relat-net
+    ports:
+      - "80:8080"
+
+  relat-backend:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.backend
+    networks:
+      - relat-net
+    ports:
+      - "3000:3000"
+    depends_on:
+      relat-database:
+        condition: service_healthy
+
+networks:
+  relat-net:
+
+volumes:
+  relat-db:
