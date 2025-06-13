@@ -9,6 +9,7 @@ const multer      = require('multer');
 const jwt         = require('jsonwebtoken');
 const swaggerUi   = require('swagger-ui-express');
 const swaggerDoc  = require('./documentation/swagger.json');
+const fs          = require('fs');
 
 const sequelize        = require('./db/sequelize');
 const utilisateurRoutes         = require('./routes/userRoutes');
@@ -26,6 +27,13 @@ const messageRoutes             = require('./routes/messageRoutes');
 const expressOasGenerator = require('express-oas-generator');
 expressOasGenerator.init(app, {});
 const PORT = process.env.PORT || 3000;
+
+const modelsPath = path.join(__dirname, 'models');
+fs.readdirSync(modelsPath)
+  .filter(file => file.endsWith('.js'))
+  .forEach(file => {
+    require(path.join(modelsPath, file));
+  });
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/'),
@@ -79,8 +87,12 @@ app.use((err, req, res, next) => {
 });
 
 sequelize.authenticate()
-  .then(() => {
-    console.log('Connexion à la base de données réussi !');
+  .then(async () => {
+    console.log('Connexion à la base de données réussie !');
+
+    await sequelize.sync({ alter: true });
+    console.log('Synchronisation des modèles terminée.');
+
     app.listen(PORT, () => {
       console.log(`✅ Serveur sur http://localhost:${PORT}`);
       console.log(`📘 Docs Swagger : http://localhost:${PORT}/api-docs`);
