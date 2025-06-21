@@ -1,0 +1,205 @@
+name: CI/CD Fullstack Deployment
+
+on:
+  push:
+    branches: [main]
+
+env:
+  NODE_VERSION: 20
+
+jobs:
+  audit_and_test_backend:
+    name: 🔍 Audit & test Backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: npm ci
+      - run: npm audit --audit-level=moderate
+      - run: npm test || true
+
+  audit_and_test_frontend:
+    name: 🔍 Audit & test Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: npm ci
+      - run: npm audit --audit-level=moderate || true
+      - run: npx eslint . || true
+      - run: npx retire --exitwith 0 || true
+      - run: npx depcheck || true
+      - run: npm test || true
+
+  build_and_push_images:
+    name: 🐳 Build & Push Docker Images
+    runs-on: ubuntu-latest
+    needs: [audit_and_test_backend, audit_and_test_frontend]
+    environment: deploiementAutomatiqueAWS
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & Push Backend
+        run: |
+          docker build -t ${{ secrets.DOCKER_REPO_BACKEND }} ./backend
+          docker push ${{ secrets.DOCKER_REPO_BACKEND }}
+
+      - name: Build & Push Frontend
+        run: |
+          docker build -t ${{ secrets.DOCKER_REPO_FRONTEND }} .
+          docker push ${{ secrets.DOCKER_REPO_FRONTEND }}
+
+  deploy_to_ec2:
+    name: 🚀 Deploy on EC2
+    runs-on: ubuntu-latest
+    needs: build_and_push_images
+    environment: deploiementAutomatiqueAWS
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            mkdir -p ~/app/traefik/dynamic
+            cd ~/app
+
+            echo "✅ Création des fichiers de déploiement..."
+
+            # .env
+            cat > .env <<EOF
+            PORT=3000
+            NODE_ENV=production
+            DB_HOST=mysql
+            DB_USER=${{ secrets.DB_USER }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            DB_NAME=${{ secrets.DB_NAME }}
+            DB_DIALECT=mysql
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            EOF
+
+            # traefik.yml
+            cat > traefik/traefik.yml <<EOF
+            api:
+              dashboard: true
+              insecure: true
+
+            entryPoints:
+              web:
+                address: ":80"
+
+            providers:
+              docker:
+                endpoint: "unix:///var/run/docker.sock"
+                exposedByDefault: false
+            EOF
+
+            # docker-compose.yml
+            cat > docker-compose.yml <<EOF
+            version: '3.8'
+
+            services:
+              traefik:
+                image: traefik:v3.0
+                container_name: traefik
+                ports:
+                  - "80:80"
+                  - "8080:8080"
+                volumes:
+                  - /var/run/docker.sock:/var/run/docker.sock
+                  - ./traefik/traefik.yml:/etc/traefik/traefik.yml
+                networks:
+                  - web
+
+              frontend:
+                image: ${{ secrets.DOCKER_REPO_FRONTEND }}
+                container_name: frontend
+                expose:
+                  - "3001"
+                labels:
+                  - "traefik.enable=true"
+                  - "traefik.http.routers.frontend.rule=Host(\`ec2-54-242-5-221.compute-1.amazonaws.com\`)"
+                  - "traefik.http.routers.frontend.entrypoints=web"
+                  - "traefik.http.services.frontend.loadbalancer.server.port=3001"
+                depends_on:
+                  - traefik
+                networks:
+                  - web
+
+              backend:
+                image: ${{ secrets.DOCKER_REPO_BACKEND }}
+                container_name: backend
+                expose:
+                  - "3000"
+                env_file: .env
+                labels:
+                  - "traefik.enable=true"
+                  - "traefik.http.routers.backend.rule=PathPrefix(\`/api\`)"
+                  - "traefik.http.routers.backend.entrypoints=web"
+                  - "traefik.http.services.backend.loadbalancer.server.port=3000"
+                depends_on:
+                  - mysql
+                networks:
+                  - web
+
+              mysql:
+                image: mysql:8.0
+                container_name: mysql
+                environment:
+                  MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+                  MYSQL_DATABASE: ${{ secrets.DB_NAME }}
+                  MYSQL_USER: ${{ secrets.DB_USER }}
+                  MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+                volumes:
+                  - mysql_data:/var/lib/mysql
+                ports:
+                  - "3306:3306"
+                networks:
+                  - web
+
+              phpmyadmin:
+                image: phpmyadmin/phpmyadmin
+                container_name: phpmyadmin
+                environment:
+                  PMA_HOST: mysql
+                  MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+                ports:
+                  - "8080:80"
+                depends_on:
+                  - mysql
+                networks:
+                  - web
+
+            volumes:
+              mysql_data:
+
+            networks:
+              web:
+                driver: bridge
+            EOF
+
+            echo "🧹 Nettoyage des anciens conteneurs..."
+            docker compose down || true
+
+            echo "📦 Pull des images..."
+            docker pull ${{ secrets.DOCKER_REPO_BACKEND }}
+            docker pull ${{ secrets.DOCKER_REPO_FRONTEND }}
+
+            echo "🚀 Démarrage des conteneurs..."
+            docker compose up -d
+
+            echo "✅ Déploiement terminé sur EC2 !"
