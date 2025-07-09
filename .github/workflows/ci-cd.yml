@@ -76,7 +76,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            mkdir -p ~/app/traefik/dynamic
+            mkdir -p ~/app/traefik/dynamic ~/app/mysql-init
             cd ~/app
 
             echo "✅ Création des fichiers de déploiement..."
@@ -91,6 +91,19 @@ jobs:
             DB_NAME=${{ secrets.DB_NAME }}
             DB_DIALECT=mysql
             JWT_SECRET=${{ secrets.JWT_SECRET }}
+            EOF
+
+            # Script d'initialisation MySQL
+            cat > mysql-init/init.sql <<EOF
+            -- Créer l'utilisateur applicatif avec droits sur tous les hosts
+            CREATE USER IF NOT EXISTS '${{ secrets.DB_USER }}'@'%' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}';
+            GRANT ALL PRIVILEGES ON \`${{ secrets.DB_NAME }}\`.* TO '${{ secrets.DB_USER }}'@'%';
+
+            -- Supprimer les utilisateurs root distants (garder seulement localhost)
+            DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+
+            -- Appliquer les changements
+            FLUSH PRIVILEGES;
             EOF
 
             # traefik.yml
@@ -163,10 +176,9 @@ jobs:
                 environment:
                   MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
                   MYSQL_DATABASE: ${{ secrets.DB_NAME }}
-                  MYSQL_USER: ${{ secrets.DB_USER }}
-                  MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
                 volumes:
                   - mysql_data:/var/lib/mysql
+                  - ./mysql-init:/docker-entrypoint-initdb.d
                 ports:
                   - "3306:3306"
                 networks:
@@ -179,7 +191,7 @@ jobs:
                   PMA_HOST: mysql
                   MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
                 ports:
-                  - "8080:80"
+                  - "8081:80"
                 depends_on:
                   - mysql
                 networks:
